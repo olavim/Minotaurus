@@ -20,23 +20,14 @@ The program will have a graphical user interface in the end.
 
 For now I'll list the objectives for the data structures I mentioned in the first topic:
 
-|     | Access | Search | Insertion | Deletion |
-|-----|--------|--------|-----------|----------|
-|List | Set    | O(1)   | O(1)      | O(1)     |
-
-**Set**
-- `O(1)` average time complexity for insertion, deletion and searching.
-- `O(n)` space complexity.
-
-**List**
-- `O(1)` time complexity for access.
-- `O(n)` time complexity for insertion, deletion and searching.
-- `O(n)` space complexity.
- 
-**Queue**
-- `O(1)` time complexity for insertion and deletion.
-- `O(n)` space complexity.
- 
-**Stack**
-- `O(1)` time complexity for insertion and deletion.
-- `O(n)` space complexity.
+|       | Access | Search | Insertion | Deletion |
+|-------|--------|--------|-----------|----------|
+| List  | O(1)   | O(n)   | O(n)      | O(n)     |
+|-------|--------|--------|-----------|----------|
+| Set   | -      | O(1)   | O(1)      | O(1)     |
+|-------|--------|--------|-----------|----------|
+| Queue | O(1)   | O(n)   | O(1)      | O(1)     |
+|-------|--------|--------|-----------|----------|
+| Stack | O(1)   | O(n)   | O(1)      | O(1)     |
+|-------|--------|--------|-----------|----------|
+| Priority Queue | O(1)   | O(n)   | O(log n)      | O(n)     |
