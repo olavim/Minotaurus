@@ -10,7 +10,7 @@ Documentation of this project will be written in English, with the exception of 
 
 ## Documents
 
-**Specification**
+[**Specification**](docs/specification.md)
 
 - Algorithms and data structures that will be used.
 - What problems I'm solving, and why I chose the algorithms/data structures I did.
