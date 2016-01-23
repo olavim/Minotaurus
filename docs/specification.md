@@ -21,18 +21,18 @@ The program will have a graphical user interface in the end.
 For now I'll list the objectives for the data structures I mentioned in the first topic:
 
 **Set**
-- O(1) average time complexity for insertion, deletion and searching.
-- O(n) space complexity.
+- `O(1)` average time complexity for insertion, deletion and searching.
+- `O(n)` space complexity.
 
 **List**
-- O(1) time complexity for access.
-- O(n) time complexity for insertion, deletion and searching.
-- O(n) space complexity.
+- `O(1)` time complexity for access.
+- `O(n)` time complexity for insertion, deletion and searching.
+- `O(n)` space complexity.
  
 **Queue**
-- O(1) time complexity for insertion and deletion.
-- O(n) space complexity.
+- `O(1)` time complexity for insertion and deletion.
+- `O(n)` space complexity.
  
 **Stack**
-- O(1) time complexity for insertion and deletion.
-- O(n) space complexity.
+- `O(1)` time complexity for insertion and deletion.
+- `O(n)` space complexity.
