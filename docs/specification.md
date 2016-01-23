@@ -20,6 +20,10 @@ The program will have a graphical user interface in the end.
 
 For now I'll list the objectives for the data structures I mentioned in the first topic:
 
+     | Access | Search | Insertion | Deletion |
+----------------------------------------------
+List | Set    | O(1)   | O(1)      | O(1)
+
 **Set**
 - `O(1)` average time complexity for insertion, deletion and searching.
 - `O(n)` space complexity.
