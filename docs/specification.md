@@ -22,8 +22,8 @@ For now I'll list the objectives for the data structures I mentioned in the firs
 
 |       | Access | Search | Insertion | Deletion |
 |-------|--------|--------|-----------|----------|
-| List  | O(1)   | O(n)   | O(n)      | O(n)     |
-| Set   | -      | O(1)   | O(1)      | O(1)     |
-| Queue | O(1)   | O(n)   | O(1)      | O(1)     |
-| Stack | O(1)   | O(n)   | O(1)      | O(1)     |
-| Priority Queue | O(1)   | O(n)   | O(log n)      | O(n)     |
+| **List**  | O(1)   | O(n)   | O(n)      | O(n)     |
+| **Set**   | -      | O(1)   | O(1)      | O(1)     |
+| **Queue** | O(1)   | O(n)   | O(1)      | O(1)     |
+| **Stack** | O(1)   | O(n)   | O(1)      | O(1)     |
+| **Priority Queue** | O(1)   | O(n)   | O(log n)      | O(n)     |
