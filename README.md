@@ -16,4 +16,18 @@ Documentation of this project will be written in English, with the exception of 
 - What problems I'm solving, and why I chose the algorithms/data structures I did.
 - What input does my program receive, and how is it used.
 - What time and space requirements am I aiming for.
-- Sources.
+
+**Implementation**
+
+- Structure of the program.
+- Accomplished time and space requirements.
+- Performance comparisons.
+- Shortcomings and possible improvements.
+
+**Testing**
+
+- What has been tested.
+- How has it been tested.
+- How can you test it.
+
+**Instructions**
