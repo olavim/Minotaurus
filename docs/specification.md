@@ -27,3 +27,5 @@ For now I'll list the objectives for the data structures I mentioned in the firs
 | **Queue** | O(1)   | O(n)   | O(1)      | O(1)     |
 | **Stack** | O(1)   | O(n)   | O(1)      | O(1)     |
 | **Priority Queue** | O(1)   | O(n)   | O(log n)      | O(n)     |
+
+Space complexity is `O(n)` for all.
