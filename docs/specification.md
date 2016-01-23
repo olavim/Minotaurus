@@ -18,6 +18,17 @@ The program will have a graphical user interface in the end.
 
 ### Time and space requirement objectives
 
-I will again say that making these objectives is pointless before there are algorithms or data structures. I will for now list the objectives for the data structures I mentioned in the first topic, however:
+For now I'll list the objectives for the data structures I mentioned in the first topic:
 
-- set
+**Set**
+- O(1) time for insertion, deletion and searching.
+
+**List**
+- O(1) for access.
+- O(n) for insertion, deletion and searching.
+ 
+**Queue**
+- O(1) for insertion and deletion.
+ 
+**Stack**
+- O(1) for insertion and deletion.
