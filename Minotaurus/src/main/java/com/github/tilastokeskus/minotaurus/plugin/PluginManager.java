@@ -44,6 +44,7 @@ public class PluginManager {
      * @return A list of maze generators, or null if none were found.
      */
     public static List<MazeGenerator> getMazeGenerators() {
+        mazeGenerators = new ArrayList<>();
         PluginManager.<MazeGenerator>loadPlugins(mazeGenerators);
         return mazeGenerators;
     }
@@ -52,7 +53,6 @@ public class PluginManager {
         List<Pair<T, Attributes>> plugins = PluginLoader.<T>loadPlugins();
         
         if (plugins != null) {
-            pluginList = new ArrayList<>();
             for (Pair<T, Attributes> plugin : plugins) {
                 PluginManager.<T>handlePlugin(pluginList, plugin);
             }

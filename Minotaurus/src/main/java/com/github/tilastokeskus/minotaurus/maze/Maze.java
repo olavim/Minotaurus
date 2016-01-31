@@ -30,7 +30,6 @@ import java.util.List;
 public class Maze {
     
     private MazeEntity[][] layout;
-    private List<Point>[] runnerGoals;
     
     /**
      * Creates a new maze with the given layout.
@@ -110,10 +109,6 @@ public class Maze {
     public MazeEntity get(int x, int y) {
         testBounds(x, y);
         return this.layout[y][x];
-    }
-    
-    public List<Point> getGoals(int runnerId) {
-        return this.runnerGoals[runnerId];
     }
     
     private void testBounds(int x, int y) {

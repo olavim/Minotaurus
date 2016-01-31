@@ -24,7 +24,6 @@
 
 package com.github.tilastokeskus.minotaurus.plugin;
 
-import com.github.tilastokeskus.minotaurus.util.ClassUtils;
 import com.github.tilastokeskus.minotaurus.util.Pair;
 import java.io.File;
 import java.io.IOException;
@@ -112,7 +111,8 @@ public class JarClassLoader<T> {
     }
     
     private boolean isAssignableFrom(Class<?> clazz) {
-        T cast = ClassUtils.<T>getClassObject();
+        Object o = new Object();
+        T cast = (T) o;
         return cast.getClass().isAssignableFrom(clazz);
     }
     
