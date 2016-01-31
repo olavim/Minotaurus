@@ -6,7 +6,7 @@ Tällainen ulkopuolisten luokkien lataaminen on itselleni jotain uutta, josta jo
 Vaikein on kuitenkin jo takana, joten mitä koodin määrään tulee, työtahti kiristynee.
 
 Yksikkötestaus on toistaiseksi vähäistä. Se johtuu siitä, että tähän asti lähes kaikki luokat ovat joko rajapintoja,
-käyttöliittymäluokkia tai niin pieniä, ettei niitä kannata testata (esim. `Pair` luokka, jolla on pelkästään get- ja set-metodit).
+käyttöliittymäluokkia tai niin pieniä, ettei niitä kannata testata (esim. `Pair` luokka, jolla on pelkästään julkisia kenttiä).
 Aivan, plugin loader kannattaisi testata verille, mutta en tiedä miten se kannattaisi, tai voisi, tehdä. Palaan asiaan myöhemmin.
 
 Nyt kun plugin loader on näennäisesti saatu tehtyä, jää seuraavalle viikolle ainakin ladattujen osien listaaminen käyttäjälle,
