@@ -30,7 +30,7 @@ public class DFSMazeGenerator implements MazeGenerator {
     }
 
     @Override
-    public String getTitle() {
+    public String toString() {
         return this.title;
     }
 

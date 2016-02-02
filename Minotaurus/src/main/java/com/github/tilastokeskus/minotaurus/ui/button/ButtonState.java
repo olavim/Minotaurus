@@ -21,30 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.tilastokeskus.minotaurus;
 
-import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.plugin.PluginManager;
-import com.github.tilastokeskus.minotaurus.ui.MainWindow;
-import java.util.List;
+package com.github.tilastokeskus.minotaurus.ui.button;
 
-public class Main {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        List<MazeGenerator> mazeGenerators = PluginManager.getMazeGenerators();
-        for (MazeGenerator gen : mazeGenerators) {
-            System.out.println(gen.toString());
-        }
-        
-        showMainWindow();
-    }
-    
-    private static void showMainWindow() {
-        MainWindow window = new MainWindow();
-        window.show();
-    }
-    
+public enum ButtonState {
+    DEFAULT,
+    HOVER,
+    DOWN;
 }

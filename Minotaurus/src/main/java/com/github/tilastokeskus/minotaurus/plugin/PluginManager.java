@@ -68,7 +68,7 @@ public class PluginManager {
                 Attributes.Name.SPECIFICATION_TITLE);
         element.setTitle(title);
         
-        if (element.getTitle() == null || element.getTitle().isEmpty()) {
+        if (element.toString() == null || element.toString().isEmpty()) {
             String canonicalName = element.getClass().getCanonicalName();
             int lastDot = canonicalName.lastIndexOf(".");
             element.setTitle(canonicalName.substring(lastDot + 1));

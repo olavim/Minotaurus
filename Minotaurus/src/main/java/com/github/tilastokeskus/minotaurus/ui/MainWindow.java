@@ -24,9 +24,13 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
+import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
+import com.github.tilastokeskus.minotaurus.plugin.Plugin;
+import com.github.tilastokeskus.minotaurus.plugin.PluginManager;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -35,7 +39,7 @@ import net.miginfocom.swing.MigLayout;
 public class MainWindow extends AbstractGUI {
     
     private static final String WINDOW_NAME = "Minotaurus";
-    private static final Color COLOR_BG = new Color(60, 60, 60);
+    private static final Color COLOR_BG = new Color(240, 240, 240);
 
     @Override
     public void run() {
@@ -51,10 +55,13 @@ public class MainWindow extends AbstractGUI {
     
     private void addContents(Container container) {
         container.setBackground(COLOR_BG);
-        container.setLayout(new MigLayout("", "[grow]", "[]"));
+        container.setLayout(new MigLayout("wrap 1", "[grow]", "[grow]"));
+        Collection<MazeGenerator> mazeGenerators = PluginManager.getMazeGenerators();
+        PluginChooser mazeGeneratorChooser = new PluginChooser(this.frame, mazeGenerators);
+        container.add(mazeGeneratorChooser, "north, grow");
         
         JButton btnStart = new JButton(new StartAction("Start"));
-        container.add(btnStart, "w 300");
+        container.add(btnStart, "south");
     }
     
     private class StartAction extends AbstractAction {

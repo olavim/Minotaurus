@@ -21,30 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.tilastokeskus.minotaurus;
 
-import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.plugin.PluginManager;
-import com.github.tilastokeskus.minotaurus.ui.MainWindow;
-import java.util.List;
+package com.github.tilastokeskus.minotaurus.ui;
 
-public class Main {
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JComponent;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        List<MazeGenerator> mazeGenerators = PluginManager.getMazeGenerators();
-        for (MazeGenerator gen : mazeGenerators) {
-            System.out.println(gen.toString());
-        }
-        
-        showMainWindow();
+public class MenuShape extends JComponent {
+    private final int size;
+
+    public MenuShape(int size) {
+        this.setMinimumSize(new Dimension(size, size));
+        this.size = size;
     }
-    
-    private static void showMainWindow() {
-        MainWindow window = new MainWindow();
-        window.show();
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+
+        g2.setStroke(new BasicStroke(2));
+        g2.setColor(new Color(140, 120, 100));
+        g2.drawLine(2, 2, size - 2, 2);
+        g2.setColor(new Color(130, 100, 80));
+        g2.drawLine(2, size / 2, size - 2, size / 2);
+        g2.setColor(new Color(120, 100, 80));
+        g2.drawLine(2, size - 2, size - 2, size - 2);
     }
-    
 }

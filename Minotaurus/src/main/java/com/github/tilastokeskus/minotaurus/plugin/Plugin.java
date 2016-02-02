@@ -25,9 +25,10 @@
 package com.github.tilastokeskus.minotaurus.plugin;
 
 /**
- * Interface for an external loadable.
+ * Interface for an external loadable plugin. plugins should override toString
+ * to specify the title under which it is listed (preferably the one specified
+ * by setTitle).
  */
 public interface Plugin {
     void setTitle(String title);
-    String getTitle();
 }
