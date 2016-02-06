@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: olavi
+Build-Jdk: 1.8.0_71
+Main-Class: com.github.tilastokeskus.dfsmazegeneratorpretty.DFSMazeGeneratorPretty

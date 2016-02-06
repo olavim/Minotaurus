@@ -42,7 +42,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @param <T>  The type of the elements the list should contain.
  */
-public abstract class ComponentList <T> extends JComponent {
+public abstract class ComponentList<T> extends JComponent {
     
     private List<ListElement> listElements;
     private List<T> objects;

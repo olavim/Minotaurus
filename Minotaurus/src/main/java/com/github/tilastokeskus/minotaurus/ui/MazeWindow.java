@@ -21,39 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.tilastokeskus.minotaurus;
 
-import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.plugin.PluginManager;
-import com.github.tilastokeskus.minotaurus.simulation.SimulationHandler;
-import com.github.tilastokeskus.minotaurus.ui.MainWindow;
-import com.github.tilastokeskus.minotaurus.ui.MazeWindow;
-import java.util.List;
+package com.github.tilastokeskus.minotaurus.ui;
 
-public class Main {
+import com.github.tilastokeskus.minotaurus.maze.Maze;
+import java.awt.Container;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.JFrame;
+import net.miginfocom.swing.MigLayout;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        List<MazeGenerator> mazeGenerators = PluginManager.getMazeGenerators();
-        for (MazeGenerator gen : mazeGenerators) {
-            System.out.println(gen.toString());
-        }
+public class MazeWindow extends AbstractGUI implements Observer {
+    
+    private static final String WINDOW_NAME = "Minotaurus Simulation";
+
+    private final MazePanel mazePanel;
+    
+    public MazeWindow(Maze maze) {
+        this.mazePanel = new MazePanel(maze);
+    }
+
+    @Override
+    public void run() {        
+        this.frame = new JFrame(WINDOW_NAME);
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
-        showMainWindow();
+        this.addContents(this.frame.getContentPane());
+        
+        this.frame.pack();
+        this.frame.setLocationByPlatform(true);
+        this.frame.setVisible(true);
+    }
+
+    private void addContents(Container container) {
+        container.setLayout(new MigLayout("", "[grow]", "[grow]"));
+        container.add(this.mazePanel, "grow");
     }
     
-    private static void showMainWindow() {
-        MainWindow window = new MainWindow();
-        window.show();
-    }
-    
-    public static void startSimulation(MazeGenerator gen) {
-        SimulationHandler simHandler = new SimulationHandler(gen);
-        MazeWindow mazeWindow = new MazeWindow(simHandler.getMaze());
-        mazeWindow.show();
-        simHandler.startSimulation(0);
+    @Override
+    public void update(Observable o, Object arg) {
+        if (this.frame != null)
+            this.frame.repaint();
     }
     
 }

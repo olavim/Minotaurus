@@ -24,9 +24,6 @@
 
 package com.github.tilastokeskus.minotaurus.maze;
 
-import java.awt.Point;
-import java.util.List;
-
 public class Maze {
     
     private MazeEntity[][] layout;
@@ -38,6 +35,7 @@ public class Maze {
      */
     public Maze(MazeEntity[][] layout) {
         this.layout = layout;
+        checkValidity();
     }
     
     /**
@@ -48,6 +46,7 @@ public class Maze {
      */
     public Maze(int width, int height) {
         this.layout = new MazeEntity[height][width];
+        checkValidity();
     }
     
     /**
@@ -57,6 +56,7 @@ public class Maze {
      */
     protected void setLayout(MazeEntity[][] layout) {
         this.layout = layout;
+        checkValidity();
     }
     
     /**
@@ -116,6 +116,13 @@ public class Maze {
             throw new IllegalArgumentException("Index out of bounds: " + x);
         if (y < 0 || y >= getHeight())
             throw new IllegalArgumentException("Index out of bounds: " + y);
+    }
+    
+    private void checkValidity() {
+        for (int i = 0; i < getWidth(); i++)
+            for (int j = 0; j < getHeight(); j++)
+                if (layout[i][j] == null)
+                    layout[i][j] = MazeEntity.WALL;
     }
 
 }

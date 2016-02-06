@@ -13,7 +13,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -21,39 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.tilastokeskus.minotaurus;
 
+package com.github.tilastokeskus.minotaurus.simulation;
+
+import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.plugin.PluginManager;
-import com.github.tilastokeskus.minotaurus.simulation.SimulationHandler;
-import com.github.tilastokeskus.minotaurus.ui.MainWindow;
-import com.github.tilastokeskus.minotaurus.ui.MazeWindow;
-import java.util.List;
+import java.util.Observable;
 
-public class Main {
+public class SimulationHandler extends Observable {
+    
+    private Maze maze;
 
     /**
-     * @param args the command line arguments
+     * Creates a new simulation handler with the given maze generator.
+     * 
+     * @param gen Maze generator.
      */
-    public static void main(String[] args) {
-        List<MazeGenerator> mazeGenerators = PluginManager.getMazeGenerators();
-        for (MazeGenerator gen : mazeGenerators) {
-            System.out.println(gen.toString());
-        }
-        
-        showMainWindow();
+    public SimulationHandler(MazeGenerator gen) {
+        maze = gen.generateMaze(100, 100);
     }
     
-    private static void showMainWindow() {
-        MainWindow window = new MainWindow();
-        window.show();
+    /**
+     * Starts the simulation.
+     * 
+     * @param rate Delay, in milliseconds, between each move.
+     */
+    public void startSimulation(int rate) {
+        this.setChanged();
+        this.notifyObservers();
     }
     
-    public static void startSimulation(MazeGenerator gen) {
-        SimulationHandler simHandler = new SimulationHandler(gen);
-        MazeWindow mazeWindow = new MazeWindow(simHandler.getMaze());
-        mazeWindow.show();
-        simHandler.startSimulation(0);
+    public Maze getMaze() {
+        return maze;
     }
     
 }

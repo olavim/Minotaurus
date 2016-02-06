@@ -33,14 +33,14 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import javax.swing.*;
 
-public class PluginChooser extends JPanel {
+public class PluginChooser<T extends Plugin> extends JPanel {
     
     private final Window parent;
-    private Collection<? extends Plugin> plugins;
+    private final Collection<T> plugins;
     private JLabel selectedPluginLabel;
-    private Plugin plugin;
+    private T plugin;
     
-    public PluginChooser(Window parent, Collection<? extends Plugin> plugins) {
+    public PluginChooser(Window parent, Collection<T> plugins) {
         super(new MigLayout("insets 0", "[grow, fill]"));
         this.parent = parent;
         this.plugins = plugins;
@@ -51,6 +51,10 @@ public class PluginChooser extends JPanel {
     public void refresh() {
         this.selectedPluginLabel.setText(plugin.toString());
         this.parent.pack();
+    }
+    
+    public T getPlugin() {
+        return this.plugin;
     }
         
     private void addComponents() {
@@ -85,22 +89,22 @@ public class PluginChooser extends JPanel {
     
     private class SelectPluginListener extends MouseAdapter {    
         private final Window parent;
-        private final PluginChooser chooser;
+        private final PluginChooser<T> chooser;
 
         public SelectPluginListener(Window parent,
-                PluginChooser chooser, Plugin plugin) {
+                PluginChooser<T> chooser, T plugin) {
             this.parent = parent;
             this.chooser = chooser;
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            ComponentList componentList = new LabelList();
+            ComponentList<T> componentList = new LabelList<>();
             componentList.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
             componentList.addObjects(plugins);
 
-            ComponentListChooser listChooser = new ComponentListChooser<>(parent, componentList);
-            Plugin chosenPlugin = (Plugin) listChooser.showDialog();
+            ComponentListChooser<T> listChooser = new ComponentListChooser<>(parent, componentList);
+            T chosenPlugin = listChooser.showDialog();
 
             if (chosenPlugin != null) {
                 plugin = chosenPlugin;

@@ -27,10 +27,10 @@ package com.github.tilastokeskus.minotaurus.maze;
 import java.awt.Color;
 
 public enum MazeEntity {
-    WALL(true, Color.LIGHT_GRAY, 0.2),
-    FLOOR,
-    GOAL(true, Color.RED, 0.2),
-    RUNNER(true, Color.MAGENTA, 0.6);
+    WALL(true, new Color(0xcf6a88)),
+    FLOOR(false, new Color(0x903572)),
+    GOAL(true, Color.RED),
+    RUNNER(true, Color.MAGENTA);
     
     /**
      * Should the entity be drawn.
@@ -42,22 +42,14 @@ public enum MazeEntity {
      */
     public final Color drawColor;
     
-    /**
-     * Size proportional to full size. 1 is full size, 0 practically means
-     * "do not draw"
-     */
-    public final double drawSize;
-    
     private MazeEntity() {
         this.draw = false;
         this.drawColor = null;
-        this.drawSize = 0;
     }
     
-    private MazeEntity(boolean draw, Color color, double drawSize) {
+    private MazeEntity(boolean draw, Color color) {
         this.draw = draw;
         this.drawColor = color;
-        this.drawSize = drawSize;
     }
     
 }

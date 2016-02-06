@@ -33,7 +33,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import net.miginfocom.swing.MigLayout;
 
-public class ComponentListChooser <T> extends JDialog {
+public class ComponentListChooser<T> extends JDialog {
     
     private Window parent;
     private ComponentList<T> componentList;

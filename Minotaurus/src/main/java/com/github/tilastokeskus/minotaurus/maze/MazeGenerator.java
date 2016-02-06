@@ -25,8 +25,25 @@
 package com.github.tilastokeskus.minotaurus.maze;
 
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
+import com.github.tilastokeskus.minotaurus.ui.MazeWindow;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public interface MazeGenerator extends Plugin {
+    
+    public final static Logger LOGGER = Logger.getLogger(MazeGenerator.class.getName());
+    
+    public static void testGenerator(Class<? extends MazeGenerator> clazz,
+            int width, int height) {
+        try {
+            MazeGenerator gen = clazz.newInstance();
+            Maze maze = gen.generateMaze(width, height);            
+            MazeWindow mazeWindow = new MazeWindow(maze);
+            mazeWindow.show();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
     
     /**
      * Generates a Maze with the given width and height.
