@@ -22,10 +22,17 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus.runner;
+package com.github.tilastokeskus.minotaurus.scenario;
 
-import java.awt.Point;
+import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
+import com.github.tilastokeskus.minotaurus.plugin.Plugin;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
+import java.util.Collection;
 
-public interface RunnerGoal {
-    Point getLocation();
+public interface Scenario extends Plugin {
+    int getMinRunners();
+    int getMaxRunners();
+    void placeRunners(Collection<Runner> runners);
+    boolean isCollisionAllowed(MazeEntity ent1, MazeEntity ent2);
+    void handleCollision(MazeEntity ent1, MazeEntity ent2);
 }

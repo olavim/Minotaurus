@@ -51,9 +51,9 @@ public class MazeTest {
     
     @Before
     public void setUp() {
-        MazeEntity[][] layout = new MazeEntity[][] {{MazeEntity.FLOOR},
-                                                    {MazeEntity.GOAL}, 
-                                                    {MazeEntity.RUNNER}};
+        MazeBlock[][] layout = new MazeBlock[][] {{MazeBlock.FLOOR},
+                                                    {MazeBlock.GOAL}, 
+                                                    {MazeBlock.RUNNER}};
         
         maze = new Maze(layout);
     }
@@ -71,7 +71,7 @@ public class MazeTest {
                 assertTrue(maze.getWidth() == i);
                 assertTrue(maze.getHeight() == j);
                 
-                maze = new Maze(new MazeEntity[j][i]);
+                maze = new Maze(new MazeBlock[j][i]);
                 assertTrue(maze.getWidth() == i);
                 assertTrue(maze.getHeight() == j);
             }
@@ -80,23 +80,23 @@ public class MazeTest {
     
     @Test
     public void mazeShouldHaveCorrectLayout() {
-        assertTrue(maze.get(0, 0) == MazeEntity.FLOOR);
-        assertTrue(maze.get(0, 1) == MazeEntity.GOAL);
-        assertTrue(maze.get(0, 2) == MazeEntity.RUNNER);
+        assertTrue(maze.get(0, 0) == MazeBlock.FLOOR);
+        assertTrue(maze.get(0, 1) == MazeBlock.GOAL);
+        assertTrue(maze.get(0, 2) == MazeBlock.RUNNER);
     }
     
     @Test
     public void mazeShouldHaveCorrectLayoutAfterChangingSomeEntities() {
-        maze.set(0, 0, MazeEntity.WALL);
-        maze.set(0, 2, MazeEntity.WALL);
-        assertTrue(maze.get(0, 0) == MazeEntity.WALL);
-        assertTrue(maze.get(0, 1) == MazeEntity.GOAL);
-        assertTrue(maze.get(0, 2) == MazeEntity.WALL);
+        maze.set(0, 0, MazeBlock.WALL);
+        maze.set(0, 2, MazeBlock.WALL);
+        assertTrue(maze.get(0, 0) == MazeBlock.WALL);
+        assertTrue(maze.get(0, 1) == MazeBlock.GOAL);
+        assertTrue(maze.get(0, 2) == MazeBlock.WALL);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void mazeSetShouldHaveThrowInvalidArgumentExceptionWhenOutOfBounds() {
-        maze.set(1, 0, MazeEntity.WALL);
+        maze.set(1, 0, MazeBlock.WALL);
     }
     
     @Test(expected = IllegalArgumentException.class)

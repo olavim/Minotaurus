@@ -26,14 +26,14 @@ package com.github.tilastokeskus.minotaurus.maze;
 
 public class Maze {
     
-    private MazeEntity[][] layout;
+    private MazeBlock[][] layout;
     
     /**
      * Creates a new maze with the given layout.
      * 
      * @param layout Layout of the new maze.
      */
-    public Maze(MazeEntity[][] layout) {
+    public Maze(MazeBlock[][] layout) {
         this.layout = layout;
         checkValidity();
     }
@@ -45,7 +45,7 @@ public class Maze {
      * @param height    Height of the maze.
      */
     public Maze(int width, int height) {
-        this.layout = new MazeEntity[height][width];
+        this.layout = new MazeBlock[height][width];
         checkValidity();
     }
     
@@ -54,7 +54,7 @@ public class Maze {
      * 
      * @param layout  New layout.
      */
-    protected void setLayout(MazeEntity[][] layout) {
+    protected void setLayout(MazeBlock[][] layout) {
         this.layout = layout;
         checkValidity();
     }
@@ -83,7 +83,7 @@ public class Maze {
      * 
      * @return 2D MazeEntity matrix.
      */
-    protected MazeEntity[][] getLayout() {
+    protected MazeBlock[][] getLayout() {
         return this.layout;
     }
     
@@ -94,7 +94,7 @@ public class Maze {
      * @param y         Location in y-axis.
      * @param entity    Entity to write to the location.
      */
-    protected void set(int x, int y, MazeEntity entity) {
+    protected void set(int x, int y, MazeBlock entity) {
         testBounds(x, y);
         this.layout[y][x] = entity;
     }
@@ -106,7 +106,7 @@ public class Maze {
      * @param y         Location in y-axis.
      * @return          Entity in the specified location.
      */
-    public MazeEntity get(int x, int y) {
+    public MazeBlock get(int x, int y) {
         testBounds(x, y);
         return this.layout[y][x];
     }
@@ -121,8 +121,8 @@ public class Maze {
     private void checkValidity() {
         for (int i = 0; i < getWidth(); i++)
             for (int j = 0; j < getHeight(); j++)
-                if (layout[i][j] == null)
-                    layout[i][j] = MazeEntity.WALL;
+                if (layout[j][i] == null)
+                    layout[j][i] = MazeBlock.WALL;
     }
 
 }

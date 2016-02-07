@@ -25,83 +25,47 @@
 package com.github.tilastokeskus.minotaurus.runner;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
+import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
- * A Runner is an artificial intelligence moving in a Maze according to its own
- * rules. A runner's job is to find out where it wants to go next, and nothing
- * else.
+ * An artificial intelligence doing various tasks in a set maze.
  */
-public abstract class Runner implements Plugin {
-    
-    private final int id;
-    private final Maze maze;
-    private List<RunnerGoal> goals;
-    
-    /**
-     * Creates a new runner with the given id and maze.
-     * 
-     * @param id    Id of the runner.
-     * @param maze  Maze according to which the runner should make its moves.
-     */
-    public Runner(int id, Maze maze) {
-        this.id = id;
-        this.maze = maze;
-        this.goals = new ArrayList<>();
-    }
-    
-    /**
-     * Returns the identifier of this runner.
-     * 
-     * @return The runner's id.
-     */
-    public int getId() {
-        return this.id;
-    }
+public interface Runner extends Plugin, MazeEntity {
     
     /**
      * Returns the maze which is associated with this runner.
      * 
      * @return A Maze.
      */
-    public Maze getMaze() {
-        return this.maze;
-    }
+    Maze getMaze();
     
     /**
      * Adds a goal, or an objective, for the runner.
      * 
      * @param goal Goal or objective to add.
      */
-    public void addGoal(RunnerGoal goal) {
-        this.goals.add(goal);
-    }
+    void addGoal(MazeEntity goal);
     
     /**
      * Removes a goal, or an objective, from the runner's list of goals.
      * 
      * @param goal Goal or objective to remove.
      */
-    public void removeGoal(RunnerGoal goal) {
-        this.goals.remove(goal);
-    }
+    void removeGoal(MazeEntity goal);
     
     /**
      * Returns a list of all the goals, or objectives, assigned to this runner.
      * 
      * @return A list of goals or objectives.
      */
-    public List<RunnerGoal> getGoals() {
-        return this.goals;
-    }
+    List<MazeEntity> getGoals();
     
     /**
      * Returns the direction in which the runner wants to go next.
      * 
      * @return A direction.
      */
-    public abstract RunnerDirection getNextMove();
-    
+    RunnerDirection getNextMove();
 }

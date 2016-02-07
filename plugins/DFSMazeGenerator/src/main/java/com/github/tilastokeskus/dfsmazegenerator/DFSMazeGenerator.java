@@ -24,9 +24,8 @@
 
 package com.github.tilastokeskus.dfsmazegenerator;
 
-import com.github.tilastokeskus.minotaurus.Main;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
-import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
+import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import java.awt.Point;
 import java.util.Collections;
@@ -42,7 +41,7 @@ public class DFSMazeGenerator implements MazeGenerator {
 
     @Override
     public Maze generateMaze(int width, int height) {
-        MazeEntity[][] layout = new MazeEntity[height][width];
+        MazeBlock[][] layout = new MazeBlock[height][width];
         dfs(layout, 0, 0, 0, 0);
         
         return new Maze(layout);
@@ -57,12 +56,12 @@ public class DFSMazeGenerator implements MazeGenerator {
      * @param lx        Previous x pos.
      * @param ly        Previous x pos.
      */
-    private void dfs(MazeEntity[][] layout, int x, int y, int lx, int ly) {
+    private void dfs(MazeBlock[][] layout, int x, int y, int lx, int ly) {
         if (!isInBounds(layout, x, y) 
                 || hasAdjacentVisited(layout, x, y, lx, ly))
             return;
         
-        layout[y][x] = MazeEntity.FLOOR;
+        layout[y][x] = MazeBlock.FLOOR;
         
         Stack<Point> points = new Stack<>();
         points.add(new Point(x - 1, y));
@@ -89,14 +88,14 @@ public class DFSMazeGenerator implements MazeGenerator {
      * @return          True if current position is adjacent to a previously
      *                  visited location, false otherwise.
      */
-    private boolean hasAdjacentVisited(MazeEntity[][] layout, int x, int y, int lx, int ly) {
+    private boolean hasAdjacentVisited(MazeBlock[][] layout, int x, int y, int lx, int ly) {
         return (x > 0 && layout[y][x-1] != null && x-1 != lx)
                 || (y > 0 && layout[y-1][x] != null && y-1 != ly)
                 || (x < layout[0].length - 1 && layout[y][x+1] != null && x+1 != lx)
                 || (y < layout.length - 1 && layout[y+1][x] != null && y+1 != ly);
     }
     
-    private boolean isInBounds(MazeEntity layout[][], int x, int y) {
+    private boolean isInBounds(MazeBlock layout[][], int x, int y) {
         return x >= 0 && x < layout[0].length && y >= 0 && y < layout.length;
     }
 

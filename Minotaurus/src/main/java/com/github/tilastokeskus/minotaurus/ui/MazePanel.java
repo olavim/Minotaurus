@@ -25,7 +25,7 @@
 package com.github.tilastokeskus.minotaurus.ui;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
-import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
+import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -41,7 +41,7 @@ public class MazePanel extends JPanel {
     
     public MazePanel(Maze maze) {
         this.maze = maze;
-        this.setBackground(MazeEntity.FLOOR.drawColor);
+        this.setBackground(MazeBlock.FLOOR.drawColor);
     }
     
     @Override
@@ -56,11 +56,11 @@ public class MazePanel extends JPanel {
         int blockH = ph / mh;
         for (int x = 0; x < mw; x++) {
             for (int y = 0; y < mh; y++) {
-                MazeEntity ent = maze.get(x, y);
+                MazeBlock ent = maze.get(x, y);
                 if (!ent.draw)
                     continue;
                 
-                if (ent == MazeEntity.WALL) {
+                if (ent == MazeBlock.WALL) {
                     g2.setColor(Color.BLACK);
                     g2.fillRect(x * blockW, y * blockH, blockW + 3, blockH + 3);
                 }

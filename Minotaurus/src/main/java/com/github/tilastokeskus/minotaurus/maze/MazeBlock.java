@@ -24,16 +24,32 @@
 
 package com.github.tilastokeskus.minotaurus.maze;
 
-public interface MazeEntity {
+import java.awt.Color;
+
+public enum MazeBlock {
+    WALL(true, new Color(0xcf6a88)),
+    FLOOR(false, new Color(0x903572)),
+    GOAL(true, Color.RED),
+    RUNNER(true, Color.MAGENTA);
     
     /**
-     * Returns the identifier of this entity.
-     * 
-     * @return The entity's id.
+     * Should the entity be drawn.
      */
-    int getId();
-    int setX();
-    int setY();
-    int getX();
-    int getY();
+    public final boolean draw;
+    
+    /**
+     * Color the entity should be drawn with.
+     */
+    public final Color drawColor;
+    
+    private MazeBlock() {
+        this.draw = false;
+        this.drawColor = null;
+    }
+    
+    private MazeBlock(boolean draw, Color color) {
+        this.draw = draw;
+        this.drawColor = color;
+    }
+    
 }

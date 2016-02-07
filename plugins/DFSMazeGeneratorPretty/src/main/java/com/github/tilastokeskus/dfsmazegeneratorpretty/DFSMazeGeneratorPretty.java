@@ -25,7 +25,7 @@
 package com.github.tilastokeskus.dfsmazegeneratorpretty;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
-import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
+import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import java.awt.Point;
 import java.util.Collections;
@@ -55,10 +55,10 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
         int[] dirDelta = {-1, 0, 1, 0, -1};
         boolean[] dirOk = new boolean[4];
         
-        MazeEntity[][] maze = new MazeEntity[height+1][width+1];
+        MazeBlock[][] maze = new MazeBlock[height+1][width+1];
         for (int y = 0; y < height/2; y++) {
             for (int x = 0; x < width/2; x++) {
-                maze[y*2+1][x*2+1] = MazeEntity.FLOOR;
+                maze[y*2+1][x*2+1] = MazeBlock.FLOOR;
                 for (int i = 0; i < 4; i++)
                     dirOk[i] = (layout[y][x] & dir[i]) != 0;
                 
@@ -66,7 +66,7 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
                     int dy = y*2 + dirDelta[i] + 1;
                     int dx = x*2 + dirDelta[i+1] + 1;
                     if (dy >= 0 && dy < height && dx >= 0 && dx < width)
-                        maze[dy][dx] = dirOk[i] ? MazeEntity.FLOOR : MazeEntity.WALL;
+                        maze[dy][dx] = dirOk[i] ? MazeBlock.FLOOR : MazeBlock.WALL;
                                 
                 }
             }
@@ -74,10 +74,10 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
         
         for (int y = 1; y < height; y++) {
             for (int x = 1; x < width; x++) {
-                if (maze[y][x] == MazeEntity.WALL) {
+                if (maze[y][x] == MazeBlock.WALL) {
                     double r = Math.random();
                     if (r <= ERASE_WALL)
-                        maze[y][x] = MazeEntity.FLOOR;
+                        maze[y][x] = MazeBlock.FLOOR;
                 }
             }
         }
