@@ -29,6 +29,7 @@ import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import java.awt.Point;
 import java.util.Collections;
+import java.util.Random;
 import java.util.Stack;
 
 public class DFSMazeGenerator implements MazeGenerator {
@@ -38,6 +39,10 @@ public class DFSMazeGenerator implements MazeGenerator {
     }
     
     private String title;
+    
+    private final int[][] dirs = new int[][] {
+        {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+    };
 
     @Override
     public Maze generateMaze(int width, int height) {
@@ -63,16 +68,20 @@ public class DFSMazeGenerator implements MazeGenerator {
         
         layout[y][x] = MazeBlock.FLOOR;
         
-        Stack<Point> points = new Stack<>();
-        points.add(new Point(x - 1, y));
-        points.add(new Point(x + 1, y));
-        points.add(new Point(x, y - 1));
-        points.add(new Point(x, y + 1));
-        Collections.shuffle(points);
+        shuffleDirs();
         
-        while (!points.empty()) {
-            Point p = points.pop();            
-            dfs(layout, p.x, p.y, x, y);
+        for (int i = 0; i < 4; i++) {
+            dfs(layout, x + dirs[i][0], y + dirs[i][1], x, y);
+        }
+    }
+    
+    private void shuffleDirs() {        
+        Random r = new Random();
+        for (int i = 3; i >= 1; i--) {
+            int j = r.nextInt(i);
+            int[] temp = dirs[j];
+            dirs[j] = dirs[i];
+            dirs[i] = temp;
         }
     }
     

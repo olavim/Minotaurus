@@ -30,9 +30,45 @@ import com.github.tilastokeskus.minotaurus.runner.Runner;
 import java.util.Collection;
 
 public interface Scenario extends Plugin {
+    
+    /**
+     * Returns the minimum amount of runners required for using this scenario.
+     * @return Minimum amount of runners.
+     */
     int getMinRunners();
+    
+    /**
+     * Returns the maximum amount of runners allowed for using this scenario, or
+     * 0 for no maximum.
+     * @return Maximum amount of runners.
+     */
     int getMaxRunners();
-    void placeRunners(Collection<Runner> runners);
+    
+    /**
+     * Places the given runners in a maze.
+     * @param  runners 
+     * @return True if the runners were placed successfully, false otherwise.
+     */
+    boolean placeRunners(Collection<Runner> runners);
+    
+    /**
+     * Returns whether or not the given two entities are allowed to go on top of
+     * each other.
+     * @param ent1 A maze entity.
+     * @param ent2 A maze entity.
+     * @return     True if collision is allowed between the entities, false
+     *             otherwise.
+     */
     boolean isCollisionAllowed(MazeEntity ent1, MazeEntity ent2);
-    void handleCollision(MazeEntity ent1, MazeEntity ent2);
+    
+    /**
+     * Handles a collision between two entities. Specifies what should happen
+     * when an entity is on top of another.
+     * @param  ent1 A maze entity.
+     * @param  ent2 A maze entity.
+     * @throws IllegalStateException if collision between the two entities is
+     *         not allowed.
+     * @return True if collision was handled successfully, false otherwise.
+     */
+    boolean handleCollision(MazeEntity ent1, MazeEntity ent2);
 }

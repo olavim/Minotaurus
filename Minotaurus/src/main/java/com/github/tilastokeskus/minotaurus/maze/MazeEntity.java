@@ -32,6 +32,7 @@ public interface MazeEntity {
      * @return The entity's id.
      */
     int getId();
+    
     int setX();
     int setY();
     int getX();
