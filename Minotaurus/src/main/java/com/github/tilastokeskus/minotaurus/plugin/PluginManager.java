@@ -36,6 +36,10 @@ public class PluginManager {
     /**
      * Retrieves a list of plugins with the type parameter's class from the
      * plugin directory, and sets an appropriate title for them.
+     * 
+     * @param <T> Type (class) of plugins to load.
+     * @return List of plugins found in the program's plugin directory that
+     *         are assignable to the class defined by the type parameter.
      */
     public static <T extends Plugin> List<T> loadPlugins() {
         List<T> plugins = PluginLoader.<T>loadPlugins();
