@@ -59,7 +59,7 @@ public class MainWindow extends AbstractGUI {
         container.setBackground(COLOR_BG);
         container.setLayout(new MigLayout("wrap 1", "[grow]", "[grow]"));
         
-        Collection<MazeGenerator> mazeGenerators = PluginManager.getMazeGenerators();
+        List<MazeGenerator> mazeGenerators = PluginManager.<MazeGenerator>loadPlugins();
         mazeGeneratorChooser = new PluginChooser<>(this.frame, mazeGenerators);        
         container.add(mazeGeneratorChooser, "north, grow");
         
