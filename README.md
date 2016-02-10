@@ -8,6 +8,8 @@ as well.
 
 Documentation of this project will be written in English, with the exception of some docs having no reason for existing apart from this course's bookkeeping, such as time tracking (how much time I spent doing what), which will be in Finnish.
 
+The program and its plugins are written in **Java 8**.
+
 ## Documents
 
 [**Specification**](docs/specification.md)
