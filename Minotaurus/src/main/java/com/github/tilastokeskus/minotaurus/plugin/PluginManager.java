@@ -32,34 +32,25 @@ import java.util.List;
  * Provides an easy way to access plugins in the program's plugin directory.
  */
 public class PluginManager {
-
-    private static List<MazeGenerator> mazeGenerators;
     
     /**
-     * Loads and retrieves a list of maze generators from the program's plugin
-     * directory.
-     * 
-     * @return A list of maze generators, or null if none were found.
+     * Retrieves a list of plugins with the type parameter's class from the
+     * plugin directory, and sets an appropriate title for them.
      */
-    public static List<MazeGenerator> getMazeGenerators() {
-        mazeGenerators = new ArrayList<>();
-        PluginManager.<MazeGenerator>loadPlugins(mazeGenerators);
-        return mazeGenerators;
-    }
-    
-    private static <T extends Plugin> void loadPlugins(List<T> pluginList) {
+    public static <T extends Plugin> List<T> loadPlugins() {
         List<T> plugins = PluginLoader.<T>loadPlugins();
         
         if (plugins != null)
             for (T plugin : plugins)
-                PluginManager.<T>handlePlugin(pluginList, plugin);
+                setPluginTitle(plugin);
+                
+        return plugins;
     }
 
-    private static <T extends Plugin> void handlePlugin(List<T> list, T plugin) {
+    private static void setPluginTitle(Plugin plugin) {
         String canonicalName = plugin.getClass().getCanonicalName();
         int lastDot = canonicalName.lastIndexOf(".");
         plugin.setTitle(canonicalName.substring(lastDot + 1));
-        list.add(plugin);
     }
     
 }
