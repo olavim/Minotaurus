@@ -38,7 +38,11 @@ public class ResourceManager {
     private static final String PLUGIN_PATH = "plugins/";
 
     public static String getPluginDirectoryPath() {
-        return new File(PATH).getParentFile().getPath() + "/" + PLUGIN_PATH;
+        return buildPath(PLUGIN_PATH);
+    }
+    
+    private static String buildPath(String resource) {
+        return new File(PATH).getParentFile().getPath() + "/" + resource;
     }
     
 }
