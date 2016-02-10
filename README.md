@@ -32,4 +32,8 @@ The program and its plugins are written in **Java 8**.
 - How has it been tested.
 - How can you test it.
 
-[**Instructions**](docs/instructions.md) **< Infoa vertaisarvioijille**
+[**Instructions**](docs/instructions.md)
+
+---
+
+[**Infoa vertaisarvioijille**](docs/vertarv-info.md)
