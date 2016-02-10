@@ -9,10 +9,10 @@ Esimerkki `plugins` kansiosta:
 ```
 +---plugins
 |   +---myMazeGen.jar
-|   |   |   MyMazeGen.class
+|   |       MyMazeGen.class
 |   |
 |   \---myRunner.jar
-|       |   MyRunner.class
+|           MyRunner.class
 ```
 
 Tämä GitHub repo sisältää kaksi `plugins` kansiota.
