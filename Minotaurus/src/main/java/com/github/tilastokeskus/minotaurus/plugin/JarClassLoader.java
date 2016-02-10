@@ -74,7 +74,7 @@ public class JarClassLoader<T> {
         
         for (URL url : this.urls) {
             try {
-                for (Class<?> c : getJarClasses(url, true)) {
+                for (Class c : getJarClasses(url, true)) {
                     if (isAssignableFrom(c))
                         classList.add((T) c.newInstance());
                 }
@@ -143,10 +143,19 @@ public class JarClassLoader<T> {
         return c;
     }
     
-    private boolean isAssignableFrom(Class<?> clazz) {
+    /**
+     * Determines if the class or interface represented by this Class's type parameter
+     * is either the same as, or is a superclass or superinterface of, the class or
+     * interface represented by the specified Class parameter.
+     * 
+     * @param cls Class object to check.
+     * @return The boolean value indicating whether objects of the type cls can be
+     *         assigned to objects of this class
+     */
+    private boolean isAssignableFrom(Class cls) {
         Object o = new Object();
         T cast = (T) o;
-        return cast.getClass().isAssignableFrom(clazz);
+        return cast.getClass().isAssignableFrom(cls);
     }
     
     private boolean isClassFile(JarEntry je) {
