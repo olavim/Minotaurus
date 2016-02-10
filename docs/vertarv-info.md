@@ -7,12 +7,12 @@ Plugin loader koostuu `com.github.tilastokeskus.minotaurus.plugin` pakkauksen lu
 Esimerkki `plugins` kansiosta:
 
 ```
-\---plugins
-    +---myMazeGen.jar
-    |       MyMazeGen.class
-    |
-    \---myRunner.jar
-            MyRunner.class
+plugins
++---myMazeGen.jar
+|       MyMazeGen.class
+|
+\---myRunner.jar
+        MyRunner.class
 ```
 
 Tämä GitHub repo sisältää kaksi `plugins` kansiota.
