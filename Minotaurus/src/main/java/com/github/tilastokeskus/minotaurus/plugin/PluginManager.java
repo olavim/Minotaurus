@@ -25,10 +25,8 @@
 package com.github.tilastokeskus.minotaurus.plugin;
 
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Attributes;
 
 /**
  * Provides an easy way to access plugins in the program's plugin directory.
@@ -50,29 +48,18 @@ public class PluginManager {
     }
     
     private static <T extends Plugin> void loadPlugins(List<T> pluginList) {
-        List<Pair<T, Attributes>> plugins = PluginLoader.<T>loadPlugins();
+        List<T> plugins = PluginLoader.<T>loadPlugins();
         
-        if (plugins != null) {
-            for (Pair<T, Attributes> plugin : plugins) {
+        if (plugins != null)
+            for (T plugin : plugins)
                 PluginManager.<T>handlePlugin(pluginList, plugin);
-            }
-        }
     }
 
-    private static <T extends Plugin> void handlePlugin(List<T> list,
-            Pair<T, Attributes> plugin) {
-        T element = plugin.first;
-        list.add(element);
-        
-        String title = plugin.second.getValue(
-                Attributes.Name.SPECIFICATION_TITLE);
-        element.setTitle(title);
-        
-        if (element.toString() == null || element.toString().isEmpty()) {
-            String canonicalName = element.getClass().getCanonicalName();
-            int lastDot = canonicalName.lastIndexOf(".");
-            element.setTitle(canonicalName.substring(lastDot + 1));
-        }
+    private static <T extends Plugin> void handlePlugin(List<T> list, T plugin) {
+        String canonicalName = plugin.getClass().getCanonicalName();
+        int lastDot = canonicalName.lastIndexOf(".");
+        plugin.setTitle(canonicalName.substring(lastDot + 1));
+        list.add(plugin);
     }
     
 }

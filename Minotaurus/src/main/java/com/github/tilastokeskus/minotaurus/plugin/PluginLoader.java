@@ -42,7 +42,7 @@ public class PluginLoader {
      *              and the second is an Attributes object.
      * @see Attributes
      */
-    public static <T> List<Pair<T, Attributes>> loadPlugins() {
+    public static <T> List<T> loadPlugins() {
         try {
             String pluginFolderPath = ResourceManager.getPluginDirectoryPath();
             JarClassLoader<T> jcl = new JarClassLoader<>(pluginFolderPath, true);

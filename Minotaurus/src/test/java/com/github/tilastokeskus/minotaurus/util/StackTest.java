@@ -30,10 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Olavi Mustanoja
- */
 public class StackTest {
     
     private Stack<Integer> stack;
@@ -100,7 +96,9 @@ public class StackTest {
         
         for (int i = 100; i >= 1; i--) {
             assertTrue("Wrong stack size", stack.size() == i);
+            int head = stack.head - 1;
             int e = stack.pop();
+            assertNull(stack.data[head]);
             assertTrue("Wrong element", e == i);            
         }
         
@@ -146,11 +144,17 @@ public class StackTest {
         assertTrue(stack.size() == 100);
         stack.clear();
         assertTrue(stack.isEmpty());
+        assertTrue(stack.size() == 0);
+        assertTrue(stack.head == 0);
     }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    
+    @Test
+    public void StackEnsureCapacityGrowsCapacity() {
+        int length = stack.data.length;
+        stack.ensureCapacity(length + 1);
+        assertTrue(stack.data.length > length);
+        length = stack.data.length;
+        stack.ensureCapacity(length + 1);
+        assertTrue(stack.data.length > length);
+    }
 }

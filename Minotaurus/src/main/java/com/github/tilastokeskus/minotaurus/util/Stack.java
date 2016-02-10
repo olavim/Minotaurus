@@ -24,17 +24,19 @@
 
 package com.github.tilastokeskus.minotaurus.util;
 
+import java.util.Arrays;
+
 public class Stack<T> {
     
     /**
      * The maximum size of array to allocate.
      */
-    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+    protected static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     
-    private static final int INITIAL_SIZE = 10;
+    protected static final int INITIAL_SIZE = 10;
     
-    private Object[] data;
-    private int head;
+    protected Object[] data;
+    protected int head;
     
     /**
      * Creates a new stack with a default initial capacity. The stack will
@@ -122,18 +124,21 @@ public class Stack<T> {
         head = 0;
     }
     
-    private boolean ensureCapacity(int size) {
+    protected boolean ensureCapacity(int size) {
         if (size > data.length) {
             int newSize = size;
-            if (size <= MAX_ARRAY_SIZE/2 - 1) {
+            System.out.println("1: " + newSize);
+            
+            if (data.length == MAX_ARRAY_SIZE) {
+                return false;
+            } else if (size <= MAX_ARRAY_SIZE/2 - 1) {
                 newSize *= 2;
             } else if (size > MAX_ARRAY_SIZE/2) {
                 newSize = MAX_ARRAY_SIZE;
             }
             
-            Object[] a = new Object[newSize];
-            System.arraycopy(data, 0, a, 0, head);
-            data = a;
+            System.out.println("2: " + newSize);
+            data = Arrays.copyOf(data, newSize);
         } else if (size < 0) { // overflow
             return false;
         }

@@ -24,17 +24,20 @@
 
 package com.github.tilastokeskus.minotaurus.plugin;
 
-import com.github.tilastokeskus.minotaurus.util.Pair;
 import java.io.File;
 import java.io.IOException;
-import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Used to retrieve classes from external files.
@@ -43,71 +46,101 @@ import java.util.jar.Attributes;
  */
 public class JarClassLoader<T> {
     
-    private URL[] urls;
-    private boolean recursive;
+    private static final Logger LOGGER = Logger.getLogger(JarClassLoader.class.getName());
+    
+    protected URL[] urls;
+    protected ClassLoader classLoader;
 
     /**
      * Creates a new JarClassLoader.
      * 
      * @param directoryPath Path to search Jars from.
      * @param recursive     If true, subdirectories will be searched.
-     * @throws IOException 
      */
-    public JarClassLoader(String directoryPath, boolean recursive)
-            throws IOException {
-        this.recursive = recursive;
-        
-        try {
-            this.urls = getFolderURLs(new File(directoryPath));
-        } catch (NullPointerException ex) {
-            throw new IOException("Directory not found: " + directoryPath);
-        }
-
-        if (urls.length == 0) {
-            throw new IOException("No plugins found");
-        }
-    }
-    
-    private Attributes getMainAttributes(URL url) throws IOException {
-	URL u = new URL("jar", "", url + "!/");
-	JarURLConnection uc = (JarURLConnection) u.openConnection();
-	Attributes attr = uc.getMainAttributes();
-        return attr;
+    public JarClassLoader(String directoryPath, boolean recursive) {        
+        this.urls = getJarURLs(new File(directoryPath), recursive);        
+        this.classLoader = URLClassLoader.newInstance(urls);
     }
 
     /**
-     * Returns a list of suitable class instances that were found inside the
-     * specified directory, paired with Attributes that were pulled from each
-     * respective Jar file.
+     * Returns a list of suitable class instances that were found in jar files
+     * inside the specified directory.
      * 
-     * @return A list of Pairs, where the first element is a class instance and
-     *         the second is an Attributes object.
+     * @return A list of class instances.
      * @see Attributes
      */
-    public List<Pair<T, Attributes>> getClassInstanceList() {
-        List<Pair<T, Attributes>> classList = new ArrayList<>();
-        URLClassLoader classLoader = URLClassLoader.newInstance(urls);
+    public List<T> getClassInstanceList() {
+        List<T> classList = new ArrayList<>();
         
-        for (URL url : urls) {
+        for (URL url : this.urls) {
             try {
-                Attributes attr = getMainAttributes(url);
-                String mainClass = attr.getValue(Attributes.Name.MAIN_CLASS);
-                Class clazz = classLoader.loadClass(mainClass);
-                
-                if (isAssignableFrom(clazz)) {
-                    
-                    /* Found class is assignable from the one we are searching,
-                     * or in other words, fits our search criteria.
-                     */
-                    T instance = (T) clazz.newInstance();
-                    classList.add(new Pair(instance, attr));
+                for (Class<?> c : getJarClasses(url, true)) {
+                    if (isAssignableFrom(c))
+                        classList.add((T) c.newInstance());
                 }
-            } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                System.err.println("Cannot load plugins: " + ex.getMessage());
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
             }
         }
         
         return classList;
+    }
+    
+    /**
+     * Returns a list of classes inside a jar archive.
+     * 
+     * @param url           URL of the jar file.
+     * @param ignoreErrors  If true, erroneous classes are ignored.
+     * @return              List of classes inside the jar archive.
+     * @throws java.io.IOException Could not open file at URL.
+     * @throws java.lang.ClassNotFoundException A class inside the jar archive
+     *                                          is erroneous.
+     */
+    public List<Class> getJarClasses(URL url, boolean ignoreErrors)
+            throws IOException, ClassNotFoundException {
+        List<Class> classes = new ArrayList<>();
+        JarFile jarFile = new JarFile(url.getPath());        
+        
+        Enumeration<JarEntry> e = jarFile.entries();
+        while (e.hasMoreElements()) {
+            JarEntry entry = e.nextElement();
+            Class c = getClassFromJarEntry(entry, ignoreErrors);
+            if (c != null)
+                classes.add(c);
+        }
+        
+        return classes;
+    }
+    
+    /**
+     * Returns a class object from a JarEntry, if the entry is a class file.
+     * @param entry         JarEntry to extract class from.
+     * @param ignoreErrors  If true, erroneous class files are ignored.
+     * @return              A class object, or null if ignoreErrors is true and
+     *                      the extracted class is erroneous.
+     * @throws ClassNotFoundException If ignoreErrors if false and the extracted
+     *                                class is erroneous.
+     */
+    protected Class getClassFromJarEntry(JarEntry entry, boolean ignoreErrors)
+            throws ClassNotFoundException {
+        Class c = null;
+        
+        try {
+            if (isClassFile(entry)) {
+                String className = getClassName(entry);
+                c = classLoader.loadClass(className);
+            }
+        } catch (ClassNotFoundException ex) {
+
+            // Class file has invalid naming.
+            if (!ignoreErrors) {
+                throw ex;
+            } else {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return c;
     }
     
     private boolean isAssignableFrom(Class<?> clazz) {
@@ -116,17 +149,38 @@ public class JarClassLoader<T> {
         return cast.getClass().isAssignableFrom(clazz);
     }
     
-    private URL[] getFolderURLs(final File folder) throws MalformedURLException {
-        ArrayList<URL> urlList = new ArrayList<>();
+    private boolean isClassFile(JarEntry je) {
+        return !je.isDirectory() && je.getName().endsWith(".class");
+    }
+    
+    private String getClassName(JarEntry je) {
+        String className = je.getName().substring(0, je.getName().length() - 6);
+        className = className.replace('/', '.');
+        return className;
+    }
+    
+    /**
+     * Composes an array of URLs pointing to Jar archives found in a folder.
+     * 
+     * @param dir       Directory to search.
+     * @param recursive If true, subdirectories are searched.
+     * @return          Array of Jar archive URLs.
+     */
+    protected URL[] getJarURLs(final File dir, boolean recursive) {
+        List<URL> urlList = new ArrayList<>();
         
-        for (final File fileEntry : folder.listFiles()) {
+        for (final File fileEntry : dir.listFiles()) {
             if (fileEntry.isDirectory() && recursive) {
-                URL[] urlsInFolder = getFolderURLs(fileEntry);
+                URL[] urlsInFolder = getJarURLs(fileEntry, recursive);
                 urlList.addAll(Arrays.asList(urlsInFolder));
             } else if (fileEntry.getName().toLowerCase().endsWith(".jar")) {
                 
                 // File is a Jar archive.
-                urlList.add(fileEntry.toURI().toURL());
+                try {                    
+                    urlList.add(fileEntry.toURI().toURL());
+                } catch (MalformedURLException ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                }
             }
         }
         
