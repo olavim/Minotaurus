@@ -33,6 +33,14 @@ public interface MazeGenerator extends Plugin {
     
     public final static Logger LOGGER = Logger.getLogger(MazeGenerator.class.getName());
     
+    /**
+     * Creates an instance of {@code clazz} and generates a maze with it.
+     * A window will be opened showcasing the generated maze.
+     * 
+     * @param clazz Class object to create an instance of.
+     * @param width Width of the maze to generate.
+     * @param height Height of the maze to generate.
+     */
     public static void testGenerator(Class<? extends MazeGenerator> clazz,
             int width, int height) {
         try {
