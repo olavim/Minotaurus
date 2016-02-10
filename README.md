@@ -34,4 +34,4 @@ The program and its plugins are written in **Java 8**.
 
 **Instructions**
 
-[**Infoa vertaisarvioijille**](docs/vertarv-info.md)
+[**Infoa vertaisarvioijille ja tarkastajille**](docs/arv-info.md)
