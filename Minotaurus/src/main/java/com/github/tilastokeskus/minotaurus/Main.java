@@ -36,7 +36,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        List<MazeGenerator> mazeGenerators = PluginManager.getMazeGenerators();
+        List<MazeGenerator> mazeGenerators = PluginManager.<MazeGenerator>loadPlugins();
         for (MazeGenerator gen : mazeGenerators) {
             System.out.println(gen.toString());
         }
