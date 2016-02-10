@@ -124,6 +124,13 @@ public class Stack<T> {
         head = 0;
     }
     
+    /**
+     * If the stack's inner data array's capacity is less than 
+     * {@code size}, grow the capacity to at least {@code size}.
+     * 
+     * @param size Amount of elements the stack should be able to hold.
+     * @return True if the capacity grew, false otherwise.
+     */
     protected boolean ensureCapacity(int size) {
         if (size > data.length) {
             int newSize = size;
