@@ -32,4 +32,4 @@ The program and its plugins are written in **Java 8**.
 - How has it been tested.
 - How can you test it.
 
-**Instructions**
+[**Instructions**](docs/instructions.md) **< Infoa vertaisarvioijille**
