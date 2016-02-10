@@ -2,7 +2,8 @@
 
 Ohjelma on pilkottu siten, että pääohjelma sisältää ainoastaan käyttöliittymäkoodia, rajapintoja ja *plugin loaderin*.
 Plugin loader koostuu `com.github.tilastokeskus.minotaurus.plugin` pakkauksen luokista. Sen tehtävä on ladata ulkoisia moduuleita
-`plugins` kansiosta. Pluginit ovat **.jar** tiedostoja, jotka sisältävät yhden luokan, joka toteuttaa `Plugin` rajapinnan
+`plugins` kansiosta. Pluginit ovat **.jar** tiedostoja, jotka sisältävät yhden luokan, joka toteuttaa `Plugin` rajapinnan.
+
 Esimerkki `plugins` kansiosta:
 
 ```
