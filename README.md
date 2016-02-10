@@ -12,8 +12,6 @@ The program and its plugins are written in **Java 8**.
 
 ---
 
-[**Infoa vertaisarvioijille ja tarkastajille**](docs/arv-info.md)
-
 ## Documents
 
 [**Specification**](docs/specification.md)
@@ -37,3 +35,5 @@ The program and its plugins are written in **Java 8**.
 - How can you test it.
 
 **Instructions**
+
+[**Infoa vertaisarvioijille ja tarkastajille**](docs/arv-info.md)
