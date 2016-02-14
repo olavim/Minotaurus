@@ -8,3 +8,5 @@ Tämä vaati testien resources-kansioon parin Jarin lisäystä jonka jälkeen te
 
 Seuraava viikko kulunee olemassaolevien ongelmien korjailuun, testien kirjoitteluun ja erilaisten `Scenario`iden ja `Runner`eiden
 luomiseen. Riippuen minkälaisia `Runner`eita teen, toteutan tarvittavia tietorakenteita. A*/dijkstra on ennenpitkää edessä syystä tai toisesta, jota varten ainakin `HashSet` ja `PriorityQueue` ovat toteutettavien rakenteiden listalla. `HashSet`tiä edeltää `HashMap` toteutus, sillä `HashSet` on tavattoman helppo toteuttaa `HashMap`in avulla.
+
+Viikkoon on kulunut noin 15 tuntia.
