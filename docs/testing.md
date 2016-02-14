@@ -10,7 +10,9 @@ Later on more data structures will be added and then tested, and all the impleme
 
 ## How has it been tested
 
-All tests are written with JUnit. Below are more details about each unit test, sectioned by classes.
+All tests are written with JUnit. The tests themselves are tested with the help of PIT mutation testing.
+
+Below are more details about each unit test, sectioned by classes.
 
 #### Maze
 
@@ -32,3 +34,7 @@ Tested by setting some positions and validating the changes with the `get` metho
 
 Tested that when invoking the `get` or `set` method with a value less than 0 or greater than the maze's width or height,
 an exception is thrown.
+
+## How you can test it
+
+As tests are written with JUnit, testing is as simple as downloading the project and running the tests.
