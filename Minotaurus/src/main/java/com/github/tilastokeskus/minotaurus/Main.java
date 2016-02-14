@@ -24,7 +24,6 @@
 package com.github.tilastokeskus.minotaurus;
 
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.maze.TestMazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.scenario.Scenario;
@@ -43,8 +42,6 @@ public class Main {
         for (MazeGenerator gen : mazeGenerators) {
             System.out.println(gen.toString());
         }
-        
-        MazeGenerator.testGenerator(TestMazeGenerator.class, 10, 10);
         
         showMainWindow();
     }

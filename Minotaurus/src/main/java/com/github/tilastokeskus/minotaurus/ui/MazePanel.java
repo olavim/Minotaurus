@@ -73,6 +73,7 @@ public class MazePanel extends JPanel {
                     g2.setColor(Color.BLACK);
                     g2.fillRect(x * blockW, y * blockH, blockW + 3, blockH + 3);
                 } else if (block == MazeBlock.ENTITY) {
+                    System.out.println("1:" + x + ":" + y);
                     MazeEntity ent = maze.getEntity(x, y);
                     if (ent != null) {
                         drawColor = ent.getColor();
