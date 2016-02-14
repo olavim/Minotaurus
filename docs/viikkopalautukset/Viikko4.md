@@ -7,4 +7,4 @@ Tämä vaati testien resources-kansioon parin Jarin lisäystä jonka jälkeen te
 `SimulationHandler`ia jatkoin sen verran, että sillä pystyy juuri ja juuri testailemaan `MazeGenerator`ia, `Scenario`ta ja `Runner`ia, tosin toteutus on vasta alullaan ja toimii huonosti. Samalla tapaa käyttöliittymäluokkiin on tullut muutoksia jotta simulaatioita pystyy testaamaan edes jotenkin.
 
 Seuraava viikko kulunee olemassaolevien ongelmien korjailuun, testien kirjoitteluun ja erilaisten `Scenario`iden ja `Runner`eiden
-luomiseen. Riippuen minkälaisia `Runner`eita teen, toteutan tarvittavia tietorakenteita. A*/dijkstra on ennenpitkää edessä syystä tai toisesta, jota varten ainakin `HashSet` on toteutettavien rakenteiden listalla. `HashSet`tiä edeltää `HashMap` toteutus, sillä `HashSet` on helppo toteuttaa `HashMap`in avulla.
+luomiseen. Riippuen minkälaisia `Runner`eita teen, toteutan tarvittavia tietorakenteita. A*/dijkstra on ennenpitkää edessä syystä tai toisesta, jota varten ainakin `HashSet` ja `PriorityQueue` ovat toteutettavien rakenteiden listalla. `HashSet`tiä edeltää `HashMap` toteutus, sillä `HashSet` on tavattoman helppo toteuttaa `HashMap`in avulla.
