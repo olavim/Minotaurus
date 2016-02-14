@@ -22,3 +22,13 @@ Tested by initializing Mazes with different dimensions ranging from width and he
 **Maze should have correct layout**
 
 Tested that after initializing a maze with a layout, the `get` method returns a correct block.
+
+**Maze should have correct layout after changing blocks**
+
+Tested that changes to the maze's layout using the `set` method are happening and visible.
+Tested by setting some positions and validating the changes with the `get` method.
+
+**Maze should throw an exception when trying to access out of bounds locations**
+
+Tested that when invoking the `get` or `set` method with a value less than 0 or greater than the maze's width or height,
+an exception is thrown.
