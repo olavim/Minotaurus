@@ -24,15 +24,33 @@
 
 package com.github.tilastokeskus.minotaurus.scenario;
 
+import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import java.util.Collection;
+import java.util.List;
 
+/**
+ * A scenario is a situation, or a world, that a simulation aims to model. A
+ * scenario answers questions such as what is each runner's role, what do they
+ * aim for, what is allowed and how they are rewarded for their actions.
+ */
 public interface Scenario extends Plugin {
+    
+    void setMaze(Maze maze);
+    
+    /**
+     * Returns the runner's current score.
+     * 
+     * @param runner A Runner.
+     * @return       The Runner's current score.
+     */
+    int getScore(Runner runner);
     
     /**
      * Returns the minimum amount of runners required for using this scenario.
+     * 
      * @return Minimum amount of runners.
      */
     int getMinRunners();
@@ -40,12 +58,14 @@ public interface Scenario extends Plugin {
     /**
      * Returns the maximum amount of runners allowed for using this scenario, or
      * 0 for no maximum.
+     * 
      * @return Maximum amount of runners.
      */
     int getMaxRunners();
     
     /**
      * Places the given runners in a maze.
+     * 
      * @param  runners 
      * @return True if the runners were placed successfully, false otherwise.
      */
@@ -54,6 +74,7 @@ public interface Scenario extends Plugin {
     /**
      * Returns whether or not the given two entities are allowed to go on top of
      * each other.
+     * 
      * @param ent1 A maze entity.
      * @param ent2 A maze entity.
      * @return     True if collision is allowed between the entities, false
@@ -64,6 +85,7 @@ public interface Scenario extends Plugin {
     /**
      * Handles a collision between two entities. Specifies what should happen
      * when an entity is on top of another.
+     * 
      * @param  ent1 A maze entity.
      * @param  ent2 A maze entity.
      * @throws IllegalStateException if collision between the two entities is
@@ -71,4 +93,13 @@ public interface Scenario extends Plugin {
      * @return True if collision was handled successfully, false otherwise.
      */
     boolean handleCollision(MazeEntity ent1, MazeEntity ent2);
+    
+    /**
+     * Returns the goals of the specified runner.
+     * 
+     * @param runner A Runner.
+     * @return A list of goals the runner should aim for.
+     */
+    List<MazeEntity> getRunnerGoals(Runner runner);
+
 }

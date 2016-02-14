@@ -24,48 +24,64 @@
 
 package com.github.tilastokeskus.minotaurus.runner;
 
+import com.github.tilastokeskus.minotaurus.Main;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
+import com.github.tilastokeskus.minotaurus.maze.TestMazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
-import java.util.List;
+import com.github.tilastokeskus.minotaurus.scenario.TestScenario;
+import com.github.tilastokeskus.minotaurus.util.Direction;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An artificial intelligence doing various tasks in a set maze.
  */
 public interface Runner extends Plugin, MazeEntity {
     
-    /**
-     * Returns the maze which is associated with this runner.
-     * 
-     * @return A Maze.
-     */
-    Maze getMaze();
+    public final static Logger LOGGER = Logger.getLogger(Runner.class.getName());
     
     /**
-     * Adds a goal, or an objective, for the runner.
+     * Creates an instance of {@code clazz} and generates a maze with it.
+     * A window will be opened showcasing the generated maze.
      * 
-     * @param goal Goal or objective to add.
+     * @param clazz Class object to create an instance of.
+     * @param width Width of the maze to generate.
+     * @param height Height of the maze to generate.
      */
-    void addGoal(MazeEntity goal);
+    public static void testGenerator(Class<? extends Runner> clazz,
+            int width, int height) {
+        try {
+            Runner runner = clazz.newInstance();
+            Main.startSimulation(new TestMazeGenerator(), new TestScenario(), Arrays.asList(runner));
+        } catch (InstantiationException | IllegalAccessException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
     
     /**
-     * Removes a goal, or an objective, from the runner's list of goals.
+     * Sets this runner's identifier.
      * 
-     * @param goal Goal or objective to remove.
+     * @param id New identifier.
      */
-    void removeGoal(MazeEntity goal);
+    void setId(int id);
     
     /**
-     * Returns a list of all the goals, or objectives, assigned to this runner.
+     * Returns this runner's identifier.
      * 
-     * @return A list of goals or objectives.
+     * @return The identifier.
      */
-    List<MazeEntity> getGoals();
+    int getId();
     
     /**
-     * Returns the direction in which the runner wants to go next.
+     * Returns the direction in which the runner wants to go next in the
+     * specified maze, with the specified goals.
      * 
+     * @param maze Maze to navigate.
+     * @param goals Goals to aim for.
      * @return A direction.
      */
-    RunnerDirection getNextMove();
+    Direction getNextMove(Maze maze, Collection<MazeEntity> goals);
 }

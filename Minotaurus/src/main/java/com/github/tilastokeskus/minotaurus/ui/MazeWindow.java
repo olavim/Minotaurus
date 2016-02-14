@@ -60,8 +60,10 @@ public class MazeWindow extends AbstractGUI implements Observer {
     
     @Override
     public void update(Observable o, Object arg) {
-        if (this.frame != null)
+        if (this.frame != null) {
             this.frame.repaint();
+            this.mazePanel.repaint();
+        }
     }
     
 }

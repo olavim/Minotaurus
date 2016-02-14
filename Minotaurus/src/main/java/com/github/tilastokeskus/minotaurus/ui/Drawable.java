@@ -22,26 +22,23 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus.runner;
+package com.github.tilastokeskus.minotaurus.ui;
 
-public enum RunnerDirection {
-    UP(0, -1),
-    DOWN(0, 1),
-    LEFT(-1, 0),
-    RIGHT(1, 0);
+import java.awt.Color;
+
+public interface Drawable {
     
     /**
-     * Change in x-axis from last location.
+     * Returns the color this object should be drawn with.
+     * 
+     * @return A color.
      */
-    public final int deltaX;
+    Color getColor();
     
     /**
-     * Change in y-axis from last location.
+     * Returns a relative size.
+     * 
+     * @return A float between 0.0 and 1.0.
      */
-    public final int deltaY;
-    
-    private RunnerDirection(int deltaX, int deltaY) {
-        this.deltaX = deltaX;
-        this.deltaY = deltaY;
-    }
+    float getSize();    
 }

@@ -42,7 +42,11 @@ public class ResourceManager {
     }
     
     private static String buildPath(String resource) {
-        return new File(PATH).getParentFile().getPath() + "/" + resource;
+        File file = new File(PATH + '/' + resource);
+        System.out.println(file.getPath());
+        if (file.exists())
+            return file.getPath();
+        return new File(PATH).getParent() + '/' + resource;
     }
     
 }

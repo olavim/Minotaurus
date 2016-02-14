@@ -41,10 +41,8 @@ import java.util.logging.Logger;
 
 /**
  * Used to retrieve classes from external files.
- * 
- * @param <T> Class to search. Subclasses are matched.
  */
-public class JarClassLoader<T> {
+public class JarClassLoader {
     
     private static final Logger LOGGER = Logger.getLogger(JarClassLoader.class.getName());
     
@@ -66,16 +64,17 @@ public class JarClassLoader<T> {
      * Returns a list of suitable class instances that were found in jar files
      * inside the specified directory.
      * 
+     * @param type Classes to search for.
      * @return A list of class instances.
      * @see Attributes
      */
-    public List<T> getClassInstanceList() {
+    public <T> List<T> getClassInstanceList(Class<T> type) {
         List<T> classList = new ArrayList<>();
         
         for (URL url : this.urls) {
             try {
                 for (Class c : getJarClasses(url, true)) {
-                    if (isAssignableFrom(c))
+                    if (type.isAssignableFrom(c))
                         classList.add((T) c.newInstance());
                 }
             } catch (Exception ex) {
@@ -141,21 +140,6 @@ public class JarClassLoader<T> {
         }
         
         return c;
-    }
-    
-    /**
-     * Determines if the class or interface represented by this Class's type parameter
-     * is either the same as, or is a superclass or superinterface of, the class or
-     * interface represented by the specified Class parameter.
-     * 
-     * @param cls Class object to check.
-     * @return The boolean value indicating whether objects of the type cls can be
-     *         assigned to objects of this class
-     */
-    private boolean isAssignableFrom(Class cls) {
-        Object o = new Object();
-        T cast = (T) o;
-        return cast.getClass().isAssignableFrom(cls);
     }
     
     private boolean isClassFile(JarEntry je) {

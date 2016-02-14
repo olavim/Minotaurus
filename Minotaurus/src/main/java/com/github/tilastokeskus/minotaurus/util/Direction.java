@@ -22,39 +22,45 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus.plugin;
+package com.github.tilastokeskus.minotaurus.util;
 
-import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Provides an easy way to access plugins in the program's plugin directory.
- */
-public class PluginManager {
+public enum Direction {
+    UP(0, -1),
+    DOWN(0, 1),
+    LEFT(-1, 0),
+    RIGHT(1, 0),
+    NONE(0, 0);
+    
+    static {
+        UP.opposite = DOWN;
+        DOWN.opposite = UP;
+        LEFT.opposite = RIGHT;
+        RIGHT.opposite = LEFT;
+        NONE.opposite = NONE;
+    }
     
     /**
-     * Retrieves a list of plugins with the type parameter's class from the
-     * plugin directory, and sets an appropriate title for them.
-     * 
-     * @param <T> Type (class) of plugins to load.
-     * @return List of plugins found in the program's plugin directory that
-     *         are assignable to the class defined by the type parameter.
+     * Change in x-axis from last location.
      */
-    public static <T extends Plugin> List<T> loadPlugins() {
-        List<T> plugins = PluginLoader.<T>loadPlugins();
-        
-        if (plugins != null)
-            for (T plugin : plugins)
-                setPluginTitle(plugin);
-                
-        return plugins;
-    }
-
-    private static void setPluginTitle(Plugin plugin) {
-        String canonicalName = plugin.getClass().getCanonicalName();
-        int lastDot = canonicalName.lastIndexOf(".");
-        plugin.setTitle(canonicalName.substring(lastDot + 1));
+    public final int deltaX;
+    
+    /**
+     * Change in y-axis from last location.
+     */
+    public final int deltaY;
+    
+    private Direction opposite;
+    
+    private Direction(int deltaX, int deltaY) {
+        this.deltaX = deltaX;
+        this.deltaY = deltaY;
     }
     
+    /**
+     * Returns the opposite direction of this direction.
+     * @return A Direction.
+     */
+    public Direction opposite() {
+        return opposite;
+    }
 }

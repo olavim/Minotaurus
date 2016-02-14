@@ -30,11 +30,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class StackTest {
+public class LinkedListStackTest {
     
-    private Stack<Integer> stack;
+    private LinkedListStack<Integer> stack;
     
-    public StackTest() {
+    public LinkedListStackTest() {
     }
     
     @BeforeClass
@@ -47,7 +47,7 @@ public class StackTest {
     
     @Before
     public void setUp() {
-        stack = new Stack<>();
+        stack = new LinkedListStack<>();
     }
     
     @After
@@ -55,33 +55,23 @@ public class StackTest {
     }
     
     @Test
-    public void StackSizeShouldInitiallyBeZero() {
+    public void LinkedListStackSizeShouldInitiallyBeZero() {
         assertTrue(stack.size() == 0);
     }
     
     @Test
-    public void StackShouldInitiallyBeEmpty() {
+    public void LinkedListStackShouldInitiallyBeEmpty() {
         assertTrue(stack.isEmpty());
     }
     
     @Test
-    public void StackCapacityShouldGrowWhenElementsAreAdded() {
-        // initial capacity is 10, should be able to add more than 10 elements.
-        for (int i = 0; i < 20; i++)
-            assertTrue(stack.add(i));
-        
-        for (int i = 19; i >= 0; i--)
-            assertTrue(stack.pop() == i);
-    }
-    
-    @Test
-    public void StackShouldNotBeEmptyWhenItHasElements() {
+    public void LinkedListStackShouldNotBeEmptyWhenItHasElements() {
         assertTrue(stack.add(1));
         assertTrue(!stack.isEmpty());
     }
     
     @Test
-    public void StackSizeShouldGrowWhenElementsAreAdded() {
+    public void LinkedListStackSizeShouldGrowWhenElementsAreAdded() {
         for (int i = 1; i <= 100; i++) {
             stack.add(i);
             assertTrue(stack.size() == i);
@@ -89,24 +79,23 @@ public class StackTest {
     }
     
     @Test
-    public void StackPopShouldReturnAndRemoveLastElement() {
+    public void LinkedListStackPopShouldReturnAndRemoveLastElement() {
         for (int i = 1; i <= 100; i++) {
             stack.add(i);
         }
         
         for (int i = 100; i >= 1; i--) {
             assertTrue("Wrong stack size", stack.size() == i);
-            int head = stack.head - 1;
             int e = stack.pop();
-            assertNull(stack.data[head]);
             assertTrue("Wrong element", e == i);            
         }
         
         assertTrue("Stack should be empty", stack.isEmpty());
+        assertTrue("Wrong stack size", stack.size() == 0);
     }
     
     @Test
-    public void StackPeekShouldReturnLastElement() {
+    public void LinkedListStackPeekShouldReturnLastElement() {
         for (int i = 1; i <= 100; i++) {
             stack.add(i);
         }
@@ -122,21 +111,7 @@ public class StackTest {
     }
     
     @Test
-    public void StackContainsShouldWork() {
-        for (int i = 0; i <= 100; i+=2) {
-            stack.add(i);
-        }
-        
-        for (int i = 0; i <= 100; i++) {
-            if (i%2 == 0)
-                assertTrue(stack.contains(i));
-            else
-                assertTrue(!stack.contains(i));
-        }
-    }
-    
-    @Test
-    public void StackClearShouldInitialize() {
+    public void LinkedListStackClearShouldInitialize() {
         for (int i = 1; i <= 100; i++) {
             stack.add(i);
         }
@@ -145,16 +120,6 @@ public class StackTest {
         stack.clear();
         assertTrue(stack.isEmpty());
         assertTrue(stack.size() == 0);
-        assertTrue(stack.head == 0);
-    }
-    
-    @Test
-    public void StackEnsureCapacityGrowsCapacity() {
-        int length = stack.data.length;
-        stack.ensureCapacity(length + 1);
-        assertTrue(stack.data.length > length);
-        length = stack.data.length;
-        stack.ensureCapacity(length + 1);
-        assertTrue(stack.data.length > length);
+        assertTrue(stack.head == LinkedListStack.ROOT);
     }
 }

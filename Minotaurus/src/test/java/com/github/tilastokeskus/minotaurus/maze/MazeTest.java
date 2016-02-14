@@ -30,10 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Olavi Mustanoja
- */
 public class MazeTest {
     
     Maze maze;
@@ -51,9 +47,9 @@ public class MazeTest {
     
     @Before
     public void setUp() {
-        MazeBlock[][] layout = new MazeBlock[][] {{MazeBlock.FLOOR},
-                                                    {MazeBlock.GOAL}, 
-                                                    {MazeBlock.RUNNER}};
+        MazeBlock[][] layout = new MazeBlock[][] {{MazeBlock.WALL},
+                                                    {MazeBlock.FLOOR}, 
+                                                    {MazeBlock.ENTITY}};
         
         maze = new Maze(layout);
     }
@@ -80,9 +76,9 @@ public class MazeTest {
     
     @Test
     public void mazeShouldHaveCorrectLayout() {
-        assertTrue(maze.get(0, 0) == MazeBlock.FLOOR);
-        assertTrue(maze.get(0, 1) == MazeBlock.GOAL);
-        assertTrue(maze.get(0, 2) == MazeBlock.RUNNER);
+        assertTrue(maze.get(0, 0) == MazeBlock.WALL);
+        assertTrue(maze.get(0, 1) == MazeBlock.FLOOR);
+        assertTrue(maze.get(0, 2) == MazeBlock.ENTITY);
     }
     
     @Test
@@ -90,7 +86,7 @@ public class MazeTest {
         maze.set(0, 0, MazeBlock.WALL);
         maze.set(0, 2, MazeBlock.WALL);
         assertTrue(maze.get(0, 0) == MazeBlock.WALL);
-        assertTrue(maze.get(0, 1) == MazeBlock.GOAL);
+        assertTrue(maze.get(0, 1) == MazeBlock.FLOOR);
         assertTrue(maze.get(0, 2) == MazeBlock.WALL);
     }
     

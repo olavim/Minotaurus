@@ -2,3 +2,7 @@
 /plugins/DFSMazeGenerator/target/
 /Minotaurus/nbproject/
 /plugins/DFSMazeGeneratorPretty/target/
+/plugins/TestPlugin/TestPlugin/target/
+/plugins/InvalidTestPlugin/target/
+/plugins/GatherPointsScenario/target/
+/plugins/SimpletonRunner/target/

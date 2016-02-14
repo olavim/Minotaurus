@@ -29,8 +29,7 @@ import java.awt.Color;
 public enum MazeBlock {
     WALL(true, new Color(0xcf6a88)),
     FLOOR(false, new Color(0x903572)),
-    GOAL(true, Color.RED),
-    RUNNER(true, Color.MAGENTA);
+    ENTITY(true, Color.RED);
     
     /**
      * Should the entity be drawn.

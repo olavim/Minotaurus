@@ -26,11 +26,11 @@ package com.github.tilastokeskus.minotaurus.ui;
 
 import com.github.tilastokeskus.minotaurus.Main;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.plugin.PluginManager;
+import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
-import java.util.Collection;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -59,7 +59,7 @@ public class MainWindow extends AbstractGUI {
         container.setBackground(COLOR_BG);
         container.setLayout(new MigLayout("wrap 1", "[grow]", "[grow]"));
         
-        List<MazeGenerator> mazeGenerators = PluginManager.<MazeGenerator>loadPlugins();
+        List<MazeGenerator> mazeGenerators = PluginLoader.loadPlugins(MazeGenerator.class);
         mazeGeneratorChooser = new PluginChooser<>(this.frame, mazeGenerators);        
         container.add(mazeGeneratorChooser, "north, grow");
         
@@ -75,7 +75,7 @@ public class MainWindow extends AbstractGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             MazeGenerator gen = mazeGeneratorChooser.getPlugin();
-            Main.startSimulation(gen);
+            //Main.startSimulation(gen);
         }        
     }
 

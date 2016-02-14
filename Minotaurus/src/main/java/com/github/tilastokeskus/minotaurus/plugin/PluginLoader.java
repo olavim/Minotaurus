@@ -25,33 +25,43 @@
 package com.github.tilastokeskus.minotaurus.plugin;
 
 import com.github.tilastokeskus.minotaurus.ResourceManager;
-import com.github.tilastokeskus.minotaurus.util.Pair;
-import java.io.IOException;
 import java.util.List;
-import java.util.jar.Attributes;
 
+/**
+ * Provides an easy way to access plugins in the program's plugin directory.
+ */
 public class PluginLoader {
     
+    private static JarClassLoader classLoader = new JarClassLoader(
+            ResourceManager.getPluginDirectoryPath(), true);
+    
     /**
-     * Returns a list of suitable class instances that were found inside the
-     * plugin directory, paired with Attributes that were pulled from each
-     * respective Jar file.
+     * Retrieves a list of plugins with the type parameter's class from the
+     * plugin directory, and sets an appropriate title for them.
      * 
-     * @param <T>   Type (class) of plugins to load.
-     * @return      A list of Pairs, where the first element is a class instance
-     *              and the second is an Attributes object.
-     * @see Attributes
+     * @param <T>
+     * @param type Type (class) of plugins to load.
+     * @return List of plugins found in the program's plugin directory that
+     *         are assignable to the class defined by the type parameter.
      */
-    public static <T> List<T> loadPlugins() {
-        try {
-            String pluginFolderPath = ResourceManager.getPluginDirectoryPath();
-            JarClassLoader<T> jcl = new JarClassLoader<>(pluginFolderPath, true);
-            return jcl.getClassInstanceList();
-        } catch (IOException ex) {
-            System.out.println("Cannot load plugins: " + ex.getMessage());
-        }
+    public static <T extends Plugin> List<T> loadPlugins(Class<T> type) {
+        List<T> plugins = classLoader.getClassInstanceList(type);
         
-        return null;
+        if (plugins != null)
+            for (T plugin : plugins)
+                setPluginTitle(plugin);
+                
+        return plugins;
+    }
+    
+    public static void setPluginDir(String path) {
+        classLoader = new JarClassLoader(path, true);
     }
 
+    private static void setPluginTitle(Plugin plugin) {
+        String canonicalName = plugin.getClass().getCanonicalName();
+        int lastDot = canonicalName.lastIndexOf(".");
+        plugin.setTitle(canonicalName.substring(lastDot + 1));
+    }
+    
 }

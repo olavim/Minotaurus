@@ -24,10 +24,9 @@
 
 package com.github.tilastokeskus.minotaurus.runner;
 
-import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
-import java.util.List;
-import java.util.ArrayList;
+import com.github.tilastokeskus.minotaurus.util.ColorFactory;
+import java.awt.Color;
 
 /**
  * A skeletal implementation of a Runner to help creating runners as easily as
@@ -35,20 +34,32 @@ import java.util.ArrayList;
  */
 public abstract class AbstractRunner implements Runner {
     
-    private final int id;
-    private final Maze maze;
-    private final List<MazeEntity> goals;
+    private int id;    
+    private int x;
+    private int y;    
+    private String title;
     
-    /**
-     * Creates a new runner with the given id and maze.
-     * 
-     * @param id    Id of the runner.
-     * @param maze  Maze according to which the runner should make its moves.
-     */
-    public AbstractRunner(int id, Maze maze) {
+    private final Color color;
+    private final float size;
+    
+    public AbstractRunner() {
+        color = ColorFactory.getNextColor();
+        size = 0.5f;
+    }
+    
+    @Override
+    public Color getColor() {
+        return this.color;
+    }
+    
+    @Override
+    public float getSize() {
+        return this.size;
+    }
+    
+    @Override
+    public void setId(int id) {
         this.id = id;
-        this.maze = maze;
-        this.goals = new ArrayList<>();
     }
     
     @Override
@@ -57,27 +68,24 @@ public abstract class AbstractRunner implements Runner {
     }
     
     @Override
-    public Maze getMaze() {
-        return this.maze;
+    public void setX(int x) {
+        this.x = x;
     }
     
     @Override
-    public void addGoal(MazeEntity goal) {
-        this.goals.add(goal);
-    }
-    
-    @Override
-    public void removeGoal(MazeEntity goal) {
-        this.goals.remove(goal);
-    }
-    
-    @Override
-    public List<MazeEntity> getGoals() {
-        return this.goals;
+    public void setY(int y) {
+        this.y = y;
     }
 
     @Override
-    public abstract RunnerDirection getNextMove();
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
 
     @Override
     public int hashCode() {
@@ -97,8 +105,18 @@ public abstract class AbstractRunner implements Runner {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Runner other = (Runner) obj;
+        final AbstractRunner other = (AbstractRunner) obj;
         return this.id == other.getId();
+    }
+    
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    @Override
+    public String toString() {
+        return this.title;
     }
     
 }

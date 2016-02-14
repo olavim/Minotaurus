@@ -24,7 +24,10 @@
 package com.github.tilastokeskus.minotaurus;
 
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.plugin.PluginManager;
+import com.github.tilastokeskus.minotaurus.maze.TestMazeGenerator;
+import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.scenario.Scenario;
 import com.github.tilastokeskus.minotaurus.simulation.SimulationHandler;
 import com.github.tilastokeskus.minotaurus.ui.MainWindow;
 import com.github.tilastokeskus.minotaurus.ui.MazeWindow;
@@ -36,10 +39,12 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        List<MazeGenerator> mazeGenerators = PluginManager.<MazeGenerator>loadPlugins();
+        List<MazeGenerator> mazeGenerators = PluginLoader.loadPlugins(MazeGenerator.class);
         for (MazeGenerator gen : mazeGenerators) {
             System.out.println(gen.toString());
         }
+        
+        MazeGenerator.testGenerator(TestMazeGenerator.class, 10, 10);
         
         showMainWindow();
     }
@@ -49,11 +54,12 @@ public class Main {
         window.show();
     }
     
-    public static void startSimulation(MazeGenerator gen) {
-        SimulationHandler simHandler = new SimulationHandler(gen);
+    public static void startSimulation(MazeGenerator gen, Scenario scenario, List<Runner> runners) {
+        SimulationHandler simHandler = new SimulationHandler(gen, scenario, runners);
         MazeWindow mazeWindow = new MazeWindow(simHandler.getMaze());
+        simHandler.addObserver(mazeWindow);
         mazeWindow.show();
-        simHandler.startSimulation(0);
+        simHandler.startSimulation(50);
     }
     
 }

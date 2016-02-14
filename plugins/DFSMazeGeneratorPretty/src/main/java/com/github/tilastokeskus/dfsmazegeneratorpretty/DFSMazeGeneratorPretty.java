@@ -24,17 +24,14 @@
 
 package com.github.tilastokeskus.dfsmazegeneratorpretty;
 
+import com.github.tilastokeskus.minotaurus.maze.AbstractMazeGenerator;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
+import com.github.tilastokeskus.minotaurus.util.Direction;
 import java.util.Random;
 
-public class DFSMazeGeneratorPretty implements MazeGenerator {
-    
-    private static final int UP    = 1;
-    private static final int DOWN  = 1<<1;
-    private static final int LEFT  = 1<<2;
-    private static final int RIGHT = 1<<3;
+public class DFSMazeGeneratorPretty extends AbstractMazeGenerator {
     
     private static final double ERASE_WALL = 0.05;
     
@@ -42,10 +39,8 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
         MazeGenerator.testGenerator(DFSMazeGeneratorPretty.class, 20, 20);
     }
     
-    private String title;
-    
-    private final int[][] dirs = new int[][] {
-        {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+    private final Direction[] dirs = new Direction[] {
+        Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT
     };
 
     @Override
@@ -53,8 +48,6 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
         int[][] layout = new int[height/2][width/2];
         dfs(layout, 0, 0, 0, 0);
         
-        int[] dir = {UP, RIGHT, DOWN, LEFT};
-        int[] dirDelta = {-1, 0, 1, 0, -1};
         boolean[] dirOk = new boolean[4];
         
         MazeBlock[][] maze = new MazeBlock[height+1][width+1];
@@ -62,11 +55,11 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
             for (int x = 0; x < width/2; x++) {
                 maze[y*2+1][x*2+1] = MazeBlock.FLOOR;
                 for (int i = 0; i < 4; i++)
-                    dirOk[i] = (layout[y][x] & dir[i]) != 0;
+                    dirOk[i] = (layout[y][x] & bitOffset(dirs[i])) != 0;
                 
                 for (int i = 0; i < 4; i++) {
-                    int dy = y*2 + dirDelta[i] + 1;
-                    int dx = x*2 + dirDelta[i+1] + 1;
+                    int dy = y*2 + dirs[i].deltaY + 1;
+                    int dx = x*2 + dirs[i].deltaX + 1;
                     if (dy >= 0 && dy < height && dx >= 0 && dx < width)
                         maze[dy][dx] = dirOk[i] ? MazeBlock.FLOOR : MazeBlock.WALL;
                                 
@@ -100,24 +93,18 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
         if (!isInBounds(layout, x, y) || layout[y][x] != 0)
             return;
         
-        if (x - 1 == lx) { // went right
-            layout[y][x] |= LEFT;
-            layout[ly][lx] |= RIGHT;
-        } else if (x + 1 == lx) { // went left
-            layout[y][x] |= RIGHT;
-            layout[ly][lx] |= LEFT;
-        } else if (y - 1 == ly) { // went down
-            layout[y][x] |= UP;
-            layout[ly][lx] |= DOWN;
-        } else if (y + 1 == ly) { // went up
-            layout[y][x] |= DOWN;
-            layout[ly][lx] |= UP;
+        for (Direction dir : dirs) {
+            if ((x + dir.deltaX == lx && dir.deltaX != 0) 
+                    || (y + dir.deltaY == ly && dir.deltaY != 0)) {
+                layout[y][x] |= bitOffset(dir);
+                layout[ly][lx] |= bitOffset(dir.opposite());
+            }
         }
         
         shuffleDirs();
         
         for (int i = 0; i < 4; i++) {
-            dfs(layout, x + dirs[i][0], y + dirs[i][1], x, y);
+            dfs(layout, x + dirs[i].deltaX, y + dirs[i].deltaY, x, y);
         }
     }
     
@@ -125,7 +112,7 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
         Random r = new Random();
         for (int i = 3; i >= 1; i--) {
             int j = r.nextInt(i);
-            int[] temp = dirs[j];
+            Direction temp = dirs[j];
             dirs[j] = dirs[i];
             dirs[i] = temp;
         }
@@ -134,15 +121,14 @@ public class DFSMazeGeneratorPretty implements MazeGenerator {
     private boolean isInBounds(int layout[][], int x, int y) {
         return x >= 0 && x < layout[0].length && y >= 0 && y < layout.length;
     }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    @Override
-    public String toString() {
-        return this.title;
+    
+    private int bitOffset(Direction dir) {
+        switch (dir) {
+            case UP: return 1<<1;
+            case DOWN: return 1<<2;
+            case LEFT: return 1<<3;
+            default: return 1<<4;
+        }
     }
 
 }

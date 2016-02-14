@@ -24,17 +24,11 @@
 
 package com.github.tilastokeskus.minotaurus.maze;
 
-public interface MazeEntity {
-    
-    /**
-     * Returns the identifier of this entity.
-     * 
-     * @return The entity's id.
-     */
-    int getId();
-    
-    int setX();
-    int setY();
+import com.github.tilastokeskus.minotaurus.ui.Drawable;
+
+public interface MazeEntity extends Drawable {
     int getX();
     int getY();
+    void setX(int x);
+    void setY(int y);
 }
