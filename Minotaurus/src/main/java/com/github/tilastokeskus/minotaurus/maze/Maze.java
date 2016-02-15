@@ -24,16 +24,21 @@
 
 package com.github.tilastokeskus.minotaurus.maze;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Maze {
+public class Maze implements Observer {
     
-    private MazeBlock[][] initialLayout;
+    private final MazeBlock[][] initialLayout;
+    
     private MazeBlock[][] currentLayout;
-    private List<MazeEntity> entities;
+    private Map<Point, List<MazeEntity>> entities;
     
     /**
      * Creates a new maze with the given layout.
@@ -42,9 +47,10 @@ public class Maze {
      */
     public Maze(MazeBlock[][] layout) {
         initialLayout = copyLayout(layout);        
-        currentLayout = layout;
-        entities = new ArrayList<>();
-        checkValidity();
+        currentLayout = copyLayout(layout);
+        checkValidity(initialLayout);
+        checkValidity(currentLayout);
+        entities = new HashMap<>();
     }
     
     /**
@@ -56,18 +62,19 @@ public class Maze {
     public Maze(int width, int height) {
         initialLayout = new MazeBlock[height][width];
         currentLayout = new MazeBlock[height][width];
-        entities = new ArrayList<>();
-        checkValidity();
+        entities = new HashMap<>();
+        checkValidity(initialLayout);
+        checkValidity(currentLayout);
     }
     
     /**
-     * Sets the maze's layout.
+     * Sets the maze's current layout.
      * 
      * @param layout  New layout.
      */
     protected void setLayout(MazeBlock[][] layout) {
-        this.currentLayout = layout;
-        checkValidity();
+        currentLayout = copyLayout(layout);
+        checkValidity(currentLayout);
     }
     
     /**
@@ -122,47 +129,35 @@ public class Maze {
         return currentLayout[y][x];
     }
     
-    public void updateEntityPositions() {
-        currentLayout = copyLayout(initialLayout);
-        for (MazeEntity ent : entities)
-            currentLayout[ent.getX()][ent.getY()] = MazeBlock.ENTITY;
-    }
-    
-    public List<MazeEntity> getEntities() {
-        return this.entities;
-    }
-    
     /**
-     * Gets an entity at the specified position. If the position has more than
-     * one entities, any of them will be returned.
+     * Gets entities at the specified position.
      * 
      * @param x X position to search.
      * @param y Y position to search.
-     * @return  A MazeEntity.
+     * @return  A list of MazeEntities, or null if the position contains no
+     *          entities.
      */
-    public MazeEntity getEntity(int x, int y) {
-        return entities.stream()
-                .filter(e -> e.getX() == x && e.getY() == y)
-                .findFirst().orElse(null);
+    public List<MazeEntity> getEntitiesAt(int x, int y) {
+        return entities.get(new Point(x, y));
     }
     
     public void addEntity(MazeEntity ent) {
-        entities.add(ent);
-        updateEntityPositions();
+        Point p = ent.getPosition();
+        if (!entities.containsKey(p))
+            entities.put(p, new ArrayList<>());
+        entities.get(p).add(ent);
+        ent.addObserver(this);
     }
     
     public void setEntities(List<MazeEntity> entities) {
-        this.entities = entities;
-        updateEntityPositions();
+        this.entities = new HashMap<>();
+        for (MazeEntity ent : entities)
+            addEntity(ent);
     }
     
     public void removeEntity(MazeEntity ent) {
-        entities.remove(ent);
-        updateEntityPositions();
-    }
-    
-    public boolean isOccupied(int x, int y) {
-        return currentLayout[y][x] != MazeBlock.FLOOR;
+        entities.get(ent.getPosition()).remove(ent);
+        ent.deleteObserver(this);
     }
     
     private void testBounds(int x, int y) {
@@ -172,11 +167,11 @@ public class Maze {
             throw new IllegalArgumentException("Index out of bounds: y " + y);
     }
     
-    private void checkValidity() {
-        for (int i = 0; i < getWidth(); i++)
-            for (int j = 0; j < getHeight(); j++)
-                if (currentLayout[j][i] == null)
-                    currentLayout[j][i] = MazeBlock.WALL;
+    private void checkValidity(MazeBlock[][] layout) {
+        for (int i = 0; i < layout.length; i++)
+            for (int j = 0; j < layout[i].length; j++)
+                if (layout[i][j] == null)
+                    layout[i][j] = MazeBlock.WALL;
     }
     
     private MazeBlock[][] copyLayout(MazeBlock[][] layout) {
@@ -185,6 +180,14 @@ public class Maze {
             copy[i] = Arrays.copyOf(layout[i], layout[i].length);
         
         return copy;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        MazeEntity ent = (MazeEntity) o;
+        Point oldPos = (Point) arg;
+        entities.get(oldPos).remove(ent);
+        addEntity(ent);
     }
 
 }

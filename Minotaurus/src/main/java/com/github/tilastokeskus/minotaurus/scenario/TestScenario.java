@@ -25,14 +25,16 @@
 package com.github.tilastokeskus.minotaurus.scenario;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
+import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.util.ColorFactory;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
+import java.awt.Point;
 
 /**
  * A Scenario intended for testing runners with.
@@ -74,8 +76,7 @@ public class TestScenario extends AbstractScenario {
     @Override
     public boolean placeRunners(Collection<Runner> runners) {
         runner = runners.iterator().next();
-        runner.setX(1);
-        runner.setY(1);
+        runner.setPosition(1, 1);
         return true;
     }
 
@@ -107,42 +108,19 @@ public class TestScenario extends AbstractScenario {
         do {
             x = r.nextInt(maze.getWidth());
             y = r.nextInt(maze.getHeight());
-        } while (maze.isOccupied(x, y));
+        } while (maze.get(x, y) != MazeBlock.FLOOR);
         
-        goal.setX(x);
-        goal.setY(y);
+        goal.setPosition(x, y);
     }
     
-    private class Goal implements MazeEntity {
+    private class Goal extends MazeEntity {
         private final Color color;
         private final float size;
         
-        private int x;
-        private int y;
-        
         public Goal(int x, int y) {
-            this.x = x;
-            this.y = y;
+            super(x, y);
             this.color = ColorFactory.getNextColor();
             this.size = 0.5f;
-        }
-        
-        @Override
-        public int getX() {
-            return x;
-        }
-
-        @Override
-        public int getY() {
-            return y;
-        }        
-
-        @Override public void setX(int x) {
-            this.x = x;
-        }
-        
-        @Override public void setY(int y) {
-            this.y = y;
         }
 
         @Override

@@ -30,16 +30,20 @@ import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.maze.TestMazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import com.github.tilastokeskus.minotaurus.scenario.TestScenario;
+import com.github.tilastokeskus.minotaurus.util.ColorFactory;
 import com.github.tilastokeskus.minotaurus.util.Direction;
+import java.awt.Color;
+import java.awt.Point;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * An artificial intelligence doing various tasks in a set maze.
  */
-public interface Runner extends Plugin, MazeEntity {
+public abstract class Runner extends MazeEntity implements Plugin {
     
     public final static Logger LOGGER = Logger.getLogger(Runner.class.getName());
     
@@ -55,25 +59,85 @@ public interface Runner extends Plugin, MazeEntity {
             int width, int height) {
         try {
             Runner runner = clazz.newInstance();
-            Main.startSimulation(new TestMazeGenerator(), new TestScenario(), Arrays.asList(runner));
+            Main.startSimulation(new TestMazeGenerator(),
+                                    new TestScenario(),
+                                    Arrays.asList(runner));
         } catch (InstantiationException | IllegalAccessException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
+    
+    private int id;
+    private String title;
+    
+    private final Color color;
+    private final float size;
+    
+    public Runner() {
+        color = ColorFactory.getNextColor();
+        size = 0.5f;
+    }
+    
+    @Override
+    public Color getColor() {
+        return this.color;
+    }
+    
+    @Override
+    public float getSize() {
+        return this.size;
+    }    
     
     /**
      * Sets this runner's identifier.
      * 
      * @param id New identifier.
      */
-    void setId(int id);
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     
     /**
      * Returns this runner's identifier.
      * 
      * @return The identifier.
      */
-    int getId();
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Runner other = (Runner) obj;
+        return this.id == other.getId();
+    }
+    
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    @Override
+    public String toString() {
+        return this.title;
+    }
     
     /**
      * Returns the direction in which the runner wants to go next in the
@@ -83,5 +147,5 @@ public interface Runner extends Plugin, MazeEntity {
      * @param goals Goals to aim for.
      * @return A direction.
      */
-    Direction getNextMove(Maze maze, Collection<MazeEntity> goals);
+    public abstract Direction getNextMove(Maze maze, Collection<MazeEntity> goals);
 }

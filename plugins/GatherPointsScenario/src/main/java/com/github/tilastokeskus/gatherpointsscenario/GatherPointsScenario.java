@@ -1,8 +1,8 @@
 package com.github.tilastokeskus.gatherpointsscenario;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
+import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.scenario.AbstractScenario;
 import com.github.tilastokeskus.minotaurus.util.ColorFactory;
 import java.awt.Color;
@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
 
 public class GatherPointsScenario extends AbstractScenario {
     
@@ -86,7 +87,7 @@ public class GatherPointsScenario extends AbstractScenario {
         do {
             x = r.nextInt(maze.getWidth());
             y = r.nextInt(maze.getHeight());
-        } while (maze.isOccupied(x, y));
+        } while (maze.get(x, y) != MazeBlock.FLOOR);
         
         goal.setX(x);
         goal.setY(y);

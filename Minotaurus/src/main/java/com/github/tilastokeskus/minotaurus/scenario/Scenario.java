@@ -27,9 +27,9 @@ package com.github.tilastokeskus.minotaurus.scenario;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
 import java.util.Collection;
 import java.util.List;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
 
 /**
  * A scenario is a situation, or a world, that a simulation aims to model. A

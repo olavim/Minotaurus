@@ -25,9 +25,9 @@
 package com.github.tilastokeskus.minotaurus.scenario;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
 import java.util.HashMap;
 import java.util.Map;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
 
 /**
  * A skeletal implementation of a Scenario to help creating scenarios as easily

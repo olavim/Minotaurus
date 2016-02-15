@@ -24,7 +24,6 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
-import com.github.tilastokeskus.minotaurus.Main;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
 import java.awt.Color;

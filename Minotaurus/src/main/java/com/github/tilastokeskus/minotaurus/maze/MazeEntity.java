@@ -25,10 +25,50 @@
 package com.github.tilastokeskus.minotaurus.maze;
 
 import com.github.tilastokeskus.minotaurus.ui.Drawable;
+import java.awt.Point;
+import java.util.Observable;
 
-public interface MazeEntity extends Drawable {
-    int getX();
-    int getY();
-    void setX(int x);
-    void setY(int y);
+public abstract class MazeEntity extends Observable implements Drawable {
+    private Point position;
+    
+    /**
+     * Creates a new MazeEntity, initializing its position to (0, 0).
+     */
+    public MazeEntity() {
+        this(0, 0);
+    }
+    
+    /**
+     * Creates a new MazeEntity, initializing its position to (x, y).
+     * 
+     * @param x X position.
+     * @param y Y position.
+     */
+    public MazeEntity(int x, int y) {
+        this.position = new Point(x, y);
+    }
+    
+    /**
+     * Returns this MazeEntity's position.
+     * 
+     * @return A Point object.
+     */
+    public Point getPosition() {
+        return this.position;
+    }
+    
+    /**
+     * Sets this MazeEntity's position, and notifies its observers, passing the
+     * previous position to them.
+     * 
+     * @param x New X position.
+     * @param y New Y position.
+     */
+    public void setPosition(int x, int y) {
+        Point oldPos = new Point(position);
+        position = new Point(x, y);
+        
+        setChanged();
+        notifyObservers(oldPos);
+    }
 }

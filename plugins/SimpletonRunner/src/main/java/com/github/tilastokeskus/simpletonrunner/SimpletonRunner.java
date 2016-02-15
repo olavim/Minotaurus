@@ -7,17 +7,18 @@
 package com.github.tilastokeskus.simpletonrunner;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
+import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
-import com.github.tilastokeskus.minotaurus.runner.AbstractRunner;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.util.Direction;
 import java.util.Collection;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
+import java.awt.Point;
 
 /**
  * Decides a direction by checking which direction has the lowest Manhattan
  * distance. Will get stuck in every trap.
  */
-public class SimpletonRunner extends AbstractRunner {
+public class SimpletonRunner extends Runner {
     
     public static void main(String[] args) {
         Runner.testGenerator(SimpletonRunner.class, 20, 20);
@@ -34,13 +35,13 @@ public class SimpletonRunner extends AbstractRunner {
         int bestDist = getDistanceTo(goal);
         Direction bestDir = Direction.NONE;
         for (Direction dir : dirs) {
-            int nx = getX() + dir.deltaX;
-            int ny = getY() + dir.deltaY;
+            int nx = getPosition().x + dir.deltaX;
+            int ny = getPosition().y + dir.deltaY;
             
-            if (maze.isOccupied(nx, ny))
+            if (maze.get(nx, ny) == MazeBlock.WALL)
                 continue;
             
-            int dist = getDistance(nx, goal.getX(), ny, goal.getY());
+            int dist = getManhattanDistance(new Point(nx, ny), goal.getPosition());
             
             if (dist < bestDist) {
                 bestDist = dist;
@@ -68,11 +69,11 @@ public class SimpletonRunner extends AbstractRunner {
     }
     
     private int getDistanceTo(MazeEntity ent) {
-        return getDistance(this.getX(), ent.getX(), this.getY(), ent.getY());
+        return getManhattanDistance(this.getPosition(), ent.getPosition());
     }
     
-    private int getDistance(int x, int x2, int y, int y2) {
-        return Math.abs(x - x2) + Math.abs(y - y2);
+    private int getManhattanDistance(Point p1, Point p2) {
+        return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
     }
 
 }

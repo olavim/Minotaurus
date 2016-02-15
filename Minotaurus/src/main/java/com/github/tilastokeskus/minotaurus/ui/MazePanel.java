@@ -31,6 +31,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.List;
 import javax.swing.JPanel;
 
 public class MazePanel extends JPanel {
@@ -72,10 +73,12 @@ public class MazePanel extends JPanel {
                 if (block == MazeBlock.WALL) {
                     g2.setColor(Color.BLACK);
                     g2.fillRect(x * blockW, y * blockH, blockW + 3, blockH + 3);
-                } else if (block == MazeBlock.ENTITY) {
-                    System.out.println("1:" + x + ":" + y);
-                    MazeEntity ent = maze.getEntity(x, y);
-                    if (ent != null) {
+                } else {
+                    List<MazeEntity> entities = maze.getEntitiesAt(x, y);
+                    System.out.println("entity");
+                    if (entities != null) {
+                        System.out.println("entity");
+                        MazeEntity ent = entities.get(0);
                         drawColor = ent.getColor();
                         w *= ent.getSize();
                         h *= ent.getSize();

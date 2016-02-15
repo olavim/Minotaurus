@@ -25,12 +25,12 @@ package com.github.tilastokeskus.minotaurus;
 
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.scenario.Scenario;
 import com.github.tilastokeskus.minotaurus.simulation.SimulationHandler;
 import com.github.tilastokeskus.minotaurus.ui.MainWindow;
 import com.github.tilastokeskus.minotaurus.ui.MazeWindow;
 import java.util.List;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
 
 public class Main {
 

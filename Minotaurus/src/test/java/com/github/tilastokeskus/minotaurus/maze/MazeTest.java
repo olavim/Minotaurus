@@ -60,7 +60,6 @@ public class MazeTest {
 
     @Test
     public void mazeShouldHaveCorrectDimensions() {
-        Maze maze;
         for (int i = 1; i <= 10; i++) {
             for (int j = 1; j <= 10; j++) {
                 maze = new Maze(i, j);
@@ -100,9 +99,29 @@ public class MazeTest {
         maze.get(1, 0);
     }
     
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    public void mazeShouldNotStoreOriginalArrayReference() {
+        MazeBlock[][] layout = new MazeBlock[][] {{MazeBlock.WALL},
+                                                    {MazeBlock.FLOOR}, 
+                                                    {MazeBlock.ENTITY}};
+        
+        Maze m = new Maze(layout);
+        assertTrue(m.get(0, 0) == MazeBlock.WALL);
+        layout[0][0] = MazeBlock.ENTITY;
+        assertTrue(m.get(0, 0) == MazeBlock.WALL);
+        m.set(0, 0, MazeBlock.FLOOR);
+        assertTrue(layout[0][0] == MazeBlock.ENTITY);
+    }
+    
+    public void mazeSetLayoutShouldOnlyStoreCopyOfLayout() {
+        MazeBlock[][] layout = new MazeBlock[][] {{MazeBlock.WALL},
+                                                    {MazeBlock.FLOOR}, 
+                                                    {MazeBlock.ENTITY}};
+        
+        maze.setLayout(layout);
+        assertTrue(maze.get(0, 0) == MazeBlock.WALL);
+        layout[0][0] = MazeBlock.ENTITY;
+        assertTrue(maze.get(0, 0) == MazeBlock.WALL);
+        maze.set(0, 0, MazeBlock.FLOOR);
+        assertTrue(layout[0][0] == MazeBlock.ENTITY);
+    }
 }

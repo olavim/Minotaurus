@@ -25,15 +25,14 @@
 package com.github.tilastokeskus.minotaurus.simulation;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
+import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.scenario.Scenario;
 import com.github.tilastokeskus.minotaurus.util.Direction;
 import java.util.List;
 import java.util.Observable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
 
 public class SimulationHandler extends Observable {
     
@@ -80,23 +79,29 @@ public class SimulationHandler extends Observable {
     private void simulateRound() {
         for (Runner runner : runners) {
             Direction dir = runner.getNextMove(maze, scenario.getRunnerGoals(runner));
-            int nx = runner.getX() + dir.deltaX;
-            int ny = runner.getY() + dir.deltaY;
+            int nx = runner.getPosition().x + dir.deltaX;
+            int ny = runner.getPosition().y + dir.deltaY;
             
-            if (!maze.isOccupied(nx, ny)) {
-                MazeEntity ent = maze.getEntity(nx, ny);
-                if (ent != null && scenario.isCollisionAllowed(runner, ent)) {
-                    scenario.handleCollision(runner, ent);
-                } else if (!scenario.isCollisionAllowed(runner, ent)) {
+            if (maze.get(nx, ny) == MazeBlock.WALL)
+                continue;
+            
+            System.out.println(dir);
+            
+            List<MazeEntity> entities = maze.getEntitiesAt(nx, ny);
+            if (entities != null) {
+                boolean collisionAllowedAll = entities.stream()
+                        .allMatch(e -> scenario.isCollisionAllowed(runner, e));
+
+                if (!collisionAllowedAll)
                     continue;
-                }
-                
-                runner.setX(nx);
-                runner.setY(ny);
+
+                for (MazeEntity ent : entities)
+                    scenario.handleCollision(runner, ent);
             }
+
+            runner.setPosition(nx, ny);
         }
         
-        maze.updateEntityPositions();
         this.setChanged();
         this.notifyObservers();
     }
