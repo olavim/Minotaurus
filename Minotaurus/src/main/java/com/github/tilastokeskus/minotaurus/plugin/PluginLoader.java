@@ -47,9 +47,8 @@ public class PluginLoader {
     public static <T extends Plugin> List<T> loadPlugins(Class<T> type) {
         List<T> plugins = classLoader.getClassInstanceList(type);
         
-        if (plugins != null)
-            for (T plugin : plugins)
-                setPluginTitle(plugin);
+        for (T plugin : plugins)
+            setPluginTitle(plugin);
                 
         return plugins;
     }
