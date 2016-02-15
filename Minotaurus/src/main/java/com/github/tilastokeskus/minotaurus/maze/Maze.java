@@ -141,6 +141,12 @@ public class Maze implements Observer {
         return entities.get(new Point(x, y));
     }
     
+    /**
+     * Adds a MazeEntity to this maze, and adds this maze to that entity's
+     * list of observers.
+     * 
+     * @param ent MazeEntity to add.
+     */
     public void addEntity(MazeEntity ent) {
         Point p = ent.getPosition();
         if (!entities.containsKey(p))
@@ -149,12 +155,28 @@ public class Maze implements Observer {
         ent.addObserver(this);
     }
     
+    /**
+     * Removes existing entities from this maze, removes this maze from each 
+     * of those entities' list of observers and adds the given entities to this
+     * maze.
+     * 
+     * @param entities List of MazeEntities to set.
+     */
     public void setEntities(List<MazeEntity> entities) {
+        for (MazeEntity ent : this.entities.values())
+            removeEntity(ent);
+        
         this.entities = new HashMap<>();
         for (MazeEntity ent : entities)
             addEntity(ent);
     }
     
+    /**
+     * Removes an entity from this maze, and removes this maze from the entity's
+     * list of observers
+     * 
+     * @param ent Entity to remove.
+     */
     public void removeEntity(MazeEntity ent) {
         entities.get(ent.getPosition()).remove(ent);
         ent.deleteObserver(this);
