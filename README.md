@@ -21,14 +21,14 @@ The program and its plugins are written in **Java 8**.
 - What input does my program receive, and how is it used.
 - What time and space requirements am I aiming for.
 
-**Implementation**
+[**Implementation**](docs/implementation.md)
 
 - Structure of the program.
 - Accomplished time and space requirements.
 - Performance comparisons.
 - Shortcomings and possible improvements.
 
-**Testing**
+[**Testing**](docs/testing.md)
 
 - What has been tested.
 - How has it been tested.
