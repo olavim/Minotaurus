@@ -32,6 +32,7 @@ The program and its plugins are written in **Java 8**.
 
 - What has been tested.
 - How has it been tested.
+- Benchmarks
 - How can you test it.
 
 **Instructions**
