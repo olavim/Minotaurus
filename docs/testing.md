@@ -104,7 +104,7 @@ Remove | 8ms | 81ms
 
 The reason why operating on String key/values is more expensive is because of the additional time it takes to calculate its hash. If the map was tested with objects that have simple hashcode calculations, the times would most likely be more or less identical to the integer map.
 
-The reason why put is, in both cases, more expensive than the other operations is because occasionally the map's internal data array is grown, which takes linear time proportional to its new size. With a million entries, the array is grown 16 times.
+The reason why `put` is, in both cases, more expensive than the other operations is because occasionally the map's internal data array is grown, which takes linear time proportional to its new size. With a million entries, the array is grown 16 times.
 
 ## How you can test it
 
