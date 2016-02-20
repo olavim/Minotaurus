@@ -59,7 +59,36 @@ Below are more details about each classes' tests, more specifically, what has be
 - `values()`
   - Should return a collection with all values in the map.
 
+#### HashSet
 
+- HashSet should initialize as an empty set.
+- `isEmpty()`
+  - Should return *true* when set is empty, and *false* when not.
+- `size()`
+  - Should return correct amount of elements in the set.
+- `clear()`
+  - Should remove all elements from the set.
+- `contains()`
+  - Should return *true* if element exists, *false* if not.
+- `containsAll()`
+  - Should return *true* if all elements exists in set, *false* if not.
+- `add()`
+  - Should add an the element to the set.
+  - Should return *true* if the element didn't exist, *false* if it did.
+- `addAll()`
+  - Should add all elements in a collection to the set.
+  - Should return *true* if at least one element was new, *false* otherwise.
+- `retainAll()`
+  - Should remove all elements from the set, except for those present in the specified collection.
+  - Should return *true* if the set was modified, *false* otherwise.
+- `removeAll()`
+  - Should remove all elements from the set that are also present in the specified collection.
+  - Should return *true* if the set was modified, *false* otherwise.
+- `iterator()`
+  - Should return an iterator over the elements in the set.
+- `toArray()`
+  - Should return an array from the set's elements.
+  
 ## How you can test it
 
 As tests are written with JUnit, testing is as simple as downloading the project and running the tests.
