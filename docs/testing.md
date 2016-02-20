@@ -12,28 +12,26 @@ Later on more data structures will be added and then tested, and all the impleme
 
 All tests are written with JUnit. The tests themselves are tested with the help of PIT mutation testing.
 
-Below are more details about each unit test, sectioned by classes.
+Below are more details about each classes' tests, more specifically, what has been tested.
 
 #### Maze
 
-**Maze should have correct dimensions**
-
-Tested that when a Maze is initialized, its `getWidth` and `getHeight` returns the correct values.
-Tested by initializing Mazes with different dimensions ranging from width and height 0 to width and height 10.
-
-**Maze should have correct layout**
-
-Tested that after initializing a maze with a layout, the `get` method returns a correct block.
-
-**Maze should have correct layout after changing blocks**
-
-Tested that changes to the maze's layout using the `set` method are happening and visible.
-Tested by setting some positions and validating the changes with the `get` method.
-
-**Maze should throw an exception when trying to access out of bounds locations**
-
-Tested that when invoking the `get` or `set` method with a value less than 0 or greater than the maze's width or height,
-an exception is thrown.
+- Maze should have correct dimensions after initialization.
+- Maze should have correct layout after initialization. `null` blocks should be changed to `MazeBlock.WALL`s.
+- When the maze is initialized with a layout matrix, changes in the original matrix should not be visible in the maze.
+- `set`
+  - Should correctly set blocks. `null` blocks should be changed to `MazeBlock.WALL`s.
+- `set`, `get`
+  - Maze should throw an exception when trying to access out of bounds locations.
+- `addEntity`
+  - Should add an entity to the maze.
+  - The maze should be set as the entity's observer.
+- `setEntities`
+  - Should clear previous entities and add new ones.
+- `removeEntity`
+  - Should remove entity from the maze.
+  - Maze should no longer be the entity's observer.
+- When an entity's position is modified, it should be visible to the maze. More of an integration test between `Maze` and `MazeEntity`.
 
 ## How you can test it
 
