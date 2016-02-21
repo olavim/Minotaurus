@@ -153,6 +153,12 @@ public class Maze implements Observer {
         return new HashSet<>(entitySet);
     }
     
+    /**
+     * Adds a MazeEntity to this maze, and adds this maze to that entity's
+     * list of observers.
+     * 
+     * @param ent MazeEntity to add.
+     */
     public void addEntity(MazeEntity ent) {
         Position p = ent.getPosition();
         
@@ -165,14 +171,34 @@ public class Maze implements Observer {
         ent.addObserver(this);
     }
     
+    /**
+     * Removes existing entities from this maze, removes this maze from each 
+     * of those entities' list of observers and adds the given entities to this
+     * maze.
+     * 
+     * @param entities List of MazeEntities to set.
+     */
     public void setEntities(List<MazeEntity> entities) {
+<<<<<<< HEAD
         entityMap.clear();
         entitySet.clear();
         
+=======
+        for (MazeEntity ent : this.entities.values())
+            removeEntity(ent);
+        
+        this.entities = new HashMap<>();
+>>>>>>> ea2e606bd6b8fae527fdeb382b8912734cbba66f
         for (MazeEntity ent : entities)
             addEntity(ent);
     }
     
+    /**
+     * Removes an entity from this maze, and removes this maze from the entity's
+     * list of observers
+     * 
+     * @param ent Entity to remove.
+     */
     public void removeEntity(MazeEntity ent) {
         entityMap.get(ent.getPosition()).remove(ent);
         entitySet.remove(ent);
