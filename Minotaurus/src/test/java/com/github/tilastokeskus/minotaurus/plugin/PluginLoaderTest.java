@@ -23,9 +23,6 @@
  */
 package com.github.tilastokeskus.minotaurus.plugin;
 
-import com.github.tilastokeskus.minotaurus.ResourceManager;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -34,10 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Olavi Mustanoja
- */
 public class PluginLoaderTest {
     
     public PluginLoaderTest() {
@@ -60,9 +53,9 @@ public class PluginLoaderTest {
     }
     
     @Test
-    public void PluginLoaderLoadPluginsShouldReturnCorrectPlugins() throws Exception {        
+    public void PluginLoaderLoadPluginsShouldReturnCorrectPlugins() {
         PluginLoader.setPluginDir(getClass().getResource("/plugins/").getPath());
-        
+
         List<Plugin> plugins = PluginLoader.loadPlugins(Plugin.class);
         assertEquals(plugins.get(0).toString(), "TestPlugin");
     }

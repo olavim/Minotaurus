@@ -27,11 +27,14 @@ package com.github.tilastokeskus.minotaurus.ui;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
+import com.github.tilastokeskus.minotaurus.util.Position;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 public class MazePanel extends JPanel {
@@ -40,15 +43,17 @@ public class MazePanel extends JPanel {
     private static final int BLOCK_HEIGHT = 10;
     
     private Maze maze;
+    private Set<JComponent> components;
     
     public MazePanel(Maze maze) {
         this.maze = maze;
         this.setBackground(MazeBlock.FLOOR.drawColor);
+        this.components = new HashSet<>();
     }
     
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);        
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         
         int mw = maze.getWidth();
@@ -58,6 +63,9 @@ public class MazePanel extends JPanel {
         int blockW = pw / mw;
         int blockH = ph / mh;
         
+        int offsetX = 0;
+        int offsetY = 0;
+        
         for (int x = 0; x < mw; x++) {
             for (int y = 0; y < mh; y++) {
                 MazeBlock block = maze.get(x, y);
@@ -65,31 +73,26 @@ public class MazePanel extends JPanel {
                     continue;
                 
                 Color drawColor = block.drawColor;
-                int offsetX = 0;
-                int offsetY = 0;
-                int w = blockW;
-                int h = blockH;
                 
                 if (block == MazeBlock.WALL) {
                     g2.setColor(Color.BLACK);
                     g2.fillRect(x * blockW, y * blockH, blockW + 3, blockH + 3);
-                } else {
-                    List<MazeEntity> entities = maze.getEntitiesAt(x, y);
-                    System.out.println("entity");
-                    if (entities != null) {
-                        System.out.println("entity");
-                        MazeEntity ent = entities.get(0);
-                        drawColor = ent.getColor();
-                        w *= ent.getSize();
-                        h *= ent.getSize();
-                        offsetX = (blockW - w) / 2;
-                        offsetY = (blockH - h) / 2;
-                    }
                 }
                 
                 g2.setColor(drawColor);
                 g2.fillRect(x*blockW + offsetX, y*blockH + offsetY, blockW, blockH);
             }
+        }
+        
+        for (MazeEntity ent : maze.getEntities()) {
+            JComponent c = ent.getComponent();
+            if (!components.contains(c)) {
+                components.add(c);
+                this.add(c);
+            }
+            
+            Position p = ent.getPosition();
+            c.setBounds(p.x * blockW, p.y * blockH, blockW, blockH);
         }
         
         this.revalidate();

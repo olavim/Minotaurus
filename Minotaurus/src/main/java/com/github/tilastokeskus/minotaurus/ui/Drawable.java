@@ -25,20 +25,10 @@
 package com.github.tilastokeskus.minotaurus.ui;
 
 import java.awt.Color;
+import javax.swing.JComponent;
 
 public interface Drawable {
-    
-    /**
-     * Returns the color this object should be drawn with.
-     * 
-     * @return A color.
-     */
-    Color getColor();
-    
-    /**
-     * Returns a relative size.
-     * 
-     * @return A float between 0.0 and 1.0.
-     */
-    float getSize();    
+    JComponent getComponent();
+    void setComponentColor(Color color);
+    Color getComponentColor();
 }

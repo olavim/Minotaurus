@@ -22,33 +22,8 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus;
+package com.github.tilastokeskus.minotaurus.exception;
 
-import java.io.File;
-
-/**
- * A central access point for the program's fixed resource paths.
- */
-public class ResourceManager {
-    
-    private static final String PATH = ResourceManager.class
-                                        .getProtectionDomain().getCodeSource()
-                                        .getLocation().getPath();
-    
-    private static final String PLUGIN_PATH = "plugins/";
-
-    public static String getPluginDirectoryPath() {
-        return buildPath(PLUGIN_PATH);
-    }
-    
-    private static String buildPath(String resource) {
-        File file = new File(PATH + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        file = new File(new File(PATH).getParent() + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        return new File(PATH).getParent() + '/';
-    }
-    
+public interface ExceptionThrower {
+    void throwException() throws Throwable;
 }

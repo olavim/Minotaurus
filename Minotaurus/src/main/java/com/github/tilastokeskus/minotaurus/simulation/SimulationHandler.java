@@ -33,12 +33,17 @@ import com.github.tilastokeskus.minotaurus.util.Direction;
 import java.util.List;
 import java.util.Observable;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.util.Rotation;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SimulationHandler extends Observable {
     
     private final Maze maze;
     private final Scenario scenario;
     private final List<Runner> runners;
+    private ScheduledExecutorService executor;
 
     /**
      * Creates a new simulation handler with the given maze generator, scenario
@@ -52,6 +57,7 @@ public class SimulationHandler extends Observable {
         this.maze = gen.generateMaze(50, 50);
         this.scenario = scenario;
         this.runners = runners;
+        executor = Executors.newSingleThreadScheduledExecutor();
     }
     
     /**
@@ -66,14 +72,9 @@ public class SimulationHandler extends Observable {
         for (Runner runner : runners)
             maze.addEntity(runner);
         
-        while (true) {
-            try {
-                Thread.sleep(rate);
-            } catch (InterruptedException ex) {
-            }
-            
+        executor.scheduleWithFixedDelay(() -> {
             simulateRound();
-        }
+        }, rate, rate, TimeUnit.MILLISECONDS);
     }
     
     private void simulateRound() {
@@ -85,21 +86,31 @@ public class SimulationHandler extends Observable {
             if (maze.get(nx, ny) == MazeBlock.WALL)
                 continue;
             
-            System.out.println(dir);
-            
             List<MazeEntity> entities = maze.getEntitiesAt(nx, ny);
-            if (entities != null) {
-                boolean collisionAllowedAll = entities.stream()
-                        .allMatch(e -> scenario.isCollisionAllowed(runner, e));
+            boolean collisionAllowedAll = entities.stream()
+                    .allMatch(e -> scenario.isCollisionAllowed(runner, e));
 
-                if (!collisionAllowedAll)
-                    continue;
+            if (!collisionAllowedAll)
+                continue;
 
-                for (MazeEntity ent : entities)
-                    scenario.handleCollision(runner, ent);
-            }
+            for (MazeEntity ent : entities)
+                scenario.handleCollision(runner, ent);
 
             runner.setPosition(nx, ny);
+            switch (dir) {
+                case UP:
+                    runner.setRotation(Rotation.UP.angle);
+                    break;
+                case RIGHT:
+                    runner.setRotation(Rotation.RIGHT.angle);
+                    break;
+                case DOWN:
+                    runner.setRotation(Rotation.DOWN.angle);
+                    break;
+                default:
+                    runner.setRotation(Rotation.LEFT.angle);
+                    break;
+            }
         }
         
         this.setChanged();

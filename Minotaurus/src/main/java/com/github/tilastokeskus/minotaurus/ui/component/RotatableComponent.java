@@ -22,33 +22,31 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus;
+package com.github.tilastokeskus.minotaurus.ui.component;
 
-import java.io.File;
+import java.awt.Color;
+import java.awt.Graphics;
+import javax.swing.JComponent;
 
-/**
- * A central access point for the program's fixed resource paths.
- */
-public class ResourceManager {
+public abstract class RotatableComponent extends JComponent implements Rotatable, Cloneable {
     
-    private static final String PATH = ResourceManager.class
-                                        .getProtectionDomain().getCodeSource()
-                                        .getLocation().getPath();
+    protected Color color;
     
-    private static final String PLUGIN_PATH = "plugins/";
-
-    public static String getPluginDirectoryPath() {
-        return buildPath(PLUGIN_PATH);
+    public RotatableComponent(Color color) {
+        this.color = color;
     }
     
-    private static String buildPath(String resource) {
-        File file = new File(PATH + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        file = new File(new File(PATH).getParent() + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        return new File(PATH).getParent() + '/';
+    @Override
+    public void paintComponent(Graphics g) {
+        g.setColor(color);
     }
     
+    @Override
+    public RotatableComponent clone() {
+        try {
+            return (RotatableComponent) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            return null;
+        }
+    }
 }

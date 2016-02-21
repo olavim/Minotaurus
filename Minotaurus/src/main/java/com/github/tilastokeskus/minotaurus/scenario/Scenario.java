@@ -72,8 +72,8 @@ public interface Scenario extends Plugin {
     boolean placeRunners(Collection<Runner> runners);
     
     /**
-     * Returns whether or not the given two entities are allowed to go on top of
-     * each other.
+     * Returns whether or not the given two entities are allowed to be on the
+     * same location, to collide.
      * 
      * @param ent1 A maze entity.
      * @param ent2 A maze entity.
@@ -84,13 +84,12 @@ public interface Scenario extends Plugin {
     
     /**
      * Handles a collision between two entities. Specifies what should happen
-     * when an entity is on top of another.
+     * when an entity is on top of another. If collision between the entities
+     * is not allowed, nothing should happen.
      * 
      * @param  ent1 A maze entity.
      * @param  ent2 A maze entity.
-     * @throws IllegalStateException if collision between the two entities is
-     *         not allowed.
-     * @return True if collision was handled successfully, false otherwise.
+     * @return True if the collision was handled, false otherwise.
      */
     boolean handleCollision(MazeEntity ent1, MazeEntity ent2);
     

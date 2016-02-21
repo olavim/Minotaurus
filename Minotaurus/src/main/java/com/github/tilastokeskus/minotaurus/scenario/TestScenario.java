@@ -27,14 +27,11 @@ package com.github.tilastokeskus.minotaurus.scenario;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
-import com.github.tilastokeskus.minotaurus.util.ColorFactory;
-import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
-import java.awt.Point;
 
 /**
  * A Scenario intended for testing runners with.
@@ -53,7 +50,7 @@ public class TestScenario extends AbstractScenario {
      * is gathered, a new one spawns in an unoccupied space.
      */
     public TestScenario() {
-        goal = new Goal(0, 0);
+        goal = new MazeEntity(0, 0);
     }
     
     @Override
@@ -86,7 +83,7 @@ public class TestScenario extends AbstractScenario {
     }
 
     @Override
-    public boolean handleCollision(MazeEntity ent1, MazeEntity ent2) {      
+    public boolean handleCollision(MazeEntity ent1, MazeEntity ent2) {
         Runner r = (Runner) (runner == ent1 ? ent1 : ent2);
 
         if (!score.containsKey(r))
@@ -111,27 +108,6 @@ public class TestScenario extends AbstractScenario {
         } while (maze.get(x, y) != MazeBlock.FLOOR);
         
         goal.setPosition(x, y);
-    }
-    
-    private class Goal extends MazeEntity {
-        private final Color color;
-        private final float size;
-        
-        public Goal(int x, int y) {
-            super(x, y);
-            this.color = ColorFactory.getNextColor();
-            this.size = 0.5f;
-        }
-
-        @Override
-        public Color getColor() {
-            return this.color;
-        }
-
-        @Override
-        public float getSize() {
-            return this.size;
-        }
     }
     
 }

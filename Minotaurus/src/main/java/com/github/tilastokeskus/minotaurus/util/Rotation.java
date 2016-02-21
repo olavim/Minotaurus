@@ -22,33 +22,17 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus;
+package com.github.tilastokeskus.minotaurus.util;
 
-import java.io.File;
-
-/**
- * A central access point for the program's fixed resource paths.
- */
-public class ResourceManager {
+public enum Rotation {
+    RIGHT(0),
+    DOWN(90),
+    LEFT(180),
+    UP(270);
     
-    private static final String PATH = ResourceManager.class
-                                        .getProtectionDomain().getCodeSource()
-                                        .getLocation().getPath();
+    public final double angle;
     
-    private static final String PLUGIN_PATH = "plugins/";
-
-    public static String getPluginDirectoryPath() {
-        return buildPath(PLUGIN_PATH);
+    private Rotation(double angle) {
+        this.angle = angle;
     }
-    
-    private static String buildPath(String resource) {
-        File file = new File(PATH + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        file = new File(new File(PATH).getParent() + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        return new File(PATH).getParent() + '/';
-    }
-    
 }

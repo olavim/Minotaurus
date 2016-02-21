@@ -30,13 +30,11 @@ import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.maze.TestMazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import com.github.tilastokeskus.minotaurus.scenario.TestScenario;
+import com.github.tilastokeskus.minotaurus.ui.component.TriangleComponent;
 import com.github.tilastokeskus.minotaurus.util.ColorFactory;
 import com.github.tilastokeskus.minotaurus.util.Direction;
-import java.awt.Color;
-import java.awt.Point;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,66 +65,10 @@ public abstract class Runner extends MazeEntity implements Plugin {
         }
     }
     
-    private int id;
     private String title;
     
-    private final Color color;
-    private final float size;
-    
     public Runner() {
-        color = ColorFactory.getNextColor();
-        size = 0.5f;
-    }
-    
-    @Override
-    public Color getColor() {
-        return this.color;
-    }
-    
-    @Override
-    public float getSize() {
-        return this.size;
-    }    
-    
-    /**
-     * Sets this runner's identifier.
-     * 
-     * @param id New identifier.
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-    
-    
-    /**
-     * Returns this runner's identifier.
-     * 
-     * @return The identifier.
-     */
-    public int getId() {
-        return this.id;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + this.id;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Runner other = (Runner) obj;
-        return this.id == other.getId();
+        super(0, 0, new TriangleComponent(ColorFactory.getNextColor()));
     }
     
     @Override

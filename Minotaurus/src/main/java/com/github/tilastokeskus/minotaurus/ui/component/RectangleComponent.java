@@ -22,33 +22,43 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus;
+package com.github.tilastokeskus.minotaurus.ui.component;
 
-import java.io.File;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JComponent;
 
-/**
- * A central access point for the program's fixed resource paths.
- */
-public class ResourceManager {
+public class RectangleComponent extends RotatableComponent {
     
-    private static final String PATH = ResourceManager.class
-                                        .getProtectionDomain().getCodeSource()
-                                        .getLocation().getPath();
+    private final int size;
+    private final int borderSize;
+    private final Color color;
+    private final Color borderColor;
     
-    private static final String PLUGIN_PATH = "plugins/";
-
-    public static String getPluginDirectoryPath() {
-        return buildPath(PLUGIN_PATH);
+    public RectangleComponent(int size, Color color, int borderSize, Color borderColor) {
+        super(color);
+        this.size = size;
+        this.borderSize = borderSize;
+        this.color = color;
+        this.borderColor = borderColor;
+        this.setMinimumSize(new Dimension(size, size));
     }
     
-    private static String buildPath(String resource) {
-        File file = new File(PATH + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        file = new File(new File(PATH).getParent() + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        return new File(PATH).getParent() + '/';
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        g.setColor(this.borderColor);
+        g.fillRect(0, 0, size, size);
+        
+        g.setColor(this.color);
+        g.fillRect(this.borderSize, this.borderSize,
+                this.size - this.borderSize * 2, this.size - this.borderSize * 2);
     }
+
+    @Override
+    public void setRotation(double angle) {}
     
 }

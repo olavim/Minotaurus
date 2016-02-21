@@ -22,33 +22,50 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus;
-
-import java.io.File;
+package com.github.tilastokeskus.minotaurus.util;
 
 /**
- * A central access point for the program's fixed resource paths.
+ * Immutable alternative for java.awt.Point.
  */
-public class ResourceManager {
+public class Position {
+    public final int x;
+    public final int y;
     
-    private static final String PATH = ResourceManager.class
-                                        .getProtectionDomain().getCodeSource()
-                                        .getLocation().getPath();
+    public Position(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
     
-    private static final String PLUGIN_PATH = "plugins/";
+    public Position(Position pos) {
+        this.x = pos.x;
+        this.y = pos.y;
+    }
 
-    public static String getPluginDirectoryPath() {
-        return buildPath(PLUGIN_PATH);
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        
+        if (obj == null)
+            return false;
+        
+        if (getClass() != obj.getClass())
+            return false;
+        
+        final Position other = (Position) obj;
+        return this.x == other.x && this.y == other.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + this.x;
+        hash = 67 * hash + this.y;
+        return hash;
     }
     
-    private static String buildPath(String resource) {
-        File file = new File(PATH + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        file = new File(new File(PATH).getParent() + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        return new File(PATH).getParent() + '/';
+    @Override
+    public String toString() {
+        return "[" + x + ":" + y + "]";
     }
-    
 }

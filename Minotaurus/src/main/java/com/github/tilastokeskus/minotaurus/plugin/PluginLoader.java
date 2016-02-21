@@ -55,6 +55,7 @@ public class PluginLoader {
     }
     
     public static void setPluginDir(String path) {
+        System.out.println(path);
         classLoader = new JarClassLoader(path, true);
     }
 

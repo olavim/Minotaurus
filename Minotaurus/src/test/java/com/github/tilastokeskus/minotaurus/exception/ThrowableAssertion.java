@@ -22,33 +22,31 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus;
+package com.github.tilastokeskus.minotaurus.exception;
 
-import java.io.File;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 
-/**
- * A central access point for the program's fixed resource paths.
- */
-public class ResourceManager {
-    
-    private static final String PATH = ResourceManager.class
-                                        .getProtectionDomain().getCodeSource()
-                                        .getLocation().getPath();
-    
-    private static final String PLUGIN_PATH = "plugins/";
+public class ThrowableAssertion {
 
-    public static String getPluginDirectoryPath() {
-        return buildPath(PLUGIN_PATH);
+    public static ThrowableAssertion assertThrown(ExceptionThrower thrower) {
+        try {
+            thrower.throwException();
+        } catch (Throwable t) {
+            return new ThrowableAssertion(t);
+        }
+        
+        throw new ExceptionNotThrownAssertionError();
     }
     
-    private static String buildPath(String resource) {
-        File file = new File(PATH + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        file = new File(new File(PATH).getParent() + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        return new File(PATH).getParent() + '/';
+    private final Throwable throwable;
+    
+    public ThrowableAssertion(Throwable t) {
+        this.throwable = t;
+    }
+    
+    public void expect(Class<? extends Throwable> exClass) {
+        Assert.assertThat(throwable, CoreMatchers.isA((Class<Throwable>) exClass));
     }
     
 }

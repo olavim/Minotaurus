@@ -42,6 +42,7 @@
                     </targetClasses>
                     <excludedClasses>
                         <param>com.github.tilastokeskus.minotaurus.ui*</param>
+                        <param>com.github.tilastokeskus.minotaurus.exception*</param>
                     </excludedClasses>
                     <targetTests>
                         <param>com.github.tilastokeskus.minotaurus*</param>
