@@ -179,16 +179,12 @@ public class Maze implements Observer {
      * @param entities List of MazeEntities to set.
      */
     public void setEntities(List<MazeEntity> entities) {
-<<<<<<< HEAD
         entityMap.clear();
         entitySet.clear();
         
-=======
-        for (MazeEntity ent : this.entities.values())
+        for (MazeEntity ent : entities)
             removeEntity(ent);
         
-        this.entities = new HashMap<>();
->>>>>>> ea2e606bd6b8fae527fdeb382b8912734cbba66f
         for (MazeEntity ent : entities)
             addEntity(ent);
     }
@@ -200,7 +196,8 @@ public class Maze implements Observer {
      * @param ent Entity to remove.
      */
     public void removeEntity(MazeEntity ent) {
-        entityMap.get(ent.getPosition()).remove(ent);
+        if (entityMap.containsKey(ent))
+            entityMap.get(ent.getPosition()).remove(ent);
         entitySet.remove(ent);
         
         ent.deleteObserver(this);
