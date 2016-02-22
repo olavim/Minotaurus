@@ -35,13 +35,13 @@ import javax.swing.*;
 
 public class PluginChooser<T extends Plugin> extends JPanel {
     
-    private final Window parent;
+    private final GUI parent;
     private final Collection<T> plugins;
     private JLabel selectedPluginLabel;
     private T plugin;
     
-    public PluginChooser(Window parent, Collection<T> plugins) {
-        super(new MigLayout("insets 0", "[grow, fill]"));
+    public PluginChooser(GUI parent, Collection<T> plugins) {
+        super(new MigLayout("insets 0", "[grow, fill]0"));
         this.parent = parent;
         this.plugins = plugins;
         this.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -50,7 +50,7 @@ public class PluginChooser<T extends Plugin> extends JPanel {
     
     public void refresh() {
         this.selectedPluginLabel.setText(plugin.toString());
-        this.parent.pack();
+        this.parent.refresh();
     }
     
     public T getPlugin() {
@@ -58,11 +58,6 @@ public class PluginChooser<T extends Plugin> extends JPanel {
     }
         
     private void addComponents() {
-        JPanel westPanel = createWestPanel();            
-        this.add(westPanel, "grow");
-    }
-
-    private JPanel createWestPanel() {
         Color pluginLabelColor = this.getForeground().brighter().brighter();
         this.selectedPluginLabel = new JLabel("No plugin");
         this.selectedPluginLabel.setFont(this.getFont());
@@ -70,21 +65,17 @@ public class PluginChooser<T extends Plugin> extends JPanel {
 
         MenuShape menuShape = new MenuShape(10);
         menuShape.addMouseListener(new SelectPluginListener(
-                    this.parent, this, plugin));
+                    parent.getFrame(), this, plugin));
         
         menuShape.setCursor(Cursor.getPredefinedCursor(
                 Cursor.HAND_CURSOR));
 
-        JPanel westPanel = new JPanel(new MigLayout("", "[grow, fill]0"));
-
-        westPanel.setBorder(BorderFactory.createMatteBorder(
+        this.setBorder(BorderFactory.createMatteBorder(
                 0, 1, 0, 0, new Color(200, 200, 200)));
 
-        westPanel.setBackground(new Color(230, 230, 230));
-        westPanel.add(this.selectedPluginLabel, "west, grow, gap 10 10 6 8");
-        westPanel.add(menuShape, "east, grow, gap 20 20 10 8");
-
-        return westPanel;
+        this.setBackground(new Color(230, 230, 230));
+        this.add(this.selectedPluginLabel, "west, gap 10 10 6 8");
+        this.add(menuShape, "east, gap 20 20 10 8");
     }
     
     private class SelectPluginListener extends MouseAdapter {    

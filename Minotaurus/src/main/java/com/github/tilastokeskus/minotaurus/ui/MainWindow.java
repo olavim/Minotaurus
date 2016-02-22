@@ -28,6 +28,7 @@ import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.scenario.Scenario;
+import com.github.tilastokeskus.minotaurus.ui.button.LabelButton;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -74,8 +75,8 @@ public class MainWindow extends AbstractGUI {
         
         List<MazeGenerator> mazeGenerators = PluginLoader.loadPlugins(MazeGenerator.class);
         List<Scenario> scenarios = PluginLoader.loadPlugins(Scenario.class);
-        mazeGeneratorChooser = new PluginChooser<>(this.frame, mazeGenerators);
-        scenarioChooser = new PluginChooser<>(this.frame, scenarios);
+        mazeGeneratorChooser = new PluginChooser<>(this, mazeGenerators);
+        scenarioChooser = new PluginChooser<>(this, scenarios);
         
         JPanel mazeGenPanel = createPluginChooserPanel("Maze Generator", mazeGeneratorChooser);
         JPanel scenarioPanel = createPluginChooserPanel("Scenario", scenarioChooser);
@@ -89,13 +90,22 @@ public class MainWindow extends AbstractGUI {
         buttonPanel.setBorder(PANEL_PADDING);
         buttonPanel.add(btnStart, "south");
         
-        runnerList = new RunnerList(this.frame);
+        JPanel runnerListPanel = new JPanel(
+                new MigLayout("wrap 1, insets 0", "[grow]0", "[]0"));
+        LabelButton addRunnerBtn = new LabelButton(
+                new AddRunnerAction("Add Runner"), true);
+        addRunnerBtn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
+        
+        runnerList = new RunnerList(this);
         runnerList.addObject(null);
         runnerList.setBorder(BorderFactory.createCompoundBorder(PANEL_PADDING,
                                                                 PANEL_BORDER));
         
+        runnerListPanel.add(addRunnerBtn, "right, gapx 0 10");
+        runnerListPanel.add(runnerList, "grow");
+        
         container.add(pluginPanel, "north");
-        container.add(runnerList, "north");
+        container.add(runnerListPanel, "north");
         container.add(buttonPanel, "south");
     }
     
@@ -119,6 +129,18 @@ public class MainWindow extends AbstractGUI {
         pluginPanel.add(southPanel, "south, grow");
         
         return pluginPanel;
+    }
+    
+    private class AddRunnerAction extends AbstractAction {
+        public AddRunnerAction(String text) {
+            super(text);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            runnerList.addObject(null);
+            refresh();
+        }
     }
     
     private class StartAction extends AbstractAction {

@@ -24,9 +24,11 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.io.IOException;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public abstract class AbstractGUI implements GUI {
@@ -40,17 +42,17 @@ public abstract class AbstractGUI implements GUI {
 
     @Override
     public Frame getFrame() {
-        return this.frame;
+        return frame;
     }
 
     @Override
     public void close() throws IOException {
-        this.frame.dispose();
+        frame.dispose();
     }
 
     @Override
     public void refresh() {
-        this.frame.repaint();
+        frame.pack();
     }
 
 }

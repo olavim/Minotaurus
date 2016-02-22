@@ -41,9 +41,9 @@ import javax.swing.*;
 
 public class RunnerList extends LabelList<Runner> {
     
-    private final Window parent;
+    private final GUI parent;
     
-    public RunnerList(Window parent) {
+    public RunnerList(GUI parent) {
         this.parent = parent;
         this.setSelectable(false);
         this.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -70,7 +70,7 @@ public class RunnerList extends LabelList<Runner> {
         Color runnerColor;
         
         private RunnerPanel(Runner runner, int runnerNum) {
-            super(new MigLayout("insets 0", "[grow, fill]"));
+            super(new MigLayout("insets 0", "[]0[grow,fill]0[]0", "[]0"));
             this.runner = runner;
             this.runnerNum = runnerNum;
             this.runnerColor = ColorFactory.getNextColor();
@@ -90,9 +90,9 @@ public class RunnerList extends LabelList<Runner> {
             removePlayerIcon.setCursor(
                     Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             
-            this.add(westPanel, "west, grow");
-            this.add(eastPanel, "west, grow, w 100%");
-            this.add(removePlayerIcon, "east, grow, gap 10 10 2 0");
+            this.add(westPanel, "growy");
+            this.add(eastPanel, "grow");
+            this.add(removePlayerIcon, "gap 10 10 2 0");
         }
         
         private JPanel createWestPanel() {
@@ -115,29 +115,12 @@ public class RunnerList extends LabelList<Runner> {
             return westPanel;
         }
         
-        private JPanel createEastPanel() {
-            Color runnerLabelColor = RunnerList.this.getForeground().brighter().brighter();
-            String text = "No plugin";
-            if (runner != null) {
-                text = runner.toString();
-                runnerLabelColor = RunnerList.this.getForeground().brighter();
-            }
-            
-            this.selectedRunnerLabel = new JLabel(text);
-            this.selectedRunnerLabel.setFont(RunnerList.this.getFont());
-            this.selectedRunnerLabel.setForeground(runnerLabelColor);
-            
-            MenuShape menuShape = new MenuShape(10);            
-            menuShape.addMouseListener(new SelectRunnerListener());            
-            menuShape.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            
-            JPanel eastPanel = new JPanel(new MigLayout("", "[grow, fill]0"));            
-            eastPanel.setBorder(BorderFactory.createMatteBorder(
-                    0, 1, 0, 1, new Color(200, 200, 200)));            
-            eastPanel.setBackground(new Color(220, 220, 220));
-            eastPanel.add(this.selectedRunnerLabel, "dock center, grow, gap 12 0 6 6");
-            eastPanel.add(menuShape, "east, grow, gap 20 10 10 0");
-            
+        private JPanel createEastPanel() {            
+            JPanel eastPanel = new JPanel(new MigLayout("insets 0", "[grow, fill]0"));
+            List<Runner> runners = PluginLoader.loadPlugins(Runner.class);
+            PluginChooser<Runner> chooser = new PluginChooser<>(parent, runners);
+            eastPanel.add(chooser, "grow");
+            eastPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(200, 200, 200)));
             return eastPanel;
         }
         
@@ -154,28 +137,6 @@ public class RunnerList extends LabelList<Runner> {
             public void mouseReleased(MouseEvent e) {
                 if (list.getObjects().size() > 1) {
                     list.removeObject(runner);
-                }
-            }
-        }
-        
-        private class SelectRunnerListener extends MouseAdapter {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                ComponentList componentList = new LabelList();
-                componentList.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-                
-                List<Runner> runners = PluginLoader.loadPlugins(Runner.class);
-                if (runners != null)
-                    componentList.addObjects(runners);
-
-                ComponentListChooser chooser = new ComponentListChooser<>(
-                        RunnerList.this.parent, componentList);
-                Runner runner = (Runner) chooser.showDialog();
-
-                if (runner != null) {
-                    runner.setComponentColor(runnerColor);
-                    RunnerPanel.this.runner = (Runner) runner.clone();
-                    RunnerList.this.refresh();
                 }
             }
         }

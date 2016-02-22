@@ -180,10 +180,11 @@ public class Maze implements Observer {
      */
     public void setEntities(List<MazeEntity> entities) {
         entityMap.clear();
-        entitySet.clear();
         
-        for (MazeEntity ent : entities)
-            removeEntity(ent);
+        for (MazeEntity ent : entitySet)
+            ent.deleteObserver(this);
+            
+        entitySet.clear();
         
         for (MazeEntity ent : entities)
             addEntity(ent);
@@ -196,7 +197,7 @@ public class Maze implements Observer {
      * @param ent Entity to remove.
      */
     public void removeEntity(MazeEntity ent) {
-        if (entityMap.containsKey(ent))
+        if (entityMap.containsKey(ent.getPosition()))
             entityMap.get(ent.getPosition()).remove(ent);
         entitySet.remove(ent);
         
