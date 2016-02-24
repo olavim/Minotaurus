@@ -24,7 +24,6 @@
 package com.github.tilastokeskus.minotaurus.plugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +41,7 @@ import static org.junit.Assert.*;
 
 public class JarClassLoaderTest {
     
-    private final String testPluginPath = getClass().getResource("/plugins/").getPath();
+    private final URL testPluginPath = getClass().getResource("/plugins/");
     
     private JarClassLoader jcl;
     
@@ -77,7 +76,7 @@ public class JarClassLoaderTest {
 
     @Test
     public void JarClassLoaderGetJarURLsShouldLoadCorrectURLsWhenRecursing() {
-        URL[] urls = jcl.getJarURLs(new File(testPluginPath), true);
+        URL[] urls = jcl.getJarURLs(new File(testPluginPath.getPath()), true);
         List<String> pluginPaths = Arrays.asList(urls).stream()
                 .map(u -> u.getPath().substring(u.getPath().lastIndexOf('/')))
                 .collect(Collectors.toList());
@@ -87,7 +86,7 @@ public class JarClassLoaderTest {
 
     @Test
     public void JarClassLoaderGetJarURLsShouldLoadCorrectURLsWhenNotRecursing() {
-        URL[] urls = jcl.getJarURLs(new File(testPluginPath), false);
+        URL[] urls = jcl.getJarURLs(new File(testPluginPath.getPath()), false);
         List<String> pluginPaths = Arrays.asList(urls).stream()
                 .map(u -> u.getPath().substring(u.getPath().lastIndexOf('/')))
                 .collect(Collectors.toList());
@@ -97,7 +96,7 @@ public class JarClassLoaderTest {
     
     @Test
     public void JarClassLoaderGetClassFromJarEntryShouldReturnCorrectClassObjects() throws Exception {
-        URL[] urls = jcl.getJarURLs(new File(testPluginPath), true);
+        URL[] urls = jcl.getJarURLs(new File(testPluginPath.getPath()), true);
         List<String> classes = new ArrayList<>();
         for (URL url : urls) {
             JarFile jarFile = new JarFile(url.getPath());        
@@ -118,7 +117,7 @@ public class JarClassLoaderTest {
     
     @Test
     public void JarClassLoaderGetJarClassesShouldReturnCorrectClassObjects() throws Exception {
-        URL[] urls = jcl.getJarURLs(new File(testPluginPath), true);
+        URL[] urls = jcl.getJarURLs(new File(testPluginPath.getPath()), true);
         List<String> classes = new ArrayList<>();
         for (URL url : urls) {
             List<Class> l = jcl.getJarClasses(url, false);

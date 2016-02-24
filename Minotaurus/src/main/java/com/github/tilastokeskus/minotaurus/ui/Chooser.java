@@ -24,48 +24,53 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
-import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
+import java.util.List;
 import javax.swing.*;
 
-public class PluginChooser<T extends Plugin> extends JPanel {
+public class Chooser<T> extends JPanel {
     
     private final GUI parent;
-    private final Collection<T> plugins;
-    private JLabel selectedPluginLabel;
-    private T plugin;
+    private final List<T> objects;
+    private JLabel selectedObjectLabel;
+    private T object;
     
-    public PluginChooser(GUI parent, Collection<T> plugins) {
+    public Chooser(GUI parent, List<T> objects) {
         super(new MigLayout("insets 0", "[grow, fill]0"));
         this.parent = parent;
-        this.plugins = plugins;
+        this.objects = objects;
         this.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         addComponents();
     }
     
     public void refresh() {
-        this.selectedPluginLabel.setText(plugin.toString());
+        if (object != null)
+            this.selectedObjectLabel.setText(object.toString());
         this.parent.refresh();
     }
     
-    public T getPlugin() {
-        return this.plugin;
+    public T getSelectedObject() {
+        return this.object;
+    }
+    
+    public void setSelectedObject(T object) {
+        this.object = object;
+        refresh();
     }
         
     private void addComponents() {
-        Color pluginLabelColor = this.getForeground().brighter().brighter();
-        this.selectedPluginLabel = new JLabel("No plugin");
-        this.selectedPluginLabel.setFont(this.getFont());
-        this.selectedPluginLabel.setForeground(pluginLabelColor);
+        Color objectLabelColor = this.getForeground().brighter().brighter();
+        this.selectedObjectLabel = new JLabel("No selection");
+        this.selectedObjectLabel.setFont(this.getFont());
+        this.selectedObjectLabel.setForeground(objectLabelColor);
 
         MenuShape menuShape = new MenuShape(10);
-        menuShape.addMouseListener(new SelectPluginListener(
-                    parent.getFrame(), this, plugin));
+        menuShape.addMouseListener(new SelectObjectListener(
+                    parent.getFrame(), this, object));
         
         menuShape.setCursor(Cursor.getPredefinedCursor(
                 Cursor.HAND_CURSOR));
@@ -74,16 +79,16 @@ public class PluginChooser<T extends Plugin> extends JPanel {
                 0, 1, 0, 0, new Color(200, 200, 200)));
 
         this.setBackground(new Color(230, 230, 230));
-        this.add(this.selectedPluginLabel, "west, gap 10 10 6 8");
+        this.add(this.selectedObjectLabel, "west, gap 10 10 6 8");
         this.add(menuShape, "east, gap 20 20 10 8");
     }
     
-    private class SelectPluginListener extends MouseAdapter {    
+    private class SelectObjectListener extends MouseAdapter {    
         private final Window parent;
-        private final PluginChooser<T> chooser;
+        private final Chooser<T> chooser;
 
-        public SelectPluginListener(Window parent,
-                PluginChooser<T> chooser, T plugin) {
+        public SelectObjectListener(Window parent,
+                Chooser<T> chooser, T object) {
             this.parent = parent;
             this.chooser = chooser;
         }
@@ -92,13 +97,13 @@ public class PluginChooser<T extends Plugin> extends JPanel {
         public void mouseReleased(MouseEvent e) {
             ComponentList<T> componentList = new LabelList<>();
             componentList.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-            componentList.addObjects(plugins);
+            componentList.addObjects(objects);
 
             ComponentListChooser<T> listChooser = new ComponentListChooser<>(parent, componentList);
             T chosenPlugin = listChooser.showDialog();
 
             if (chosenPlugin != null) {
-                plugin = chosenPlugin;
+                object = chosenPlugin;
                 chooser.refresh();
             }
         }

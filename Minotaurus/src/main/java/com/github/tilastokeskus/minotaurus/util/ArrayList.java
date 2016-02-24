@@ -21,43 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.tilastokeskus.minotaurus.plugin;
 
-import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+package com.github.tilastokeskus.minotaurus.util;
 
-public class PluginLoaderTest {
-    
-    public PluginLoaderTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
-    
-    @Test
-    public void PluginLoaderLoadPluginsShouldReturnCorrectPlugins() {
-        PluginLoader.setPluginDir(getClass().getResource("/plugins/"));
+public class ArrayList<E> extends AbstractList<E> {
 
-        List<Plugin> plugins = PluginLoader.loadPlugins(Plugin.class);
-        assertEquals(plugins.get(0).toString(), "TestPlugin");
+    @Override
+    public int size() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    public E get(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void add(int index, E element) {
+    }
+
+    @Override
+    public E set(int index, E element) {
+        throw new UnsupportedOperationException();
+    }
+
 }

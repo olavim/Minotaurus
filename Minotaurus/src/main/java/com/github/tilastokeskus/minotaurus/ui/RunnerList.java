@@ -24,6 +24,7 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
+import com.github.tilastokeskus.minotaurus.ResourceManager;
 import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.ui.component.RectangleComponent;
@@ -35,45 +36,58 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.*;
 
-public class RunnerList extends LabelList<Runner> {
+public class RunnerList extends ComponentList<Runner> {
     
     private final GUI parent;
+    private final ColorFactory runnerColorFactory;
+    
+    public RunnerList() {
+        this(null);
+    }
     
     public RunnerList(GUI parent) {
         this.parent = parent;
+        this.runnerColorFactory = new ColorFactory();
         this.setSelectable(false);
         this.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
     }
 
     @Override
-    protected Iterable<Pair<Component, Runner>> generateComponents() {
-        List<Pair<Component, Runner>> components = new ArrayList<>();
-        
-        for (int i = 0; i < this.getObjects().size(); i++) {
-            Runner runner = this.getObjects().get(i);
-            RunnerPanel panel = new RunnerPanel(runner, i+1);
-            components.add(new Pair(panel, runner));
+    protected Pair<Component, Runner> generateComponent(Runner runner) {
+        RunnerPanel panel = new RunnerPanel(runner);        
+        return new Pair(panel, runner);
+    }
+    
+    @Override
+    public void refresh() {
+        for (ListElement le : this.listElements) {
+            RunnerPanel p = (RunnerPanel) le.component;
+            int runnerNum = indexOf(new Pair(p, p.runner)) + 1;
+            p.runnerName.setText("Runner " + runnerNum);
         }
         
-        return components;
+        super.refresh();
     }
     
     private class RunnerPanel extends JPanel {
         
         JLabel selectedRunnerLabel;
+        JLabel runnerName;
         Runner runner;
-        int runnerNum;
         Color runnerColor;
         
-        private RunnerPanel(Runner runner, int runnerNum) {
+        public RunnerPanel(Runner runner) {
             super(new MigLayout("insets 0", "[]0[grow,fill]0[]0", "[]0"));
             this.runner = runner;
-            this.runnerNum = runnerNum;
-            this.runnerColor = ColorFactory.getNextColor();
+            this.runnerName = new JLabel("Runner 1");
+            runnerName.setFont(RunnerList.this.getFont());
+            runnerName.setForeground(RunnerList.this.getForeground());
+            this.runnerColor = runnerColorFactory.getNextColor();
+            
             this.addComponents();
         }
         
@@ -81,11 +95,11 @@ public class RunnerList extends LabelList<Runner> {
             JPanel westPanel = createWestPanel();            
             JPanel eastPanel = createEastPanel();
             
-            URL url = this.getClass().getResource("/images/delete.png");
+            URL url = ResourceManager.IMAGE_DELETE;
             JLabel removePlayerIcon = new JLabel(new ImageIcon(url));
             
             removePlayerIcon.addMouseListener(
-                    new RemoveRunnerListener(RunnerList.this, runner));
+                    new RemoveRunnerListener(RunnerList.this, this));
             
             removePlayerIcon.setCursor(
                     Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -99,15 +113,9 @@ public class RunnerList extends LabelList<Runner> {
             JComponent colorRectangle = new RectangleComponent(
                     16, runnerColor, 1, runnerColor.darker());
             
-            JLabel runnerName = new JLabel("Runner " + runnerNum);
-            runnerName.setFont(RunnerList.this.getFont());
-            runnerName.setForeground(RunnerList.this.getForeground());
-            
-            JPanel westPanel = new JPanel(new MigLayout("", "[grow, fill]0"));
-            
+            JPanel westPanel = new JPanel(new MigLayout("", "[grow, fill]0"));            
             westPanel.setBorder(BorderFactory.createMatteBorder(
-                    0, 1, 0, 0, new Color(200, 200, 200)));
-            
+                    0, 1, 0, 0, new Color(200, 200, 200)));            
             westPanel.setBackground(new Color(230, 230, 230));
             westPanel.add(colorRectangle, "west, grow, gap 10 0 6 0");
             westPanel.add(runnerName, "west, grow, gap 10 10 6 0");
@@ -116,29 +124,58 @@ public class RunnerList extends LabelList<Runner> {
         }
         
         private JPanel createEastPanel() {            
-            JPanel eastPanel = new JPanel(new MigLayout("insets 0", "[grow, fill]0"));
+            JPanel eastPanel = new JPanel(
+                    new MigLayout("insets 0", "[grow, fill]0"));
             List<Runner> runners = PluginLoader.loadPlugins(Runner.class);
-            PluginChooser<Runner> chooser = new PluginChooser<>(parent, runners);
+            Chooser<Runner> chooser = new Chooser<>(parent, runners);
+            chooser.setSelectedObject(runner);
             eastPanel.add(chooser, "grow");
-            eastPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(200, 200, 200)));
+            eastPanel.setBorder(BorderFactory.createMatteBorder(
+                    0, 0, 0, 1, new Color(200, 200, 200)));
             return eastPanel;
         }
         
         private class RemoveRunnerListener extends MouseAdapter {    
             private final RunnerList list;
-            private final Runner runner;
+            private final RunnerPanel panel;
 
-            public RemoveRunnerListener(RunnerList list, Runner runner) {
+            public RemoveRunnerListener(RunnerList list, RunnerPanel panel) {
                 this.list = list;
-                this.runner = runner;
+                this.panel = panel;
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (list.getObjects().size() > 1) {
-                    list.removeObject(runner);
+                    Pair<Component, Runner> pair = new Pair(panel, panel.runner);
+                    list.removeComponent(pair);
                 }
             }
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 79 * hash + Objects.hashCode(this.selectedRunnerLabel);
+            hash = 79 * hash + Objects.hashCode(this.runnerName);
+            hash = 79 * hash + Objects.hashCode(this.runner);
+            hash = 79 * hash + Objects.hashCode(this.runnerColor);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+                
+            if (obj == null || getClass() != obj.getClass())
+                return false;
+                
+            final RunnerPanel other = (RunnerPanel) obj;
+            return (Objects.equals(this.selectedRunnerLabel, other.selectedRunnerLabel)
+                    && Objects.equals(this.runnerName, other.runnerName)
+                    && Objects.equals(this.runner, other.runner)
+                    && Objects.equals(this.runnerColor, other.runnerColor));
         }
         
     }

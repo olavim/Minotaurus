@@ -25,15 +25,13 @@
 package com.github.tilastokeskus.minotaurus.util;
 
 import java.awt.Color;
-import java.util.Random;
 
 public class ColorFactory {
     
     private final static float GOLDEN_ANGLE = 137.5f;
     private final static int PALETTE_SIZE = 360;
     private final static Color[] COLORWHEEL;
-    
-    private static double index = new Random().nextDouble() * PALETTE_SIZE;
+    private final static ColorFactory STATIC_FACTORY = new ColorFactory();
     
     static {
         
@@ -51,7 +49,19 @@ public class ColorFactory {
      * 
      * @return A color.
      */
-    public static Color getNextColor() {
+    public static Color nextColor() {
+        return STATIC_FACTORY.getNextColor();
+    }
+    
+    private double index = 0;
+    
+    /**
+     * Returns a new color from a preset collection of pastel colors, that is
+     * distinct from the previously returned colors.
+     * 
+     * @return A color.
+     */
+    public Color getNextColor() {
         
         /* By moving the index by the golden angle, we get an even distribution
          * among different colors.
@@ -60,6 +70,15 @@ public class ColorFactory {
         Color color = COLORWHEEL[(int) index];
         
         return color;
+    }
+    
+    /**
+     * Sets the index according to seed. Any value is valid. Calling
+     * {@link getNextColor()} after this function always returns the same color
+     * when the same seed is used.
+     */
+    public void reset() {
+        index = 0;
     }
     
 }

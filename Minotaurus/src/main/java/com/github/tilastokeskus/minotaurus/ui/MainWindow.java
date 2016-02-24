@@ -51,8 +51,8 @@ public class MainWindow extends AbstractGUI {
     private static final Border PANEL_BORDER =  BorderFactory.createMatteBorder(
             1, 1, 1, 1, new Color(200, 200, 200));
     
-    private PluginChooser<MazeGenerator> mazeGeneratorChooser;
-    private PluginChooser<Scenario> scenarioChooser;
+    private Chooser<MazeGenerator> mazeGeneratorChooser;
+    private Chooser<Scenario> scenarioChooser;
     private ComponentList<Runner> runnerList;
 
     @Override
@@ -75,8 +75,8 @@ public class MainWindow extends AbstractGUI {
         
         List<MazeGenerator> mazeGenerators = PluginLoader.loadPlugins(MazeGenerator.class);
         List<Scenario> scenarios = PluginLoader.loadPlugins(Scenario.class);
-        mazeGeneratorChooser = new PluginChooser<>(this, mazeGenerators);
-        scenarioChooser = new PluginChooser<>(this, scenarios);
+        mazeGeneratorChooser = new Chooser<>(this, mazeGenerators);
+        scenarioChooser = new Chooser<>(this, scenarios);
         
         JPanel mazeGenPanel = createPluginChooserPanel("Maze Generator", mazeGeneratorChooser);
         JPanel scenarioPanel = createPluginChooserPanel("Scenario", scenarioChooser);
@@ -109,7 +109,7 @@ public class MainWindow extends AbstractGUI {
         container.add(buttonPanel, "south");
     }
     
-    private JPanel createPluginChooserPanel(String labelStr, PluginChooser chooser) {
+    private JPanel createPluginChooserPanel(String labelStr, Chooser chooser) {
         Font labelFont = new Font(Font.SANS_SERIF, Font.BOLD, 10);        
         
         JPanel northPanel = new JPanel(new MigLayout("insets 1", "[]"));
@@ -150,7 +150,7 @@ public class MainWindow extends AbstractGUI {
         
         @Override
         public void actionPerformed(ActionEvent e) {
-            MazeGenerator gen = mazeGeneratorChooser.getPlugin();
+            MazeGenerator gen = mazeGeneratorChooser.getSelectedObject();
             //Main.startSimulation(gen);
         }        
     }

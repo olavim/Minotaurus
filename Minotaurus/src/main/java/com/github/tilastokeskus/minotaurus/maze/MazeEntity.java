@@ -53,7 +53,7 @@ public class MazeEntity extends Observable implements Drawable, Rotatable, Clone
      * @param y Y position.
      */
     public MazeEntity(int x, int y) {
-        this(x, y, new RectangleComponent(10, ColorFactory.getNextColor(), 0, Color.BLACK));
+        this(x, y, new RectangleComponent(10, ColorFactory.nextColor(), 0, Color.BLACK));
     }
     
     /**

@@ -35,6 +35,7 @@ import com.github.tilastokeskus.minotaurus.util.ColorFactory;
 import com.github.tilastokeskus.minotaurus.util.Direction;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,7 +69,7 @@ public abstract class Runner extends MazeEntity implements Plugin {
     private String title;
     
     public Runner() {
-        super(0, 0, new TriangleComponent(ColorFactory.getNextColor()));
+        super(0, 0, new TriangleComponent(ColorFactory.nextColor()));
     }
     
     @Override
@@ -90,4 +91,24 @@ public abstract class Runner extends MazeEntity implements Plugin {
      * @return A direction.
      */
     public abstract Direction getNextMove(Maze maze, Collection<MazeEntity> goals);
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj))
+            return false;
+            
+        if (getClass() != obj.getClass())
+            return false;
+        
+        final Runner other = (Runner) obj;
+        return Objects.equals(this.title, other.title);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * super.hashCode();
+        hash = 59 * hash + Objects.hashCode(this.title);
+        return hash;
+    }
 }

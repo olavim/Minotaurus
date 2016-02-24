@@ -24,6 +24,8 @@
 
 package com.github.tilastokeskus.minotaurus.util;
 
+import java.util.Objects;
+
 public class Pair<T, E> {
 
     public final T first;
@@ -32,6 +34,27 @@ public class Pair<T, E> {
     public Pair(T first, E second) {
         this.first = first;
         this.second = second;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+            
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+            
+        final Pair<?, ?> other = (Pair<?, ?>) obj;
+        return Objects.equals(this.first, other.first) 
+                && Objects.equals(this.second, other.second);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.first);
+        hash = 37 * hash + Objects.hashCode(this.second);
+        return hash;
     }
     
 }

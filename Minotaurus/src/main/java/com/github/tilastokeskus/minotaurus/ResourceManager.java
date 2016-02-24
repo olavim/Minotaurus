@@ -25,30 +25,45 @@
 package com.github.tilastokeskus.minotaurus;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A central access point for the program's fixed resource paths.
  */
 public class ResourceManager {
     
+    private static final Logger LOGGER = Logger.getLogger(ResourceManager.class.getName());
+    
     private static final String PATH = ResourceManager.class
                                         .getProtectionDomain().getCodeSource()
                                         .getLocation().getPath();
     
-    private static final String PLUGIN_PATH = "plugins/";
-
-    public static String getPluginDirectoryPath() {
-        return buildPath(PLUGIN_PATH);
+    public static final URL PLUGIN_DIR;
+    public static final URL IMAGE_DELETE;
+    
+    static {
+        PLUGIN_DIR = getURLFromPath("plugins/", true);
+        IMAGE_DELETE = getURLFromPath("images/delete.png");
     }
     
-    private static String buildPath(String resource) {
-        File file = new File(PATH + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        file = new File(new File(PATH).getParent() + '/' + resource);
-        if (file.exists())
-            return file.getPath();
-        return new File(PATH).getParent() + '/';
+    private static URL getURLFromPath(String resource) {
+        return getURLFromPath(resource, false);
+    }
+    
+    private static URL getURLFromPath(String resource, boolean createDir) {
+        File f = new File(PATH + '/' + resource);
+        if (createDir)
+            f.mkdir();
+        
+        try {
+            return f.toURI().toURL();
+        } catch (MalformedURLException ex) {
+            LOGGER.log(Level.WARNING, null, ex);
+            return null;
+        }
     }
     
 }

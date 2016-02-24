@@ -52,11 +52,11 @@ public class JarClassLoader {
     /**
      * Creates a new JarClassLoader.
      * 
-     * @param directoryPath Path to search Jars from.
-     * @param recursive     If true, subdirectories will be searched.
+     * @param url Path to search Jars from.
+     * @param recursive If true, subdirectories will be searched.
      */
-    public JarClassLoader(String directoryPath, boolean recursive) {        
-        this.urls = getJarURLs(new File(directoryPath), recursive);        
+    public JarClassLoader(URL url, boolean recursive) {
+        this.urls = getJarURLs(new File(url.getPath()), recursive);        
         this.classLoader = URLClassLoader.newInstance(urls);
     }
 
@@ -159,7 +159,7 @@ public class JarClassLoader {
      * @param recursive If true, subdirectories are searched.
      * @return          Array of Jar archive URLs.
      */
-    protected URL[] getJarURLs(final File dir, boolean recursive) {
+    static URL[] getJarURLs(final File dir, boolean recursive) {
         List<URL> urlList = new ArrayList<>();
         
         for (final File fileEntry : dir.listFiles()) {

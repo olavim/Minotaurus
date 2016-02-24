@@ -30,33 +30,30 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * Provides basic functionality to lists of visual elements of different kinds.
+ * A customizable visual list of objects.
  * 
- * @param <T>  The type of the elements the list should contain.
+ * @param <T>  Type of elements the list contains.
  */
 public abstract class ComponentList<T> extends JComponent {
     
-    private List<ListElement> listElements;
-    private List<T> objects;
-    private T selected;
-    private boolean selectable;
+    final List<ListElement> listElements;
+    final List<T> objects;
+    T selected;
+    boolean selectable;
     
     public ComponentList() {
-        this(new ArrayList<>());
-    }
-    
-    public ComponentList(Collection<? extends T> objects) {
-        this.setLayout(new MigLayout("insets 0, wrap 1", "[grow]0", "[grow]0"));
+        this.setLayout(new MigLayout("insets 0, wrap 1", "[grow, fill]0", "[grow]0"));
         this.listElements = new ArrayList<>();
-        this.objects = new ArrayList<>(objects);
+        this.objects = new ArrayList<>();
         this.selected = null;
         this.selectable = true;
     }
@@ -65,128 +62,174 @@ public abstract class ComponentList<T> extends JComponent {
         this.selectable = selectable;
     }
     
+    /**
+     * Returns a the list of objects in this list.
+     * 
+     * @return A list of objects.
+     */
     public List<T> getObjects() {
-        return this.objects;
+        return new ArrayList<>(objects);
     }
     
+    /**
+     * Returns the currently selected object.
+     * 
+     * @return An object.
+     */
     public T getSelected() {
-        return this.selected;
+        return selected;
     }
     
+    /**
+     * Sets the currently selected object to the specified one. The specified
+     * object doesn't have to be contained in this list.
+     * 
+     * @param selected Object to mark as the currently selected object.
+     */
     public void setSelected(T selected) {
         this.selected = selected;
     }
     
-    public void removeObject(T obj) {
-        this.objects.remove(obj);
-        this.refresh();
-    }
-    
-    public void addObject(T obj) {
-        this.objects.add(obj);
-        this.refresh();
-    }
-    
-    public void addObjects(Collection<? extends T> elements) {
-        this.objects.addAll(elements);
-        this.refresh();
+    /**
+     * Removes a component matching the specified pair. Also removes the object
+     * from this list specified by the pair.
+     * 
+     * @param pair A Component - {@code T} pair.
+     */
+    public void removeComponent(Pair<Component, T> pair) {
+        ListElement le = new ListElement(pair, false);
+        int index = Arrays.asList(this.getComponents()).indexOf(le);
+        remove(index);
+        objects.remove(pair.second);
+        refresh();
     }
     
     /**
-     * Removes all elements from the list and adds them back. This way all
-     * new components and changes in them will be redrawn and visible.
-     *
-     * refresh() should be called after any and all content changes. refresh()
-     * is called, by default, automatically by the methods removeObject(),
-     * addObject() and addObjects().
+     * Adds an object to this list and generates a component for it, which will
+     * be added to this panel.
+     * 
+     * @param obj Object to add.
+     * @return A Component - {@code T} pair that was generated from the object.
      */
-    public final void refresh() {
-        this.removeAll();
-        this.setSelected(null);
+    public Pair<Component, T> addObject(T obj) {
+        objects.add(obj);
+        Pair<Component, T> pair = generateComponent(obj);
+        ListElement listElement = new ListElement(pair, true);
+        listElements.add(listElement);
+        this.add(listElement);
         
-        this.addComponents(this.generateComponents());
+        refresh();
+        return pair;
+    }
+    
+    /**
+     * Adds objects to this list and generates components for for them, which
+     * will be added to this panel.
+     * 
+     * @param objects Objects to add.
+     * @return A list of Component - {@code T} pairs that were generated from
+     *         the objects.
+     */
+    public List<Pair<Component, T>> addObjects(List<T> objects) {
+        objects.addAll(objects);
+        List<Pair<Component, T>> pairs = new ArrayList<>();
+        for (T obj : objects)
+            pairs.add(addObject(obj));
+        refresh();
+        return pairs;
+    }
+    
+    /**
+     * Refreshes the changes in this panel to be visible.
+     */
+    public void refresh() {
         this.revalidate();
         this.repaint();
     }
     
-    public final void addComponents(Iterable<Pair<Component, T>> components) {
-        for (Pair<Component, T> component : components) {            
-            ListElement element = new ListElement(component);
-            this.listElements.add(element);
-            this.add(element, "grow");
-        }
+    /**
+     * Returns the index of the Component - {@code T} pair in this list.
+     * 
+     * @param pair A Component - {@code T} pair.
+     * @return The index of the pair.
+     */
+    public int indexOf(Pair<Component, T> pair) {
+        ListElement e = new ListElement(pair, false);
+        return listElements.indexOf(e);
     }
     
     /**
-     * Generates the pairs of components and elements this list should consist of.
+     * Generates a component/element pair for an element.
      * 
-     * @return  {@link java.lang.Iterable Iterable} object containing pairs of
-     * Component and T, where Component is something that should be visible in
-     * the list, and T being the object the Component represents. For example,
-     * the code
-     * 
-     * <pre>
-     * {@code
-     *      Iterable<Pair<Component, T>> generateComponents() {
-     *          List<Pair<Component, T>> components = new ArrayList<>();
-     *          for (T element : this.getObjects()) {
-     *              JLabel label = new JLabel(element.toString());
-     *              components.add(new Pair(label, element));
-     *          }
-     * 
-     *          return components;
-     *      }
-     *  }
-     * </pre>
-     * 
-     * generates a list of elements that are represented as JLabels containing
-     * what ever the element's {@link #toString() toString} method returns.
-     * 
+     * @param element Element to generate component for.
+     * @return A pair, first element being a component meant as a visual
+     * representation of an element, and the second being the element itself.
      */
-    abstract protected Iterable<Pair<Component, T>> generateComponents();
+    abstract protected Pair<Component, T> generateComponent(T element);
     
-    private class ListElement extends JPanel {
+    class ListElement extends JPanel {
 
-        private final T element;
+        final T element;
+        final Component component;
+        
+        private ListElement(Pair<Component, T> pair) {
+            this(pair, true);
+        }
 
-        private ListElement(Pair<Component, T> component) {
+        private ListElement(Pair<Component, T> pair, boolean visible) {
             super(new MigLayout("insets 0", "[grow]"));
-            this.element = component.second;
+            this.component = pair.first;
+            this.element = pair.second;
 
-            this.add(component.first, "grow");
-            this.addMouseListener(new MouseAdapter() {
+            if (visible) {
+                this.add(component, "grow");
+                this.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        if (selectable) {
+                            setBackground(new Color(220, 215, 210));
+                            setSelected(element);
 
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    if (selectable) {
-                        setBackground(new Color(220, 215, 210));
-                        setSelected(element);
-
-                        for (ListElement listElement : listElements) {
-                            listElement.getMouseListeners()[0].mouseExited(e);
+                            for (ListElement listElement : listElements)
+                                listElement.getMouseListeners()[0].mouseExited(e);
                         }
                     }
-                }
 
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    if (selectable) {
-                        if (selected != element) {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        if (selectable && selected != element)
                             setBackground(new Color(225, 220, 220));
-                        }
                     }
-                }
 
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    if (selectable) {
-                        if (selected != element) {
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        if (selectable && selected != element)
                             setBackground(UIManager.getColor("Panel.background"));
-                        }
                     }
-                }
+                });
+            }
+        }
 
-            });
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+                
+            if (obj == null || getClass() != obj.getClass())
+                return false;
+                
+            final ListElement other = (ListElement) obj;
+                
+            return Objects.equals(this.component, other.component)
+                    && Objects.equals(this.element, other.element);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 79 * hash + Objects.hashCode(this.element);
+            hash = 79 * hash + Objects.hashCode(this.component);
+            return hash;
         }
 
     }

@@ -25,6 +25,7 @@
 package com.github.tilastokeskus.minotaurus.plugin;
 
 import com.github.tilastokeskus.minotaurus.ResourceManager;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ import java.util.List;
 public class PluginLoader {
     
     private static JarClassLoader classLoader = new JarClassLoader(
-            ResourceManager.getPluginDirectoryPath(), true);
+            ResourceManager.PLUGIN_DIR, true);
     
     /**
      * Retrieves a list of plugins with the type parameter's class from the
@@ -53,9 +54,9 @@ public class PluginLoader {
         return plugins;
     }
     
-    public static void setPluginDir(String path) {
-        System.out.println(path);
-        classLoader = new JarClassLoader(path, true);
+    public static void setPluginDir(URL url) {
+        System.out.println(url);
+        classLoader = new JarClassLoader(url, true);
     }
 
     private static void setPluginTitle(Plugin plugin) {
