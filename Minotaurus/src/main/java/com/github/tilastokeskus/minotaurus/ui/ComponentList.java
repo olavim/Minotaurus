@@ -24,12 +24,12 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
+import com.github.tilastokeskus.minotaurus.util.ArrayList;
 import com.github.tilastokeskus.minotaurus.util.Pair;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -131,7 +131,6 @@ public abstract class ComponentList<T> extends JComponent {
      *         the objects.
      */
     public List<Pair<Component, T>> addObjects(List<T> objects) {
-        objects.addAll(objects);
         List<Pair<Component, T>> pairs = new ArrayList<>();
         for (T obj : objects)
             pairs.add(addObject(obj));

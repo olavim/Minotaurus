@@ -39,13 +39,12 @@ public class MazeWindow extends AbstractGUI implements Observer {
     
     public MazeWindow(Maze maze) {
         this.mazePanel = new MazePanel(maze);
+        this.frame = new JFrame(WINDOW_NAME);        
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     @Override
     public void run() {        
-        this.frame = new JFrame(WINDOW_NAME);
-        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
         this.addContents(this.frame.getContentPane());
         
         this.frame.pack();

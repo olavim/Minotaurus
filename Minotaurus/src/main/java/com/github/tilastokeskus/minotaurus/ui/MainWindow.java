@@ -24,6 +24,7 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
+import com.github.tilastokeskus.minotaurus.Main;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
@@ -38,6 +39,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -151,7 +153,24 @@ public class MainWindow extends AbstractGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             MazeGenerator gen = mazeGeneratorChooser.getSelectedObject();
-            //Main.startSimulation(gen);
+            Scenario scen = scenarioChooser.getSelectedObject();
+            List<Runner> runners = runnerList.getObjects();
+            
+            if (runners.size() < scen.getMinRunners()) {
+                JOptionPane.showMessageDialog(frame,
+                        "This scenario requires at least "
+                                + scen.getMinRunners() + " runners.",
+                        "Rules not met",
+                        JOptionPane.WARNING_MESSAGE);
+            } else if (runners.size() > scen.getMaxRunners()) {
+                JOptionPane.showMessageDialog(frame,
+                        "This scenario does not allow more than "
+                                + scen.getMaxRunners() + " runners.",
+                        "Rules not met",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
+                Main.startSimulation(gen, scen, runners);
+            }
         }        
     }
 

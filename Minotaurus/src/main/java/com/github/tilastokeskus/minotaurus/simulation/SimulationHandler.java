@@ -37,8 +37,12 @@ import com.github.tilastokeskus.minotaurus.util.Rotation;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SimulationHandler extends Observable {
+    
+    private static final Logger LOGGER = Logger.getLogger(SimulationHandler.class.getName());
     
     private final Maze maze;
     private final Scenario scenario;
@@ -57,11 +61,12 @@ public class SimulationHandler extends Observable {
         this.maze = gen.generateMaze(50, 50);
         this.scenario = scenario;
         this.runners = runners;
+        
         executor = Executors.newSingleThreadScheduledExecutor();
     }
     
     /**
-     * Starts the simulation.
+     * Starts the simulation with the specified speed.
      * 
      * @param rate Delay, in milliseconds, between each move.
      */
@@ -73,16 +78,32 @@ public class SimulationHandler extends Observable {
             maze.addEntity(runner);
         
         executor.scheduleWithFixedDelay(() -> {
-            simulateRound();
+            
+            // Wrap call to try-catch, since Future devours exceptions.
+            try {
+                simulateRound();
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "", ex);
+            }
         }, rate, rate, TimeUnit.MILLISECONDS);
     }
     
+    /**
+     * Simulates a single round, a round being when all runners have moved once.
+     */
     private void simulateRound() {
         for (Runner runner : runners) {
+            
+            // Get the direction the runner wants to go next.
             Direction dir = runner.getNextMove(maze, scenario.getRunnerGoals(runner));
+            
+            /* Calculate the position of the runner after moving to said
+             * direction
+             */
             int nx = runner.getPosition().x + dir.deltaX;
             int ny = runner.getPosition().y + dir.deltaY;
             
+            // If the runner tries to move illegally, skip its turn.
             if (maze.get(nx, ny) == MazeBlock.WALL)
                 continue;
             
@@ -90,6 +111,9 @@ public class SimulationHandler extends Observable {
             boolean collisionAllowedAll = entities.stream()
                     .allMatch(e -> scenario.isCollisionAllowed(runner, e));
 
+            /* If the runner tries to move illegally on top of some entity with
+             * whom collision is not allowed, skip its turn.
+             */
             if (!collisionAllowedAll)
                 continue;
 
@@ -97,6 +121,8 @@ public class SimulationHandler extends Observable {
                 scenario.handleCollision(runner, ent);
 
             runner.setPosition(nx, ny);
+            
+            // Update the runner to point in the direction it moved.
             switch (dir) {
                 case UP:
                     runner.setRotation(Rotation.UP.angle);
@@ -115,6 +141,13 @@ public class SimulationHandler extends Observable {
         
         this.setChanged();
         this.notifyObservers();
+    }
+    
+    /**
+     * Stops the simulation.
+     */
+    public void stop() {
+        executor.shutdown();
     }
     
     public Maze getMaze() {

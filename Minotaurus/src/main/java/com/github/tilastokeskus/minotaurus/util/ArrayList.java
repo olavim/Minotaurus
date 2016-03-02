@@ -24,25 +24,126 @@
 
 package com.github.tilastokeskus.minotaurus.util;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public class ArrayList<E> extends AbstractList<E> {
+    
+    static final int INITIAL_CAPACITY = 16;
+    static final int MAX_CAPACITY = Integer.MAX_VALUE - 8;
+    
+    Object[] data;
+    int numElements;
+    
+    public ArrayList() {
+        this(INITIAL_CAPACITY);
+    }
+    
+    public ArrayList(int initialCapacity) {
+        data = new Object[initialCapacity];
+        numElements = 0;
+    }
+    
+    public ArrayList(Collection<E> coll) {
+        numElements = 0;
+        data = new Object[coll.size() * 2];
+        addAll(coll);
+    }
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return numElements;
     }
 
     @Override
     public E get(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkBounds(index);
+        return (E) data[index];
+    }
+
+    @Override
+    public void clear() {
+        mods++;        
+        for (int i = 0; i < numElements; i++)
+            data[i] = null;        
+        numElements = 0;
     }
 
     @Override
     public void add(int index, E element) {
+        checkBoundsAdd(index);
+        if (shouldResize(numElements + 1))
+            resize(data.length * 2);
+        
+        shiftElements(index);
+        data[index] = element;
+        numElements++;
+        mods++;
     }
 
     @Override
     public E set(int index, E element) {
-        throw new UnsupportedOperationException();
+        checkBounds(index);
+        E oldElem = get(index);
+        data[index] = element;
+        mods++;
+        return oldElem;
+    }
+
+    @Override
+    public E remove(int index) {
+        checkBounds(index);
+        E oldElem = get(index);
+        int elementsToMove = numElements - index;
+        System.arraycopy(data, index + 1, data, index, elementsToMove);
+        data[numElements - 1] = null;
+        numElements--;
+        mods++;
+        return oldElem;
+    }
+
+    @Override
+    public Object[] toArray() {
+        return Arrays.copyOf(data, numElements);
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        if (numElements > a.length)
+            return (T[]) Arrays.copyOf(data, numElements, a.getClass());
+        
+        System.arraycopy(data, 0, a, 0, numElements);
+        return a;
+    }
+    
+    void shiftElements(int startIndex) {
+        int elementsToShift = numElements - startIndex;
+        System.arraycopy(data, startIndex, data, startIndex + 1, elementsToShift);
+    }
+    
+    boolean shouldResize(int newNumElements) {
+        return newNumElements > data.length;
+    }
+    
+    void resize(int newCapacity) {
+        if (numElements == MAX_CAPACITY)
+            return;
+        
+        if (newCapacity > MAX_CAPACITY)
+            newCapacity = MAX_CAPACITY;
+        
+        Object[] newData = Arrays.copyOf(data, newCapacity);
+        data = newData;
+    }
+    
+    private void checkBounds(int index) {
+        if (index < 0 || index >= size())
+            throw new IndexOutOfBoundsException("" + index);
+    }
+    
+    private void checkBoundsAdd(int index) {
+        if (index < 0 || index > size())
+            throw new IndexOutOfBoundsException("" + index);
     }
 
 }

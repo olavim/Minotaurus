@@ -26,6 +26,7 @@ package com.github.tilastokeskus.minotaurus.util;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -33,6 +34,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public abstract class AbstractList<E> implements List<E> {
+    
+    int mods;
 
     @Override
     abstract public int size();
@@ -83,6 +86,9 @@ public abstract class AbstractList<E> implements List<E> {
 
     @Override
     public boolean remove(Object o) {
+        int index = indexOf(o);
+        if (index == -1)
+            return false;
         return remove(indexOf(o)) != null;
     }
 
@@ -194,6 +200,7 @@ public abstract class AbstractList<E> implements List<E> {
     private class Itr implements Iterator<E> {
         
         int cursor = 0;
+        int expectedMods = mods;
 
         @Override
         public boolean hasNext() {
@@ -202,6 +209,9 @@ public abstract class AbstractList<E> implements List<E> {
 
         @Override
         public E next() {
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
+            
             try {
                 return get(cursor++);
             } catch (IndexOutOfBoundsException ex) {
@@ -215,6 +225,7 @@ public abstract class AbstractList<E> implements List<E> {
         
         int cursor;
         int lastPos;
+        int expectedMods;
         
         public ListItr() {
             this(0);
@@ -223,6 +234,7 @@ public abstract class AbstractList<E> implements List<E> {
         public ListItr(int index) {
             cursor = index;
             lastPos = -1;
+            expectedMods = mods;
         }
 
         @Override
@@ -232,6 +244,9 @@ public abstract class AbstractList<E> implements List<E> {
 
         @Override
         public E next() {
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
+            
             try {
                 lastPos = cursor;
                 return get(cursor++);
@@ -247,6 +262,9 @@ public abstract class AbstractList<E> implements List<E> {
 
         @Override
         public E previous() {
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
+            
             try {
                 lastPos = --cursor;
                 return get(cursor);
@@ -269,25 +287,35 @@ public abstract class AbstractList<E> implements List<E> {
         public void remove() {
             if (lastPos == -1)
                 throw new IllegalStateException();
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
             
             AbstractList.this.remove(lastPos);
             if (lastPos < cursor)
                 cursor--;
             lastPos = -1;
+            expectedMods = mods;
         }
 
         @Override
         public void set(E e) {
             if (lastPos == -1)
                 throw new IllegalStateException();
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
             
             AbstractList.this.set(lastPos, e);
+            expectedMods = mods;
         }
 
         @Override
         public void add(E e) {
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
+            
             AbstractList.this.add(cursor++, e);
             lastPos = -1;
+            expectedMods = mods;
         }
         
     }

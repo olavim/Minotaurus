@@ -24,9 +24,9 @@
 
 package com.github.tilastokeskus.minotaurus.maze;
 
+import com.github.tilastokeskus.minotaurus.util.ArrayList;
 import com.github.tilastokeskus.minotaurus.util.HashMap;
 import com.github.tilastokeskus.minotaurus.util.Position;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;

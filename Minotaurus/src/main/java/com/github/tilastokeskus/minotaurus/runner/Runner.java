@@ -25,6 +25,7 @@
 package com.github.tilastokeskus.minotaurus.runner;
 
 import com.github.tilastokeskus.minotaurus.Main;
+import com.github.tilastokeskus.minotaurus.maze.DFSMazeGeneratorPretty;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.maze.TestMazeGenerator;
@@ -58,7 +59,7 @@ public abstract class Runner extends MazeEntity implements Plugin {
             int width, int height) {
         try {
             Runner runner = clazz.newInstance();
-            Main.startSimulation(new TestMazeGenerator(),
+            Main.startSimulation(new DFSMazeGeneratorPretty(),
                                     new TestScenario(),
                                     Arrays.asList(runner));
         } catch (InstantiationException | IllegalAccessException ex) {
@@ -79,7 +80,7 @@ public abstract class Runner extends MazeEntity implements Plugin {
     
     @Override
     public String toString() {
-        return this.title;
+        return title != null ? title : super.toString();
     }
     
     /**

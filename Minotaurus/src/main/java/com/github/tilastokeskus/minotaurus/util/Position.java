@@ -25,7 +25,7 @@
 package com.github.tilastokeskus.minotaurus.util;
 
 /**
- * Immutable alternative for java.awt.Point.
+ * Immutable alternative to java.awt.Point.
  */
 public class Position {
     public final int x;

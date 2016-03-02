@@ -28,6 +28,7 @@ import com.github.tilastokeskus.minotaurus.ResourceManager;
 import com.github.tilastokeskus.minotaurus.plugin.PluginLoader;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.ui.component.RectangleComponent;
+import com.github.tilastokeskus.minotaurus.util.ArrayList;
 import com.github.tilastokeskus.minotaurus.util.ColorFactory;
 import com.github.tilastokeskus.minotaurus.util.Pair;
 import net.miginfocom.swing.MigLayout;
@@ -66,27 +67,42 @@ public class RunnerList extends ComponentList<Runner> {
     public void refresh() {
         for (ListElement le : this.listElements) {
             RunnerPanel p = (RunnerPanel) le.component;
-            int runnerNum = indexOf(new Pair(p, p.runner)) + 1;
+            int runnerNum = indexOf(new Pair(p, p.chooser.getSelectedObject())) + 1;
             p.runnerName.setText("Runner " + runnerNum);
         }
         
         super.refresh();
     }
     
+    @Override
+    public List<Runner> getObjects() {
+        List<Runner> list = new ArrayList<>();
+        for (ListElement le : this.listElements) {
+            RunnerPanel rp = (RunnerPanel) le.component;
+            if (rp.chooser.getSelectedObject() != null)
+                list.add(rp.chooser.getSelectedObject());
+        }
+        
+        return list;
+    }
+    
     private class RunnerPanel extends JPanel {
         
         JLabel selectedRunnerLabel;
         JLabel runnerName;
-        Runner runner;
         Color runnerColor;
+        Chooser<Runner> chooser;
         
         public RunnerPanel(Runner runner) {
             super(new MigLayout("insets 0", "[]0[grow,fill]0[]0", "[]0"));
-            this.runner = runner;
             this.runnerName = new JLabel("Runner 1");
-            runnerName.setFont(RunnerList.this.getFont());
-            runnerName.setForeground(RunnerList.this.getForeground());
+            this.runnerName.setFont(RunnerList.this.getFont());
+            this.runnerName.setForeground(RunnerList.this.getForeground());
             this.runnerColor = runnerColorFactory.getNextColor();
+            
+            List<Runner> runners = PluginLoader.loadPlugins(Runner.class);
+            this.chooser = new Chooser<>(parent, runners);
+            this.chooser.setSelectedObject(runner);
             
             this.addComponents();
         }
@@ -126,9 +142,6 @@ public class RunnerList extends ComponentList<Runner> {
         private JPanel createEastPanel() {            
             JPanel eastPanel = new JPanel(
                     new MigLayout("insets 0", "[grow, fill]0"));
-            List<Runner> runners = PluginLoader.loadPlugins(Runner.class);
-            Chooser<Runner> chooser = new Chooser<>(parent, runners);
-            chooser.setSelectedObject(runner);
             eastPanel.add(chooser, "grow");
             eastPanel.setBorder(BorderFactory.createMatteBorder(
                     0, 0, 0, 1, new Color(200, 200, 200)));
@@ -147,7 +160,7 @@ public class RunnerList extends ComponentList<Runner> {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (list.getObjects().size() > 1) {
-                    Pair<Component, Runner> pair = new Pair(panel, panel.runner);
+                    Pair<Component, Runner> pair = new Pair(panel, panel.chooser.getSelectedObject());
                     list.removeComponent(pair);
                 }
             }
@@ -158,7 +171,7 @@ public class RunnerList extends ComponentList<Runner> {
             int hash = 3;
             hash = 79 * hash + Objects.hashCode(this.selectedRunnerLabel);
             hash = 79 * hash + Objects.hashCode(this.runnerName);
-            hash = 79 * hash + Objects.hashCode(this.runner);
+            hash = 79 * hash + Objects.hashCode(this.chooser.getSelectedObject());
             hash = 79 * hash + Objects.hashCode(this.runnerColor);
             return hash;
         }
@@ -174,7 +187,7 @@ public class RunnerList extends ComponentList<Runner> {
             final RunnerPanel other = (RunnerPanel) obj;
             return (Objects.equals(this.selectedRunnerLabel, other.selectedRunnerLabel)
                     && Objects.equals(this.runnerName, other.runnerName)
-                    && Objects.equals(this.runner, other.runner)
+                    && Objects.equals(this.chooser.getSelectedObject(), other.chooser.getSelectedObject())
                     && Objects.equals(this.runnerColor, other.runnerColor));
         }
         

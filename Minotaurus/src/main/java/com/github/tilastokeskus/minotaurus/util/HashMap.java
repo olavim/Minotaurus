@@ -27,6 +27,7 @@ package com.github.tilastokeskus.minotaurus.util;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -41,6 +42,7 @@ public class HashMap<K, V> implements Map<K, V> {
     
     Entry[] table;    
     int size;
+    volatile int mods;
     
     public HashMap() {
         this.table = new Entry[INITIAL_CAPACITY];
@@ -101,6 +103,7 @@ public class HashMap<K, V> implements Map<K, V> {
         }
         
         addNewEntry(table, hash, bucket, key, value);
+        mods++;
         return null;
     }
 
@@ -125,6 +128,7 @@ public class HashMap<K, V> implements Map<K, V> {
                     table[bucket] = next;
                 }
                 
+                mods++;
                 size--;
                 return e.value;
             }
@@ -144,6 +148,7 @@ public class HashMap<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
+        mods++;
         for (int i = 0; i < table.length; i++)
             table[i] = null;
         
@@ -329,8 +334,10 @@ public class HashMap<K, V> implements Map<K, V> {
         Entry<K, V> next;
         Entry<K, V> current;
         int bucketIndex;
+        int expectedMods;
         
         MapIterator() {
+            expectedMods = mods;
             if (size > 0) {
                 while (bucketIndex < table.length)
                     if ((next = table[bucketIndex++]) != null)
@@ -347,15 +354,20 @@ public class HashMap<K, V> implements Map<K, V> {
         public void remove() {
             if (current == null)
                 throw new IllegalStateException();
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
             
             K k = current.key;
             current = null;
             HashMap.this.remove(k);
+            expectedMods = mods;
         }
 
         public Entry<K, V> nextEntry() {
             if (next == null)
                 throw new NoSuchElementException();
+            if (expectedMods != mods)
+                throw new ConcurrentModificationException();
                 
             Entry<K, V> e = next;
             current = e;

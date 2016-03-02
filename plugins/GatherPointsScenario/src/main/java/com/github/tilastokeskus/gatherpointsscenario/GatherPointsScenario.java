@@ -9,13 +9,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.util.ArrayList;
 
 public class GatherPointsScenario extends AbstractScenario {
 
     private static final int MIN_RUNNERS = 2;
     private static final int MAX_RUNNERS = 4;
 
-    private Runner runner;
+    private List<Runner> runners;
     private MazeEntity goal;
     
     /**
@@ -25,6 +26,7 @@ public class GatherPointsScenario extends AbstractScenario {
      */
     public GatherPointsScenario() {
         goal = new MazeEntity(0, 0);
+        runners = new ArrayList<>();
     }
     
     @Override
@@ -45,9 +47,17 @@ public class GatherPointsScenario extends AbstractScenario {
     }
 
     @Override
-    public boolean placeRunners(Collection<Runner> runners) {
-        runner = runners.iterator().next();
-        runner.setPosition(1, 1);
+    public boolean placeRunners(Collection<Runner> r) {
+        this.runners.addAll(r);
+        
+        if (runners.size() > 0)
+            runners.get(0).setPosition(1, 1);
+        if (runners.size() > 1)
+            runners.get(1).setPosition(maze.getWidth() - 2, maze.getHeight() - 2);
+        if (runners.size() > 2)
+            runners.get(2).setPosition(1, maze.getHeight() - 2);        
+        if (runners.size() > 3)
+            runners.get(3).setPosition(maze.getHeight() - 2, 1);
         return true;
     }
 
@@ -58,7 +68,10 @@ public class GatherPointsScenario extends AbstractScenario {
 
     @Override
     public boolean handleCollision(MazeEntity ent1, MazeEntity ent2) {
-        Runner r = (Runner) (runner == ent1 ? ent1 : ent2);
+        if (ent1 != goal && ent2 != goal)
+            return true;
+        
+        Runner r = (Runner) (ent1 instanceof Runner ? ent1 : ent2);
 
         if (!score.containsKey(r))
             score.put(r, 1);
