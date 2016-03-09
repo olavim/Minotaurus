@@ -22,35 +22,14 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus.ui;
+package com.github.tilastokeskus.minotaurus.util;
 
-import java.awt.Frame;
-import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-public abstract class AbstractGUI implements GUI {
-    
-    protected JFrame frame;
-
-    @Override
-    public void show() {
-        SwingUtilities.invokeLater(this);
-    }
-
-    @Override
-    public Frame getFrame() {
-        return frame;
-    }
-
-    @Override
-    public void close() throws IOException {
-        frame.dispose();
-    }
-
-    @Override
-    public void refresh() {
-        frame.pack();
-    }
-
+public interface Benchmarkable {
+        
+    /**
+     * Run a piece of code.
+     * 
+     * @return Time it took to run the code.
+     */
+    int run();
 }

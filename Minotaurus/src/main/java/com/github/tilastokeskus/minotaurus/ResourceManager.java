@@ -41,12 +41,26 @@ public class ResourceManager {
                                         .getProtectionDomain().getCodeSource()
                                         .getLocation().getPath();
     
+    /**
+     * URL to the program's plugin folder. The plugin folder should contain all
+     * the plugins that are used.
+     */
     public static final URL PLUGIN_DIR;
+    
+    /**
+     * URL to a delete icon.
+     */
     public static final URL IMAGE_DELETE;
+    
+    /**
+     * URL to a settings icon.
+     */
+    public static final URL IMAGE_SETTINGS;
     
     static {
         PLUGIN_DIR = getURLFromPath("plugins/", true);
         IMAGE_DELETE = getURLFromPath("images/delete.png");
+        IMAGE_SETTINGS = getURLFromPath("images/settings.png");
     }
     
     private static URL getURLFromPath(String resource) {
@@ -55,6 +69,8 @@ public class ResourceManager {
     
     private static URL getURLFromPath(String resource, boolean createDir) {
         File f = new File(PATH + '/' + resource);
+        
+        // Create directory if it doesn't exist (nothing happens if it does).
         if (createDir)
             f.mkdir();
         

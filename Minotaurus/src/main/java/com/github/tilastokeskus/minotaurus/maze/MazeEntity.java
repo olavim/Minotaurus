@@ -40,7 +40,7 @@ public class MazeEntity extends Observable implements Drawable, Rotatable, Clone
     private RotatableComponent component;
     
     /**
-     * Creates a new MazeEntity.
+     * Creates a new MazeEntity with a position at (0, 0).
      */
     public MazeEntity() {
         this(0, 0);
@@ -76,7 +76,7 @@ public class MazeEntity extends Observable implements Drawable, Rotatable, Clone
     
     @Override
     public Color getComponentColor() {
-        return Color.black;//component.getForeground();
+        return component.getForeground();
     }
     
     @Override
@@ -126,7 +126,6 @@ public class MazeEntity extends Observable implements Drawable, Rotatable, Clone
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.position);
         hash = 73 * hash + Objects.hashCode(this.component);
         return hash;
     }

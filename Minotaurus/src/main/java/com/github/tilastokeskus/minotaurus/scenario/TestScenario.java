@@ -32,9 +32,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.util.Direction;
+import java.util.Map;
 
 /**
- * A Scenario intended for testing runners with.
+ * A Scenario intended for testing runners with. In this scenario, a goal is
+ * randomly spawned in the maze and the runners' job is to gather it. When the
+ * goal is gathered, a new one spawns in an unoccupied space.
  */
 public class TestScenario extends AbstractScenario {
 
@@ -45,9 +49,7 @@ public class TestScenario extends AbstractScenario {
     private MazeEntity goal;
     
     /**
-     * Creates a new TestScenario. In this scenario, a goal is randomly
-     * spawned in the maze and the runners' job is to gather it. When the goal
-     * is gathered, a new one spawns in an unoccupied space.
+     * Creates a new TestScenario.
      */
     public TestScenario() {
         goal = new MazeEntity(0, 0);
@@ -83,14 +85,22 @@ public class TestScenario extends AbstractScenario {
     }
 
     @Override
-    public boolean handleCollision(MazeEntity ent1, MazeEntity ent2) {
-        Runner r = (Runner) (runner == ent1 ? ent1 : ent2);
+    public boolean handleRunnerMove(Runner runner, Direction dir) {
+            
+        /* Calculate the position of the runner after moving to said
+         * direction
+         */
+        int nx = runner.getPosition().x + dir.deltaX;
+        int ny = runner.getPosition().y + dir.deltaY;
 
-        if (!score.containsKey(r))
-            score.put(r, 1);
-        score.put(r, score.get(r) + 1);
-
-        resetGoal();        
+        // If the runner tries to move illegally, skip its turn.
+        if (maze.get(nx, ny) == MazeBlock.WALL
+                || !maze.getEntitiesAt(nx, ny).isEmpty())
+            return false;
+        
+        setScore(runner, getScore(runner) + 1);
+        resetGoal();
+        runner.setPosition(nx, ny);    
         return true;
     }
 
@@ -100,6 +110,10 @@ public class TestScenario extends AbstractScenario {
     }
     
     private void resetGoal() {
+        
+        /* Randomly select a position in the maze until we find
+         * an unoccupied one.
+         */
         Random r = new Random();
         int x, y;
         do {
@@ -108,6 +122,11 @@ public class TestScenario extends AbstractScenario {
         } while (maze.get(x, y) != MazeBlock.FLOOR);
         
         goal.setPosition(x, y);
+    }
+
+    @Override
+    public Map<String, Setting> getModifiableSettings() {
+        return null;
     }
     
 }

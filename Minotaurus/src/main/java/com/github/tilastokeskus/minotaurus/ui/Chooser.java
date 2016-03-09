@@ -24,20 +24,22 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
-import net.miginfocom.swing.MigLayout;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import net.miginfocom.swing.MigLayout;
 import java.util.List;
 import javax.swing.*;
 
 public class Chooser<T> extends JPanel {
     
-    private final GUI parent;
-    private final List<T> objects;
-    private JLabel selectedObjectLabel;
-    private T object;
+    final GUI parent;
+    final List<T> objects;
+    JLabel selectedObjectLabel;
+    T object;
     
     public Chooser(GUI parent, List<T> objects) {
         super(new MigLayout("insets 0", "[grow, fill]0"));

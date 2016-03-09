@@ -23,7 +23,11 @@
  */
 package com.github.tilastokeskus.minotaurus.util;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,6 +36,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PriorityQueueTest {
+    
+    private final boolean BENCHMARK = false;
     
     PriorityQueue<Integer> queue;
     
@@ -101,5 +107,113 @@ public class PriorityQueueTest {
         queue.clear();
         assertTrue(queue.size() == 0);
         assertTrue(queue.min() == null);
+    }
+    
+    @Test
+    public void hashMapPerformanceTest() {
+        if (BENCHMARK) {
+            hashMapPerformanceTestIntegers();
+            hashMapPerformanceTestStrings();
+        }
+    }
+    
+    int x = 0;
+    
+    public void hashMapPerformanceTestIntegers() {
+        int numIters = 20000;
+        List<Integer> shuffled = IntStream.range(0, numIters).boxed().collect(Collectors.toList());
+        Collections.shuffle(shuffled);
+        
+        int putAvg = new Benchmark(() -> {
+            queue.clear();
+        }, () -> {
+            System.out.println(x++);
+            for (int i = 0; i < numIters; i++)
+                queue.add(shuffled.get(i));
+        }).runBenchmark(100);
+        
+        int containsAvg = new Benchmark(() -> {}, () -> {
+            for (int i = 0; i < numIters; i++)
+                queue.contains(i);
+        }).runBenchmark(100);
+        
+        int extractMinAvg = new Benchmark(() -> {
+            queue.clear();
+            for (int i = 0; i < numIters; i++)
+                queue.add(shuffled.get(i));
+        }, () -> {
+            System.out.println(x++);
+            for (int i = 0; i < numIters; i++)
+                queue.extractMin();
+        }).runBenchmark(50);
+        
+        int removeAvg = new Benchmark(() -> {
+            queue.clear();
+            for (int i = 0; i < numIters; i++)
+                queue.add(shuffled.get(i));
+        }, () -> {
+            for (int i = 0; i < numIters; i++)
+                queue.remove(i);
+        }).runBenchmark(100);
+        
+        System.out.println("Integers - Put: " + putAvg);        
+        System.out.println("Integers - Contains: " + containsAvg);        
+        System.out.println("Integers - Get: " + extractMinAvg);        
+        System.out.println("Integers - Remove: " + removeAvg);        
+    }
+    
+    public void hashMapPerformanceTestStrings() {
+        int numIters = 100000;
+        
+        long start = System.nanoTime();
+        String[] strings = new String[numIters];
+        for (int n = 0; n < numIters; n++)
+            strings[n] = StringUtils.getRandomString(50);
+        
+        long end = System.nanoTime();
+        System.out.println("String gen took " + millis(start, end) + "ms");
+        
+        PriorityQueue<String> q = new PriorityQueue<>();
+        
+        int putAvg = new Benchmark(() -> {
+            q.clear();
+            q.data = new Object[PriorityQueue.INITIAL_CAPACITY];
+        }, () -> {
+            for (int i = 0; i < numIters; i++)
+                q.add(strings[i]);
+        }).runBenchmark(100);
+        
+        int containsAvg = new Benchmark(() -> {}, () -> {
+            for (int i = 0; i < numIters; i++)
+                q.contains(strings[i]);
+        }).runBenchmark(100);
+        
+        int extractMinAvg = new Benchmark(() -> {
+            q.clear();
+            for (int i = 0; i < numIters; i++)
+                q.add(strings[i]);
+        }, () -> {
+            for (int i = 0; i < numIters; i++)
+                q.extractMin();
+        }).runBenchmark(100);
+        
+        int removeAvg = new Benchmark(() -> {
+            q.clear();
+            q.data = new Object[PriorityQueue.INITIAL_CAPACITY];
+            for (int i = 0; i < numIters; i++)
+                q.add(strings[i]);
+        }, () -> {
+            for (int i = 0; i < numIters; i++)
+                q.remove(strings[i]);
+        }).runBenchmark(100);
+        
+        System.out.println("Strings - Put: " + putAvg);        
+        System.out.println("Strings - Contains: " + containsAvg);        
+        System.out.println("Strings - Get: " + extractMinAvg);        
+        System.out.println("Strings - Remove: " + removeAvg);        
+    }
+    
+    private int millis(long start, long end) {
+        return (int) ((end - start) / 1000000);
     }
 }

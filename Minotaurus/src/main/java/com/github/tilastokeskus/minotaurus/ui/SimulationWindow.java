@@ -24,27 +24,35 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
-import com.github.tilastokeskus.minotaurus.maze.Maze;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.scenario.Scenario;
+import com.github.tilastokeskus.minotaurus.simulation.SimulationHandler;
+import com.github.tilastokeskus.minotaurus.ui.component.RectangleComponent;
+import java.awt.Color;
 import java.awt.Container;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 
-public class MazeWindow extends AbstractGUI implements Observer {
+public class SimulationWindow extends AbstractGUI implements Observer {
     
     private static final String WINDOW_NAME = "Minotaurus Simulation";
 
+    private final SimulationHandler sHandler;
     private final MazePanel mazePanel;
+    private final ScorePanel scorePanel;
     
-    public MazeWindow(Maze maze) {
-        this.mazePanel = new MazePanel(maze);
+    public SimulationWindow(SimulationHandler sHandler) {
+        this.sHandler = sHandler;
+        this.mazePanel = new MazePanel(sHandler.getMaze());
+        this.scorePanel = new ScorePanel(sHandler.getRunners());
         this.frame = new JFrame(WINDOW_NAME);        
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     @Override
-    public void run() {        
+    public void run() {
         this.addContents(this.frame.getContentPane());
         
         this.frame.pack();
@@ -53,8 +61,9 @@ public class MazeWindow extends AbstractGUI implements Observer {
     }
 
     private void addContents(Container container) {
-        container.setLayout(new MigLayout("", "[grow]", "[grow]"));
+        container.setLayout(new MigLayout("wrap 1", "[grow]", "[grow]"));
         container.add(this.mazePanel, "grow");
+        container.add(this.scorePanel);
     }
     
     @Override
@@ -62,6 +71,11 @@ public class MazeWindow extends AbstractGUI implements Observer {
         if (this.frame != null) {
             this.frame.repaint();
             this.mazePanel.repaint();
+            
+            for (Runner r : sHandler.getRunners()) {
+                int score = sHandler.getScenario().getScore(r);
+                this.scorePanel.setScore(r, score);
+            }
         }
     }
     

@@ -24,33 +24,41 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
-import java.awt.Frame;
-import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.ui.component.RectangleComponent;
+import com.github.tilastokeskus.minotaurus.util.HashMap;
+import java.awt.Color;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
 
-public abstract class AbstractGUI implements GUI {
+public class ScorePanel extends JPanel {
+
+    private final Map<Runner, JLabel> scores;
     
-    protected JFrame frame;
-
-    @Override
-    public void show() {
-        SwingUtilities.invokeLater(this);
+    public ScorePanel(List<Runner> runners) {
+        super(new MigLayout("wrap 3", "[grow]"));
+        scores = new HashMap<>();
+        
+        for (Runner r : runners) {
+            JLabel l = new JLabel("0");
+            scores.put(r, l);
+            
+            Color runnerColor = r.getComponentColor();
+            RectangleComponent c = new RectangleComponent(16,
+                    runnerColor, 1, runnerColor.darker());
+            
+            add(c);
+            add(new JLabel(r.toString()));
+            add(l);
+        }
     }
-
-    @Override
-    public Frame getFrame() {
-        return frame;
+    
+    public void setScore(Runner r, int score) {
+        if (scores.containsKey(r))
+            scores.get(r).setText("" + score);
     }
-
-    @Override
-    public void close() throws IOException {
-        frame.dispose();
-    }
-
-    @Override
-    public void refresh() {
-        frame.pack();
-    }
-
+    
 }

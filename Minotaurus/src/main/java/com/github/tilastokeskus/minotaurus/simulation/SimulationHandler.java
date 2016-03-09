@@ -33,6 +33,7 @@ import com.github.tilastokeskus.minotaurus.util.Direction;
 import java.util.List;
 import java.util.Observable;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.util.ArrayList;
 import com.github.tilastokeskus.minotaurus.util.Rotation;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,6 +41,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Simulation handler is the mediator between a MazeGenerator, Scenario and
+ * a set of Runners. Its job is to figure out each runner's preferred move each
+ * turn, and move them if it's allowed.
+ */
 public class SimulationHandler extends Observable {
     
     private static final Logger LOGGER = Logger.getLogger(SimulationHandler.class.getName());
@@ -70,10 +76,13 @@ public class SimulationHandler extends Observable {
      * 
      * @param rate Delay, in milliseconds, between each move.
      */
-    public void startSimulation(int rate) {       
+    public void startSimulation(int rate) {
+        
+        // Initialize the scenario and ask it to place the runners in the maze.
         this.scenario.setMaze(maze);
         this.scenario.placeRunners(runners);
         
+        // Place runners in the maze.
         for (Runner runner : runners)
             maze.addEntity(runner);
         
@@ -97,45 +106,25 @@ public class SimulationHandler extends Observable {
             // Get the direction the runner wants to go next.
             Direction dir = runner.getNextMove(maze, scenario.getRunnerGoals(runner));
             
-            /* Calculate the position of the runner after moving to said
-             * direction
-             */
-            int nx = runner.getPosition().x + dir.deltaX;
-            int ny = runner.getPosition().y + dir.deltaY;
+            boolean didMove = scenario.handleRunnerMove(runner, dir);
             
-            // If the runner tries to move illegally, skip its turn.
-            if (maze.get(nx, ny) == MazeBlock.WALL)
-                continue;
+            if (didMove) {
             
-            List<MazeEntity> entities = maze.getEntitiesAt(nx, ny);
-            boolean collisionAllowedAll = entities.stream()
-                    .allMatch(e -> scenario.isCollisionAllowed(runner, e));
-
-            /* If the runner tries to move illegally on top of some entity with
-             * whom collision is not allowed, skip its turn.
-             */
-            if (!collisionAllowedAll)
-                continue;
-
-            for (MazeEntity ent : entities)
-                scenario.handleCollision(runner, ent);
-
-            runner.setPosition(nx, ny);
-            
-            // Update the runner to point in the direction it moved.
-            switch (dir) {
-                case UP:
-                    runner.setRotation(Rotation.UP.angle);
-                    break;
-                case RIGHT:
-                    runner.setRotation(Rotation.RIGHT.angle);
-                    break;
-                case DOWN:
-                    runner.setRotation(Rotation.DOWN.angle);
-                    break;
-                default:
-                    runner.setRotation(Rotation.LEFT.angle);
-                    break;
+                // Update the runner to point in the direction it moved.
+                switch (dir) {
+                    case UP:
+                        runner.setRotation(Rotation.UP.angle);
+                        break;
+                    case RIGHT:
+                        runner.setRotation(Rotation.RIGHT.angle);
+                        break;
+                    case DOWN:
+                        runner.setRotation(Rotation.DOWN.angle);
+                        break;
+                    default:
+                        runner.setRotation(Rotation.LEFT.angle);
+                        break;
+                }
             }
         }
         
@@ -152,6 +141,14 @@ public class SimulationHandler extends Observable {
     
     public Maze getMaze() {
         return maze;
+    }
+    
+    public List<Runner> getRunners() {
+        return new ArrayList<>(runners);
+    }
+    
+    public Scenario getScenario() {
+        return scenario;
     }
     
 }

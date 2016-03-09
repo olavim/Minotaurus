@@ -30,6 +30,8 @@ import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import java.util.Collection;
 import java.util.List;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.util.Direction;
+import java.util.Map;
 
 /**
  * A scenario is a situation, or a world, that a simulation aims to model. A
@@ -38,15 +40,31 @@ import com.github.tilastokeskus.minotaurus.runner.Runner;
  */
 public interface Scenario extends Plugin {
     
+    /**
+     * Sets the maze this scenario should adjust to. A scenario needs the maze
+     * to place the specified runners, as well as do other scenario-specific 
+     * actions, like placing goals.
+     * 
+     * @param maze Maze to adjust to.
+     */
     void setMaze(Maze maze);
     
     /**
-     * Returns the runner's current score.
+     * Returns a runner's current score.
      * 
      * @param runner A Runner.
      * @return       The Runner's current score.
      */
     int getScore(Runner runner);
+    
+    /**
+     * Sets a runner's current score.
+     * 
+     * @param runner A Runner.
+     * @param score  Score to set for the runner.
+     * @return The runner's previous score.
+     */
+    int setScore(Runner runner, int score);
     
     /**
      * Returns the minimum amount of runners required for using this scenario.
@@ -83,15 +101,14 @@ public interface Scenario extends Plugin {
     boolean isCollisionAllowed(MazeEntity ent1, MazeEntity ent2);
     
     /**
-     * Handles a collision between two entities. Specifies what should happen
-     * when an entity is on top of another. If collision between the entities
-     * is not allowed, nothing should happen.
+     * Attempts to move a runner in some direction. If the movement is not
+     * allowed, the runner is not moved.
      * 
-     * @param  ent1 A maze entity.
-     * @param  ent2 A maze entity.
-     * @return True if the collision was handled, false otherwise.
+     * @param runner Runner to move.
+     * @param direction Direction in which the runner should be moved to.
+     * @return True if the movement was allowed, false otherwise.
      */
-    boolean handleCollision(MazeEntity ent1, MazeEntity ent2);
+    boolean handleRunnerMove(Runner runner, Direction direction);
     
     /**
      * Returns the goals of the specified runner.
@@ -100,5 +117,14 @@ public interface Scenario extends Plugin {
      * @return A list of goals the runner should aim for.
      */
     List<MazeEntity> getRunnerGoals(Runner runner);
+    
+    /**
+     * Returns a map of settings that are modifiable by the user. The key is
+     * the name, and value the setting.
+     * 
+     * @return A String - Setting map, or null if there are no modifiable
+     * settings
+     */
+    Map<String, Setting> getModifiableSettings();
 
 }

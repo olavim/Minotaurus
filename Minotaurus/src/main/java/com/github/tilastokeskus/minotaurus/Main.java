@@ -27,7 +27,7 @@ import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import com.github.tilastokeskus.minotaurus.scenario.Scenario;
 import com.github.tilastokeskus.minotaurus.simulation.SimulationHandler;
 import com.github.tilastokeskus.minotaurus.ui.MainWindow;
-import com.github.tilastokeskus.minotaurus.ui.MazeWindow;
+import com.github.tilastokeskus.minotaurus.ui.SimulationWindow;
 import java.util.List;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import java.awt.event.WindowAdapter;
@@ -50,7 +50,7 @@ public class Main {
     public static void startSimulation(MazeGenerator gen, Scenario scenario,
             List<Runner> runners) {
         SimulationHandler simHandler = new SimulationHandler(gen, scenario, runners);
-        MazeWindow mazeWindow = new MazeWindow(simHandler.getMaze());
+        SimulationWindow mazeWindow = new SimulationWindow(simHandler);
         mazeWindow.getFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
@@ -59,7 +59,7 @@ public class Main {
         });
         simHandler.addObserver(mazeWindow);
         mazeWindow.show();
-        simHandler.startSimulation(50);
+        simHandler.startSimulation(10);
     }
     
 }

@@ -25,9 +25,12 @@
 package com.github.tilastokeskus.minotaurus.maze;
 
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
-import com.github.tilastokeskus.minotaurus.ui.MazeWindow;
+import com.github.tilastokeskus.minotaurus.ui.MazePanel;
+import com.github.tilastokeskus.minotaurus.ui.SimulationWindow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import net.miginfocom.swing.MigLayout;
 
 public interface MazeGenerator extends Plugin {
     
@@ -45,9 +48,13 @@ public interface MazeGenerator extends Plugin {
             int width, int height) {
         try {
             MazeGenerator gen = clazz.newInstance();
-            Maze maze = gen.generateMaze(width, height);            
-            MazeWindow mazeWindow = new MazeWindow(maze);
-            mazeWindow.show();
+            Maze maze = gen.generateMaze(width, height);
+            JFrame f = new JFrame("Maze");
+            f.getContentPane().setLayout(new MigLayout("", "[grow]", "[grow]"));
+            f.getContentPane().add(new MazePanel(maze));
+            f.pack();
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            f.setVisible(true);
         } catch (InstantiationException | IllegalAccessException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }

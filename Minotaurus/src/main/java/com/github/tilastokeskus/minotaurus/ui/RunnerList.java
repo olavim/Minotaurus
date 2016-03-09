@@ -79,8 +79,11 @@ public class RunnerList extends ComponentList<Runner> {
         List<Runner> list = new ArrayList<>();
         for (ListElement le : this.listElements) {
             RunnerPanel rp = (RunnerPanel) le.component;
-            if (rp.chooser.getSelectedObject() != null)
-                list.add(rp.chooser.getSelectedObject());
+            Runner runner = rp.chooser.object;
+            if (runner != null) {
+                runner.setComponentColor(rp.runnerColor);
+                list.add(runner);
+            }
         }
         
         return list;

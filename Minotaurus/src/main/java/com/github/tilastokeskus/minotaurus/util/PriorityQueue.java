@@ -60,7 +60,7 @@ public final class PriorityQueue<T> {
     }
     
     public void clear() {
-        data = new Object[data.length];
+        data = new Object[INITIAL_CAPACITY];
         numElements = 0;
     }
     

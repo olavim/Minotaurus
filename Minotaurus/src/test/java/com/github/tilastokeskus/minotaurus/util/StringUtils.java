@@ -22,35 +22,20 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus.ui;
+package com.github.tilastokeskus.minotaurus.util;
 
-import java.awt.Frame;
-import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-public abstract class AbstractGUI implements GUI {
+public class StringUtils {
     
-    protected JFrame frame;
-
-    @Override
-    public void show() {
-        SwingUtilities.invokeLater(this);
+    public static String getRandomString(int length) {
+        char str[] = new char[length];
+        for (int i = 0; i < length; i++)
+            str[i] = getRandomChar('a', 'z');
+        return new String(str);
     }
-
-    @Override
-    public Frame getFrame() {
-        return frame;
-    }
-
-    @Override
-    public void close() throws IOException {
-        frame.dispose();
-    }
-
-    @Override
-    public void refresh() {
-        frame.pack();
+    
+    public static char getRandomChar(char min, char max) {
+        int c = (int) (Math.random() * (max - min) + min);
+        return (char) c;
     }
 
 }

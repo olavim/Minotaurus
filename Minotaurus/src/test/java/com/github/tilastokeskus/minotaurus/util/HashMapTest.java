@@ -28,7 +28,6 @@ import com.github.tilastokeskus.minotaurus.util.HashMap.Entry;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,7 +37,7 @@ import static org.junit.Assert.*;
 
 public class HashMapTest {
     
-    private final boolean DO_BENCHMARK = false;
+    private final boolean BENCHMARK = false;
     
     private HashMap<Integer, Integer> map;
     
@@ -331,7 +330,7 @@ public class HashMapTest {
     
     @Test
     public void hashMapPerformanceTest() {
-        if (DO_BENCHMARK) {
+        if (BENCHMARK) {
             hashMapPerformanceTestIntegers();
             hashMapPerformanceTestStrings();
         }
@@ -340,25 +339,25 @@ public class HashMapTest {
     public void hashMapPerformanceTestIntegers() {
         int numIters = 1000000;
         
-        int putAvg = makeBenchmark(() -> {
+        int putAvg = new Benchmark(() -> {
             map.clear();
             map.table = new Entry[HashMap.INITIAL_CAPACITY];
         }, () -> {
             for (int i = 0; i < numIters; i++)
                 map.put(i, i);
-        });
+        }).runBenchmark(100);
         
-        int containsAvg = makeBenchmark(() -> {}, () -> {
+        int containsAvg = new Benchmark(() -> {}, () -> {
             for (int i = 0; i < numIters; i++)
                 map.containsKey(i);
-        });
+        }).runBenchmark(100);
         
-        int getAvg = makeBenchmark(() -> {
+        int getAvg = new Benchmark(() -> {
             for (int i = 0; i < numIters; i++)
                 map.get(i);
-        });
+        }).runBenchmark(100);
         
-        int removeAvg = makeBenchmark(() -> {
+        int removeAvg = new Benchmark(() -> {
             map.clear();
             map.table = new Entry[HashMap.INITIAL_CAPACITY];
             for (int i = 0; i < numIters; i++)
@@ -366,7 +365,7 @@ public class HashMapTest {
         }, () -> {
             for (int i = 0; i < numIters; i++)
                 map.remove(i);
-        });
+        }).runBenchmark(100);
         
         System.out.println("Integers - Put: " + putAvg);        
         System.out.println("Integers - Contains: " + containsAvg);        
@@ -379,37 +378,33 @@ public class HashMapTest {
         
         long start = System.nanoTime();
         String[] strings = new String[numIters];
-        char str[] = new char[50];
-        Random r = new Random();
-        for (int n = 0; n < numIters; n++) {
-            for (int i = 0; i < 50; i++)
-                str[i] = (char) r.nextInt('z');
-            strings[n] = new String(str);
-        }
+        for (int n = 0; n < numIters; n++)
+            strings[n] = StringUtils.getRandomString(50);
+        
         long end = System.nanoTime();
         System.out.println("String gen took " + millis(start, end) + "ms");
         
         HashMap<String, String> m = new HashMap<>();
         
-        int putAvg = makeBenchmark(() -> {
+        int putAvg = new Benchmark(() -> {
             m.clear();
             m.table = new Entry[HashMap.INITIAL_CAPACITY];
         }, () -> {
             for (int i = 0; i < numIters; i++)
                 m.put(strings[i], strings[i]);
-        });
+        }).runBenchmark(100);
         
-        int containsAvg = makeBenchmark(() -> {}, () -> {
+        int containsAvg = new Benchmark(() -> {}, () -> {
             for (int i = 0; i < numIters; i++)
                 m.containsKey(strings[i]);
-        });
+        }).runBenchmark(100);
         
-        int getAvg = makeBenchmark(() -> {
+        int getAvg = new Benchmark(() -> {
             for (int i = 0; i < numIters; i++)
                 m.get(strings[i]);
-        });
+        }).runBenchmark(100);
         
-        int removeAvg = makeBenchmark(() -> {
+        int removeAvg = new Benchmark(() -> {
             m.clear();
             m.table = new Entry[HashMap.INITIAL_CAPACITY];
             for (int i = 0; i < numIters; i++)
@@ -417,7 +412,7 @@ public class HashMapTest {
         }, () -> {
             for (int i = 0; i < numIters; i++)
                 m.remove(strings[i]);
-        });
+        }).runBenchmark(100);
         
         System.out.println("Strings - Put: " + putAvg);        
         System.out.println("Strings - Contains: " + containsAvg);        
@@ -425,51 +420,7 @@ public class HashMapTest {
         System.out.println("Strings - Remove: " + removeAvg);        
     }
     
-    private int makeBenchmark(Runnable r) {
-        return makeBenchmark(() -> {}, r, () -> {});
-    }
-    
-    private int makeBenchmark(Runnable before, Runnable r) {
-        return makeBenchmark(before, r, () -> {});
-    }
-    
-    private int makeBenchmark(Runnable before, Runnable r, Runnable after) {
-        return getBenchmarkAverage(() -> {
-            before.run();
-            
-            long start = System.nanoTime();
-            r.run();
-            long end = System.nanoTime();
-            
-            after.run();
-            return millis(start, end);
-        }, 100);
-    }
-    
-    private int getBenchmarkAverage(Benchmarkable b, int times) {
-        
-        // warmup
-        for (int i = 0; i < 100; i++)
-            b.run();
-        
-        int totalTime = 0;
-        for (int i = 0; i < times; i++)
-            totalTime += b.run();
-        
-        return totalTime / times;
-    }
-    
     private int millis(long start, long end) {
         return (int) ((end - start) / 1000000);
-    }
-    
-    private interface Benchmarkable {
-        
-        /**
-         * Run a piece of code.
-         * 
-         * @return Time it took to run the code.
-         */
-        int run();
     }
 }

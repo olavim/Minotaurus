@@ -54,7 +54,7 @@ public class MainWindow extends AbstractGUI {
             1, 1, 1, 1, new Color(200, 200, 200));
     
     private Chooser<MazeGenerator> mazeGeneratorChooser;
-    private Chooser<Scenario> scenarioChooser;
+    private ScenarioChooser scenarioChooser;
     private ComponentList<Runner> runnerList;
 
     @Override
@@ -78,7 +78,7 @@ public class MainWindow extends AbstractGUI {
         List<MazeGenerator> mazeGenerators = PluginLoader.loadPlugins(MazeGenerator.class);
         List<Scenario> scenarios = PluginLoader.loadPlugins(Scenario.class);
         mazeGeneratorChooser = new Chooser<>(this, mazeGenerators);
-        scenarioChooser = new Chooser<>(this, scenarios);
+        scenarioChooser = new ScenarioChooser(this, scenarios);
         
         JPanel mazeGenPanel = createPluginChooserPanel("Maze Generator", mazeGeneratorChooser);
         JPanel scenarioPanel = createPluginChooserPanel("Scenario", scenarioChooser);

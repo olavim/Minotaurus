@@ -9,15 +9,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
+import com.github.tilastokeskus.minotaurus.scenario.Setting;
 import com.github.tilastokeskus.minotaurus.util.ArrayList;
+import com.github.tilastokeskus.minotaurus.util.Direction;
+import com.github.tilastokeskus.minotaurus.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
-public class GatherPointsScenario extends AbstractScenario {
+public class GatherPointsScenario extends AbstractScenario implements Observer {
 
     private static final int MIN_RUNNERS = 2;
     private static final int MAX_RUNNERS = 4;
 
-    private List<Runner> runners;
-    private MazeEntity goal;
+    private final Map<String, Setting> modifiableSettings;
+    private final List<Runner> runners;
+    private final List<MazeEntity> goals;
     
     /**
      * Creates a new TestScenario. In this scenario, a goal is randomly
@@ -25,15 +32,26 @@ public class GatherPointsScenario extends AbstractScenario {
      * is gathered, a new one spawns in an unoccupied space.
      */
     public GatherPointsScenario() {
-        goal = new MazeEntity(0, 0);
-        runners = new ArrayList<>();
+        goals = new ArrayList<>();
+        runners = new ArrayList<>();        
+        modifiableSettings = new HashMap<>();   
+        
+        modifiableSettings.put("goals", new Setting<Integer>(
+                Integer.class,
+                "Number of goals in the maze",
+                v -> (v > 0 && v <= 10),
+                Integer::parseInt));        
+        modifiableSettings.get("goals").addObserver(this);
+        modifiableSettings.get("goals").setValue(1);
     }
     
     @Override
     public void setMaze(Maze maze) {
         super.setMaze(maze);
-        maze.addEntity(goal);
-        resetGoal();
+        for (MazeEntity goal : goals) {
+            maze.addEntity(goal);
+            resetGoal(goal);
+        }
     }
 
     @Override
@@ -67,34 +85,72 @@ public class GatherPointsScenario extends AbstractScenario {
     }
 
     @Override
-    public boolean handleCollision(MazeEntity ent1, MazeEntity ent2) {
-        if (ent1 != goal && ent2 != goal)
-            return true;
-        
-        Runner r = (Runner) (ent1 instanceof Runner ? ent1 : ent2);
+    public boolean handleRunnerMove(Runner runner, Direction dir) {
+            
+        /* Calculate the position of the runner after moving to said
+         * direction
+         */
+        int nx = runner.getPosition().x + dir.deltaX;
+        int ny = runner.getPosition().y + dir.deltaY;
 
-        if (!score.containsKey(r))
-            score.put(r, 1);
-        score.put(r, score.get(r) + 1);
+        // If the runner tries to move illegally, skip its turn.
+        if (maze.get(nx, ny) == MazeBlock.WALL)
+            return false;
 
-        resetGoal();        
+        List<MazeEntity> entities = maze.getEntitiesAt(nx, ny);
+        boolean collisionAllowedAll = entities.stream()
+                .allMatch(e -> isCollisionAllowed(runner, e));
+
+        /* If the runner tries to move illegally on top of some entity with
+         * whom collision is not allowed, skip its turn.
+         */
+        if (!collisionAllowedAll)
+            return false;
+
+        for (MazeEntity ent : entities)
+            handleCollision(runner, ent);
+
+        runner.setPosition(nx, ny);    
         return true;
+    }
+    
+    private void handleCollision(Runner runner, MazeEntity entity) {            
+        if (!goals.contains(entity))
+            return;
+        
+        setScore(runner, getScore(runner) + 1);
+        resetGoal(entity);
     }
 
     @Override
     public List<MazeEntity> getRunnerGoals(Runner runner) {
-        return Arrays.asList(goal);
+        return new ArrayList<>(goals);
     }
     
-    private void resetGoal() {
+    private void resetGoal(MazeEntity goal) {
         Random r = new Random();
         int x, y;
         do {
             x = r.nextInt(maze.getWidth());
             y = r.nextInt(maze.getHeight());
-        } while (maze.get(x, y) != MazeBlock.FLOOR);
+        } while (maze.get(x, y) != MazeBlock.FLOOR || maze.getEntitiesAt(x, y).size() > 0);
         
         goal.setPosition(x, y);
+    }
+
+    @Override
+    public Map<String, Setting> getModifiableSettings() {        
+        return modifiableSettings;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        int numGoals = (int) modifiableSettings.get("goals").getValue();
+        
+        while (goals.size() < numGoals)
+            goals.add(new MazeEntity(0, 0));
+        while (goals.size() > numGoals)
+            goals.remove(goals.size() - 1);
     }
     
 }

@@ -22,52 +22,56 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus.scenario;
+package com.github.tilastokeskus.minotaurus.util;
 
-import com.github.tilastokeskus.minotaurus.maze.Maze;
-import java.util.Map;
-import com.github.tilastokeskus.minotaurus.runner.Runner;
-import com.github.tilastokeskus.minotaurus.util.HashMap;
+public class Benchmark {
+    
+    Runnable before;
+    Runnable r;
+    Runnable after;
+    
+    public Benchmark(Runnable r) {
+        this(() -> {}, r, () -> {});
+    }
+    
+    public Benchmark(Runnable before, Runnable r) {
+        this(before, r, () -> {});
+    }
+    
+    public Benchmark(Runnable before, Runnable r, Runnable after) {
+        this.before = before;
+        this.r = r;
+        this.after = after;
+    }
+    
+    public int runBenchmark(int times) {        
+        return getBenchmarkAverage(() -> {
+            before.run();
+            
+            long start = System.nanoTime();
+            r.run();
+            long end = System.nanoTime();
+            
+            after.run();
+            return millis(start, end);
+        }, times);
+    }
+    
+    private int getBenchmarkAverage(Benchmarkable b, int times) {
+        
+        // warmup
+        for (int i = 0; i < 100; i++)
+            b.run();
+        
+        int totalTime = 0;
+        for (int i = 0; i < times; i++)
+            totalTime += b.run();
+        
+        return totalTime / times;
+    }
+    
+    private int millis(long start, long end) {
+        return (int) ((end - start) / 1000000);
+    }
 
-/**
- * A skeletal implementation of a Scenario to help creating scenarios as easily
- * as possible.
- */
-public abstract class AbstractScenario implements Scenario {
-    
-    protected final Map<Runner, Integer> scoreMap;    
-    protected Maze maze;
-    
-    private String title;
-    
-    public AbstractScenario() {
-        this.scoreMap = new HashMap<>();
-    }
-    
-    @Override
-    public void setMaze(Maze maze) {
-        this.maze = maze;
-    }
-    
-    @Override
-    public int getScore(Runner runner) {
-        return scoreMap.containsKey(runner) ? scoreMap.get(runner) : 0;
-    }
-    
-    @Override
-    public int setScore(Runner runner, int score) {
-        int oldScore = scoreMap.containsKey(runner) ? scoreMap.get(runner) : 0;
-        scoreMap.put(runner, score);
-        return oldScore;
-    }
-    
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    @Override
-    public String toString() {
-        return this.title;
-    }
 }
