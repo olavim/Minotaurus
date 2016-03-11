@@ -108,7 +108,7 @@ The reason why `put` is, in both cases, more expensive than the other operations
 
 #### PriorityQueue
 
-Similar to benchmarking HashMap, all benchmarks are an average of numerous consecutive calls to an operation. Because `contains` and `remove` are slow operations, both having a worst case of `O(n)` time complexity, all operations were tested with only 100000 elements.
+Similar to benchmarking HashMap, all benchmarks are an average of numerous consecutive calls to an operation. Because `contains` and `remove` are slow operations, both having a worst case of `O(n)` time complexity, all operations were tested with only 100000 elements. So for example `contains` was called 100000 times on a queue that has 100000 elements.
 
 | Operation | Integers - Time | Strings - Time |
 |-----------|----------------|-----------------|
