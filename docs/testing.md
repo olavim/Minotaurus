@@ -113,6 +113,25 @@ Below are more details about each classes' tests, more specifically, what has be
   - Should throw an exception when index is out of bounds.
 - `toArray()`
   - Should return an array from the list.
+   
+#### LinkedListStack
+
+- Constructor
+  - Size should be initially 0.
+  - Should be initially empty.
+- `isEmpty()`
+  - Should return true if no elements have been added.
+  - Should return false if stack contains elements.
+- `add()`
+  - Size should grow when elements are added.
+  - Stack should contain elements that have been added.
+- `pop()`
+  - Should return and remove that last added element.
+  - Size should decrease after popping.
+- `peek()`
+  - Should return the last added element without removing it.
+- `clear()`
+  - Size should be 0 after clearing.
   
 ## Benchmarks
 
