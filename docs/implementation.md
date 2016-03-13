@@ -76,11 +76,12 @@ When the number of goals is reduced to 1, the two runners are basically identica
 
 MazeGenerator | Scenario | Runners
 --------------|----------|--------
-`ArenaMazeGenerator` | `GatherPointsScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`
+`ArenaMazeGenerator` | `GatherPointsScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`, `SimpletonRunner`
 
 Runner | Score
 -------|------
 `AStartRunner` | 195
 `AStartRunnerSimple` | 193
+`SimpletonRunner` | 197
 
-When the maze contains no obstacles, the seemingly closest goal is also the truly closest goal, and thus the operation of the two runners is once again basically identical. Both runners are again equally likely to win.
+When the maze contains no obstacles, even the usually useless `SimpletonRunner` can shine. Now the seemingly closest goal is also the truly closest goal, and thus the operation of the three runners is once again basically identical. All runners are again equally likely to win.
