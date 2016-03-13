@@ -41,3 +41,13 @@ I haven't considered any real optimizations for the other data structures, excep
 `HashMap`'s own rehash algorithm could perhaps be improved, but it would have to be tested against so much real world data that I simply won't bother. Within the constraints of this program, the data is distributed amongst different buckets equally well with my and Java's implementation, so I can only draw the conclusion that improving the rehash function wouldn't lead to any real performance gains. Reading Java's `HashMap` documentation on its rehash function, the sole purpose of the function is to better distribute elements amongst buckets when the elements *have a poor hashCode function*. I have used NetBean's automatic hashcode function generation, and it seems to be doing a decent job.
 
 `PriorityQueue` is currently backed by a *binary heap*. `PriorityQueue` isn't designed for searching elements, and as such the `contains` and `remove` operations have `O(n)` time requirements for non-minimum elements. This could in fact be slightly improved to have just a `O(n/2)` time requirement, with the tradeoff of a bit more required space and a slightly greater constant factor for time. The other possible improvement is to change the class to be backed by a *fibonacci heap*. I never tried it because it would have taken too much time to do, and I was afraid the performance improvements wouldn't have been real due to much bigger constant factors.
+
+#### Simulations
+
+All scores are taken from the point where one of the runners have obtained a score of **200**.
+
+---
+
+MazeGenerator | Scenario | Runners
+--------------|----------|--------
+`DFSMazeGeneratorPretty` | `GatherPointScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`
