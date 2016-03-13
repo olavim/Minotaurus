@@ -71,3 +71,7 @@ public class ArenaMazeGenerator extends AbstractMazeGenerator {
 
 }
 ```
+
+The above example generates an arena-like maze, everything being floor except for the boundaries, which are wall.
+
+The `generateMaze` returns a `Maze` object, which can be constructed with a 2D `MazeBlock` matrix. `MazeBlock` is an enum class containing the `Mazeblock.FLOOR` and `MazeBlock.WALL` enums. What these signify should be self-explanatory.
