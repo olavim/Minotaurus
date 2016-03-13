@@ -6,11 +6,13 @@ classes, which will not be tested. Some of the less important classes, such as `
 
 By core elements I'm talking about the plugin loader, which consists of `JarClassLoader` and `PluginLoader`, data structures, which at the moment consists of `LinkedListStack`, and the `Maze` class.
 
-Later on more data structures will be added and then tested, and all the implementations of `Scenario`, `MazeGenerator` and `Runner` will be thorougly tested.
+Later on more data structures will be added and then tested, and all the implementations of `MazeGenerator`, `Scenario`, and `Runner` will be thorougly tested.
 
 ## How has it been tested
 
 All tests are written with JUnit. The tests themselves are tested with the help of PIT mutation testing. For more specific info about what has been tested and how, refer to the actual tests located [here](../Minotaurus/src/test).
+
+The implementations of `MazeGenerator`, `Scenario`, and `Runner` are an exception in that they haven't been tested with JUnit or similar tools. They have been tested in practice and deemed functional.
   
 ## Benchmarks
 
@@ -41,6 +43,10 @@ ExtractMin | 19ms | 45ms
 Remove | 23ms | 18072ms
 
 `Remove` is faster than `contains` because, after each operation, the queue is left with one less element.
+
+#### About benchmarking Runners
+
+Though benchmarking the different algorithms present in the implementations of `Runner` would seem like a reasonable thing to do, I have not done so since the running time of those implementations is not important. The goal of runners is to obtain as big of a score as possible as defined by the scenario being used. How much time a runner takes to determine its moves is unimportant, unless of course a scenario scores runners by the time they take to determine a move.
 
 ## How you can test it
 
