@@ -88,6 +88,31 @@ Below are more details about each classes' tests, more specifically, what has be
   - Should return an iterator over the elements in the set.
 - `toArray()`
   - Should return an array from the set's elements.
+   
+#### ArrayList
+
+- `add()`
+  - Size should grow when elements are added.
+  - Capacity should grow when the next element wouldn't fit in the backing array.
+  - Element should be contained in the list after adding.
+  - Calling without the index parameter should add elements at the end of the list.
+  - Calling with index should add elements at the specified index.
+  - Should throw an exception when called with index and index is out of bounds.
+- `contains()`
+  - Should return true is element is contained in the list.
+  - Should return false if element is not contained in the list.
+- `set()`
+  - Should set element at the specified index.
+  - Should throw an exception when index is out of bounds.
+- `remove()`
+  - Removed element should not be contained in the list after removal.
+  - Size should decrease after removal.
+  - Should throw an exception when called with index and index is out of bounds.
+- `get()`
+  - Should return element at the specified index.
+  - Should throw an exception when index is out of bounds.
+- `toArray()`
+  - Should return an array from the list.
   
 ## Benchmarks
 
