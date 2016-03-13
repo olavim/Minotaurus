@@ -44,6 +44,18 @@ public abstract class AbstractScenario implements Scenario {
     }
     
     @Override
+    public void reset() {
+        this.scoreMap = new HashMap<>();
+        this.maze = null;
+        _reset();
+    }
+    
+    /**
+     * Initializes the scenario to the state it was in when it was first created.
+     */
+    public abstract void _reset();
+    
+    @Override
     public void setMaze(Maze maze) {
         this.maze = maze;
     }

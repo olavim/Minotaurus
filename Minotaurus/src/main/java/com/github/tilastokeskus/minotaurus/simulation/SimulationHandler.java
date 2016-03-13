@@ -75,7 +75,7 @@ public class SimulationHandler extends Observable {
      * 
      * @param rate Delay, in milliseconds, between each move.
      */
-    public void startSimulation(int rate) {
+    public void startSimulation(int rate, int cap) {
         
         // Initialize the scenario and ask it to place the runners in the maze.
         this.scenario.setMaze(maze);
@@ -96,6 +96,15 @@ public class SimulationHandler extends Observable {
             
             if (runners.isEmpty())
                 stop();
+            
+            if (cap > 0) {
+                for (Runner r : runners) {
+                    if (scenario.getScore(r) >= cap) {
+                        stop();
+                        break;
+                    }
+                }
+            }
         }, rate, rate, TimeUnit.MILLISECONDS);
     }
     

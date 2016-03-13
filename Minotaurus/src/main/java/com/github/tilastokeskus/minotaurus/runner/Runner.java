@@ -55,14 +55,16 @@ public abstract class Runner extends MazeEntity implements Plugin {
      * @param clazz Class object to create an instance of.
      * @param width Width of the maze to generate.
      * @param height Height of the maze to generate.
+     * @param rate Delay, in milliseconds, between moves.
      */
-    public static void testGenerator(Class<? extends Runner> clazz,
-            int width, int height) {
+    public static void testRunner(Class<? extends Runner> clazz,
+            int width, int height, int rate) {
         try {
             Runner runner = clazz.newInstance();
             Main.startSimulation(new TestMazeGenerator(),
                                     new TestScenario(),
-                                    Arrays.asList(runner));
+                                    Arrays.asList(runner),
+                                    rate, 0);
         } catch (InstantiationException | IllegalAccessException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }

@@ -98,6 +98,14 @@ public class ArrayListTest {
     }
 
     @Test
+    public void arrayListContainsShouldReturnFalseIfElementDoesNotExist() {
+        for (int i = 0; i < ITERATIONS; i+=2)
+            list.add(i);        
+        for (int i = 1; i < ITERATIONS; i+=2)
+            assertFalse(list.contains(i));
+    }
+
+    @Test
     public void arrayListSetShouldSetElementAtIndex() {
         for (int i = 0; i < ITERATIONS; i++)
             list.add(i);
@@ -148,15 +156,6 @@ public class ArrayListTest {
             list.add(i);
         assertThrown(() -> list.set(-1, 0)).expect(IndexOutOfBoundsException.class);
         assertThrown(() -> list.set(ITERATIONS, 0)).expect(IndexOutOfBoundsException.class);
-    }
-
-    @Test
-    public void arrayListContainsShouldReturnFalseIfElementDoesNotExist() {
-        for (int i = 0; i < ITERATIONS; i+=2)
-            list.add(i);
-        
-        for (int i = 1; i < ITERATIONS; i+=2)
-            assertFalse(list.contains(i));
     }
 
     @Test

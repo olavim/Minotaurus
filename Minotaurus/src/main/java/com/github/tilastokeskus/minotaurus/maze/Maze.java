@@ -111,7 +111,7 @@ public class Maze implements Observer, Cloneable {
      * @param y         Location in y-axis.
      * @param block    Entity to write to the location.
      */
-    protected void set(int x, int y, MazeBlock block) {
+    public void set(int x, int y, MazeBlock block) {
         testBounds(x, y);
         layout[y][x] = block;
     }
@@ -251,16 +251,12 @@ public class Maze implements Observer, Cloneable {
     public Maze clone() {
         try {
             Maze clone = (Maze) super.clone();
-    
-            Set<MazeEntity> s = new HashSet<>();
-            Map<Position, List<MazeEntity>> m = new HashMap<>();            
-            MazeBlock[][] l = new MazeBlock[getHeight()][getHeight()];
-            for (int i = 0; i < getHeight(); i++)
-                l[i] = Arrays.copyOf(layout[i], layout[i].length);
                 
-            clone.entitySet = s;
-            clone.entityMap = m;
-            clone.layout = l;
+            clone.entitySet = new HashSet<>();
+            clone.entityMap = new HashMap<>();
+            clone.layout = new MazeBlock[getHeight()][];
+            for (int i = 0; i < getHeight(); i++)
+                clone.layout[i] = Arrays.copyOf(layout[i], layout[i].length);
             return clone;
         } catch (CloneNotSupportedException ex) {
             return null;

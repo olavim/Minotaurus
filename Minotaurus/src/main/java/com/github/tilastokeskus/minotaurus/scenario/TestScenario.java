@@ -58,6 +58,12 @@ public class TestScenario extends AbstractScenario {
     }
     
     @Override
+    public void _reset() {
+        goal = new MazeEntity(0, 0);
+        runner = null;
+    }
+    
+    @Override
     public void setMaze(Maze maze) {
         super.setMaze(maze);
         maze.addEntity(goal);

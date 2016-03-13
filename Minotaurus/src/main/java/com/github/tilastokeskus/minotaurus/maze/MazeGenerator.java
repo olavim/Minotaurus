@@ -29,6 +29,7 @@ import com.github.tilastokeskus.minotaurus.ui.MazePanel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
 public interface MazeGenerator extends Plugin {
@@ -49,8 +50,9 @@ public interface MazeGenerator extends Plugin {
             MazeGenerator gen = clazz.newInstance();
             Maze maze = gen.generateMaze(width, height);
             JFrame f = new JFrame("Maze");
-            f.getContentPane().setLayout(new MigLayout("", "[grow]", "[grow]"));
-            f.getContentPane().add(new MazePanel(maze));
+            JPanel p = new JPanel(new MigLayout("", "[grow]", "[grow]"));
+            p.add(new MazePanel(maze));
+            f.setContentPane(p);
             f.pack();
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setVisible(true);

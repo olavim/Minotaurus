@@ -111,16 +111,16 @@ public class PriorityQueueTest {
     }
     
     @Test
-    public void hashMapPerformanceTest() {
+    public void priorityQueuePerformanceTest() {
         if (BENCHMARK) {
-            hashMapPerformanceTestIntegers();
-            hashMapPerformanceTestStrings();
+            priorityQueuePerformanceTestIntegers();
+            priorityQueuePerformanceTestStrings();
         }
     }
     
     int x = 0;
     
-    public void hashMapPerformanceTestIntegers() {
+    public void priorityQueuePerformanceTestIntegers() {
         int numIters = 100000;
         List<Integer> shuffled = IntStream.range(0, numIters).boxed().collect(Collectors.toList());
         Collections.shuffle(shuffled);
@@ -161,7 +161,7 @@ public class PriorityQueueTest {
         System.out.println("Integers - Remove: " + removeAvg);        
     }
     
-    public void hashMapPerformanceTestStrings() {
+    public void priorityQueuePerformanceTestStrings() {
         x = 0;
         int numIters = 100000;
         

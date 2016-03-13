@@ -139,6 +139,11 @@ public interface Scenario extends Plugin {
     Map<String, Setting> getModifiableSettings();
     
     /**
+     * Initializes the scenario to the state it was in when it was first created.
+     */
+    void reset();
+    
+    /**
      * Returns a shallow copy of this class instance.
      * 
      * @return A MazeGenerator.

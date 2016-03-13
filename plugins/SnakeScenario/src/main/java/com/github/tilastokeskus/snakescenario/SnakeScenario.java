@@ -33,10 +33,16 @@ public class SnakeScenario extends AbstractScenario {
     private static final int MIN_RUNNERS = 1;
     private static final int MAX_RUNNERS = 4;
     
-    private final HashMap<Runner, List<MazeEntity>> snakes;
-    private final MazeEntity goal;
+    private HashMap<Runner, List<MazeEntity>> snakes;
+    private MazeEntity goal;
     
     public SnakeScenario() {
+        snakes = new HashMap<>();
+        goal = new MazeEntity(0, 0);
+    }
+    
+    @Override
+    public void _reset() {
         snakes = new HashMap<>();
         goal = new MazeEntity(0, 0);
     }

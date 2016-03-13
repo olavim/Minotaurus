@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 public class AStarRunner extends Runner {
     
     public static void main(String[] args) {
-        Runner.testGenerator(AStarRunner.class, 20, 20);
+        Runner.testRunner(AStarRunner.class, 20, 20, 50);
     }
     
     private static final Direction dirs[] = new Direction[] {

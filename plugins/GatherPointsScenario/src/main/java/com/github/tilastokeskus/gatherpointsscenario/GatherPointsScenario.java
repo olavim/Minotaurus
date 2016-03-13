@@ -20,12 +20,12 @@ import java.util.function.Predicate;
 
 public class GatherPointsScenario extends AbstractScenario implements Observer {
 
-    private static final int MIN_RUNNERS = 2;
+    private static final int MIN_RUNNERS = 1;
     private static final int MAX_RUNNERS = 4;
 
-    private final Map<String, Setting> modifiableSettings;
-    private final List<Runner> runners;
-    private final List<MazeEntity> goals;
+    private Map<String, Setting> modifiableSettings;    
+    private List<Runner> runners;
+    private List<MazeEntity> goals;
     
     /**
      * Creates a new TestScenario. In this scenario, a goal is randomly
@@ -34,9 +34,24 @@ public class GatherPointsScenario extends AbstractScenario implements Observer {
      */
     public GatherPointsScenario() {
         goals = new ArrayList<>();
-        runners = new ArrayList<>();        
-        modifiableSettings = new HashMap<>();   
+        runners = new ArrayList<>();
         
+        modifiableSettings = new HashMap<>();
+        modifiableSettings.put("goals", new Setting<Integer>(
+                Integer.class,
+                "Number of goals in the maze",
+                v -> (v > 0 && v <= 10),
+                Integer::parseInt));        
+        modifiableSettings.get("goals").addObserver(this);
+        modifiableSettings.get("goals").setValue(1);
+    }
+    
+    @Override
+    public void _reset() {
+        goals = new ArrayList<>();
+        runners = new ArrayList<>();
+        
+        modifiableSettings = new HashMap<>();
         modifiableSettings.put("goals", new Setting<Integer>(
                 Integer.class,
                 "Number of goals in the maze",

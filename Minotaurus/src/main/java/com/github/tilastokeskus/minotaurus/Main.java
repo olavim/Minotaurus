@@ -48,7 +48,7 @@ public class Main {
     }
     
     public static void startSimulation(MazeGenerator gen, Scenario scenario,
-            List<Runner> runners) {
+            List<Runner> runners, int rate, int cap) {
         SimulationHandler simHandler = new SimulationHandler(gen, scenario, runners);
         SimulationWindow mazeWindow = new SimulationWindow(simHandler);
         mazeWindow.getFrame().addWindowListener(new WindowAdapter() {
@@ -59,7 +59,7 @@ public class Main {
         });
         simHandler.addObserver(mazeWindow);
         mazeWindow.show();
-        simHandler.startSimulation(10);
+        simHandler.startSimulation(rate, cap);
     }
     
 }

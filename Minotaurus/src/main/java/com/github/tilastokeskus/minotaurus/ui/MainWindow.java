@@ -41,6 +41,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
@@ -52,10 +53,13 @@ public class MainWindow extends AbstractGUI {
     private static final Border PANEL_PADDING = new EmptyBorder(10, 10, 10, 10);
     private static final Border PANEL_BORDER =  BorderFactory.createMatteBorder(
             1, 1, 1, 1, new Color(200, 200, 200));
+    private static final Font LABEL_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 10);
     
     private Chooser<MazeGenerator> mazeGeneratorChooser;
     private ScenarioChooser scenarioChooser;
     private ComponentList<Runner> runnerList;
+    private JTextField rateField;
+    private JTextField scoreCapField;
 
     @Override
     public void run() {
@@ -106,20 +110,45 @@ public class MainWindow extends AbstractGUI {
         runnerListPanel.add(addRunnerBtn, "right, gapx 0 10");
         runnerListPanel.add(runnerList, "grow");
         
+        JPanel settingPanel = new JPanel(new MigLayout("wrap 1", "[grow]"));
+        settingPanel.setBorder(PANEL_PADDING);
+        
+        rateField = new JTextField();
+        scoreCapField = new JTextField();
+        JPanel rateSettingPanel = createSettingPanel("Rate of Simulation", rateField, "50");
+        JPanel scoreCapSettingPanel = createSettingPanel("End simulation at score", scoreCapField, "200");
+        
+        settingPanel.add(rateSettingPanel, "grow");
+        settingPanel.add(scoreCapSettingPanel, "grow");
+        
         container.add(pluginPanel, "north");
         container.add(runnerListPanel, "north");
+        container.add(settingPanel, "north");
         container.add(buttonPanel, "south");
     }
     
-    private JPanel createPluginChooserPanel(String labelStr, Chooser chooser) {
-        Font labelFont = new Font(Font.SANS_SERIF, Font.BOLD, 10);        
-        
-        JPanel northPanel = new JPanel(new MigLayout("insets 1", "[]"));
+    private JPanel createSettingPanel(String labelStr, JTextField field, String defaultVal) {
+        JPanel panel = new JPanel(new MigLayout("insets 0", "[grow]"));
+        field.setText(defaultVal);
+        JPanel label = createLabelPanel(labelStr);
+        panel.add(label);
+        panel.add(field, "south, grow");
+        return panel;
+    }
+    
+    private JPanel createLabelPanel(String labelStr) {        
+        JPanel panel = new JPanel(new MigLayout("insets 1", "[]"));
         JLabel label = new JLabel(labelStr);
-        label.setFont(labelFont);
+        label.setFont(LABEL_FONT);
         label.setForeground(new Color(200, 200, 200));
-        northPanel.setBackground(new Color(80, 80, 80));   
-        northPanel.add(label, "gap 2 4 0 0");
+        panel.setBackground(new Color(80, 80, 80));   
+        panel.add(label, "gap 2 4 0 0");
+        return panel;
+    }
+    
+    private JPanel createPluginChooserPanel(String labelStr, Chooser chooser) {
+        
+        JPanel labelPanel = createLabelPanel(labelStr);
         
         JPanel southPanel = new JPanel(new MigLayout("", "[grow, fill]"));
         southPanel.setBackground(new Color(220, 220, 220));
@@ -127,7 +156,7 @@ public class MainWindow extends AbstractGUI {
         southPanel.setBorder(PANEL_BORDER);
         
         JPanel pluginPanel = new JPanel(new MigLayout("insets 0", "[grow]"));
-        pluginPanel.add(northPanel, "");
+        pluginPanel.add(labelPanel, "");
         pluginPanel.add(southPanel, "south, grow");
         
         return pluginPanel;
@@ -154,6 +183,7 @@ public class MainWindow extends AbstractGUI {
         public void actionPerformed(ActionEvent e) {
             MazeGenerator gen = mazeGeneratorChooser.getSelectedObject().clone();
             Scenario scen = scenarioChooser.getSelectedObject().clone();
+            scen.reset();
             List<Runner> runners = runnerList.getObjects();
             
             if (runners.size() < scen.getMinRunners()) {
@@ -169,7 +199,9 @@ public class MainWindow extends AbstractGUI {
                         "Rules not met",
                         JOptionPane.WARNING_MESSAGE);
             } else {
-                Main.startSimulation(gen, scen, runners);
+                int rate = Integer.parseInt(rateField.getText());
+                int cap = Integer.parseInt(scoreCapField.getText());
+                Main.startSimulation(gen, scen, runners, rate, cap);
             }
         }        
     }

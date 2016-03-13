@@ -7,7 +7,6 @@
 package com.github.tilastokeskus.simpletonrunner;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
-import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.util.Direction;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
@@ -22,7 +21,7 @@ import java.util.function.Predicate;
 public class SimpletonRunner extends Runner {
     
     public static void main(String[] args) {
-        Runner.testGenerator(SimpletonRunner.class, 20, 20);
+        Runner.testRunner(SimpletonRunner.class, 20, 20, 50);
     }
     
     private static final Direction dirs[] = new Direction[] {
