@@ -40,3 +40,12 @@ To add a runner, click on the **Add Runner** button. To specify a runner's algor
 Clicking on this button starts the simulation, given that all required components are in place. A new window will open showcasing the simulation. Below the simulation panel are each runners' current score, labeled by the associated runner's color and title.
 
 To end the simulation abruptly, simply close the simulation window.
+
+## Implementing plugins
+
+Implementing plugins requires **Java 8** and the main program as a dependency. After these are met, implementing plugins is quite straight forward.
+
+#### MazeGenerator
+
+To implement a `MazeGenerator`, refer to the below example:
+
