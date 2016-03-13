@@ -49,3 +49,25 @@ Implementing plugins requires **Java 8** and the main program as a dependency. A
 
 To implement a `MazeGenerator`, refer to the below example:
 
+```java
+public class ArenaMazeGenerator extends AbstractMazeGenerator {
+
+    @Override
+    public Maze generateMaze(int width, int height) {
+        MazeBlock[][] layout = new MazeBlock[height][width];
+        
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++)
+                layout[i][j] = isBoundary(j, i, width, height) ?
+                        MazeBlock.WALL :
+                        MazeBlock.FLOOR;
+        
+        return new Maze(layout);
+    }
+    
+    private boolean isBoundary(int x, int y, int w, int h) {
+        return x == 0 || x == w - 1 || y == 0 || y == h - 1;
+    }
+
+}
+```
