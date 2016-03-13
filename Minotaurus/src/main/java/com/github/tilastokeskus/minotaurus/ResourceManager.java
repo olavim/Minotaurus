@@ -68,7 +68,8 @@ public class ResourceManager {
     }
     
     private static URL getURLFromPath(String resource, boolean createDir) {
-        File f = new File(PATH + '/' + resource);
+        File f = new File(new File(PATH).getParent() + '/' + resource);
+        System.out.println(f.getPath());
         
         // Create directory if it doesn't exist (nothing happens if it does).
         if (createDir)

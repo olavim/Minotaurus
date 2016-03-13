@@ -162,17 +162,19 @@ public class JarClassLoader {
     static URL[] getJarURLs(final File dir, boolean recursive) {
         List<URL> urlList = new ArrayList<>();
         
-        for (final File fileEntry : dir.listFiles()) {
-            if (fileEntry.isDirectory() && recursive) {
-                URL[] urlsInFolder = getJarURLs(fileEntry, recursive);
-                urlList.addAll(Arrays.asList(urlsInFolder));
-            } else if (fileEntry.getName().toLowerCase().endsWith(".jar")) {
-                
-                // File is a Jar archive.
-                try {                    
-                    urlList.add(fileEntry.toURI().toURL());
-                } catch (MalformedURLException ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
+        if (dir.exists()) {
+            for (final File fileEntry : dir.listFiles()) {
+                if (fileEntry.isDirectory() && recursive) {
+                    URL[] urlsInFolder = getJarURLs(fileEntry, recursive);
+                    urlList.addAll(Arrays.asList(urlsInFolder));
+                } else if (fileEntry.getName().toLowerCase().endsWith(".jar")) {
+
+                    // File is a Jar archive.
+                    try {                    
+                        urlList.add(fileEntry.toURI().toURL());
+                    } catch (MalformedURLException ex) {
+                        LOGGER.log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }

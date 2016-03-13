@@ -6,3 +6,7 @@
 /plugins/InvalidTestPlugin/target/
 /plugins/GatherPointsScenario/target/
 /plugins/SimpletonRunner/target/
+/plugins/AStarRunner/target/
+/plugins/com.github.tilastokeskus.AStarRunnerSimple/target/
+/plugins/ArenaMazeGenerator/target/
+/plugins/SnakeScenario/target/
