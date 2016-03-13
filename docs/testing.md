@@ -132,6 +132,21 @@ Below are more details about each classes' tests, more specifically, what has be
   - Should return the last added element without removing it.
 - `clear()`
   - Size should be 0 after clearing.
+  - Should not contain any elements after clearing.
+   
+#### PriorityQueue
+
+- `add()`
+  - Should add new elements to queue.
+  - Size should grow when new elements are added.
+- `min()`
+  - Should return the minimum element in the queue.
+- `extractMin()`
+  - Should return the minimum element in the queue.
+  - Should remove the minimum element from the queue.
+- `clear()`
+  - Size should be 0 after clearing.
+  - Should not contain any elements after clearing.
   
 ## Benchmarks
 
