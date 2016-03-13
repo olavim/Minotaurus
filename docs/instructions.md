@@ -28,3 +28,15 @@ Scenario is the ruleset of the simulation. The scenario defines the following th
 A scenario might also have additional responsibilities, such as inserting entities in the maze.
 
 To choose a scenario, click on the menu icon on the right edge below the **Maze Generator** label. Depending on the scenario chosen, a settings icon might appear next to the menu icon. Click on it to change scenario-specific settings.
+
+#### Runners
+
+A runner is an artificial intelligence moving in the maze. In most cases it's nothing more than some path finding algorithm moving towards the closest goal it can find, but depending on the scenario it's intended for, it might be a little more complicated than that.
+
+To add a runner, click on the **Add Runner** button. To specify a runner's algorithm, click on the menu icon on the appropriate row. To remove a runner, click on the delete icon on the appropriate row.
+
+#### Start
+
+Clicking on this button starts the simulation, given that all required components are in place. A new window will open showcasing the simulation. Below the simulation panel are each runners' current score, labeled by the associated runner's color and title.
+
+To end the simulation abruptly, simply close the simulation window.
