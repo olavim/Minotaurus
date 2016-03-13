@@ -51,3 +51,10 @@ All scores are taken from the point where one of the runners have obtained a sco
 MazeGenerator | Scenario | Runners
 --------------|----------|--------
 `DFSMazeGeneratorPretty` | `GatherPointScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`
+
+Averages after 10 simulations:
+
+Runner | Score
+-------|------
+`AStartRunner` | 200
+`AStartRunnerSimple` | 169
