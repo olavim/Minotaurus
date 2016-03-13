@@ -37,4 +37,6 @@ The program and its plugins are written in **Java 8**.
 
 [**Instructions**](docs/instructions.md)
 
+[**JavaDocs**](http://tilastokeskus.github.io/Minotaurus/)
+
 [**Infoa vertaisarvioijille ja tarkastajille**](docs/arv-info.md)
