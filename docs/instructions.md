@@ -82,11 +82,15 @@ Further examples can be found [here](../plugins).
 
 #### Scenario
 
+All implementations of `Scenario` should implement the `Scenario` interface, though it is again recommended to extends the `AbstractScenario` to simplify this process.
+
 Giving a small example for a `Scenario` implementation is a bit harder, so please refer to [examples](../plugins) and the javadoc.
 
 #### Runner
 
-To implement a `Runner`, refer to the below example:
+All implementations of `Runner` should extend the `Runner` class.
+
+To implement a runner, refer to the below example:
 
 ```Java
 public class SimpletonRunner extends Runner {
