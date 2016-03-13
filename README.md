@@ -35,6 +35,6 @@ The program and its plugins are written in **Java 8**.
 - Benchmarks
 - How can you test it.
 
-**Instructions**
+[**Instructions**](docs/instructions.md)
 
 [**Infoa vertaisarvioijille ja tarkastajille**](docs/arv-info.md)
