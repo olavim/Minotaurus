@@ -44,16 +44,13 @@ I haven't considered any real optimizations for the other data structures, excep
 
 #### Simulations
 
-All scores are taken from the point where one of the runners have obtained a score of **200**.
+All scores are taken from the point where one of the runners have obtained a score of **200**. All reported scores are an average of **10** simulations.
 
 ---
 
 MazeGenerator | Scenario | Runners
 --------------|----------|--------
-`DFSMazeGeneratorPretty` | `GatherPointScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`
-
-
-**Averages after 10 simulations**
+`DFSMazeGeneratorPretty` | `GatherPointsScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`
 
 Runner | Score
 -------|------
@@ -61,3 +58,29 @@ Runner | Score
 `AStartRunnerSimple` | 169
 
 `AStartRunner` is simply a more robust AI, taking into consideration all goals in the playfield. `AStartRunnerSimple` calculates the closest goal and sticks with it until it has obtained it or the goal has been removed.
+
+---
+
+MazeGenerator | Scenario | Runners
+--------------|----------|--------
+`DFSMazeGeneratorPretty` | `GatherPointsScenario` with 1 goal | `AStartRunner`, `AStarRunnerSimple`
+
+Runner | Score
+-------|------
+`AStartRunner` | 194
+`AStartRunnerSimple` | 196
+
+When the number of goals is reduced to 1, the two runners are basically identical in their operation: a race to the same objective. Both runners are equally likely to win.
+
+---
+
+MazeGenerator | Scenario | Runners
+--------------|----------|--------
+`ArenaMazeGenerator` | `GatherPointsScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`
+
+Runner | Score
+-------|------
+`AStartRunner` | 195
+`AStartRunnerSimple` | 193
+
+When the maze contains no obstacles, the seemingly closest goal is also the truly closest goal, and thus the operation of the two runners is once again basically identical. Both runners are again equally likely to win.
