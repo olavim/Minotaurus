@@ -59,3 +59,5 @@ Runner | Score
 -------|------
 `AStartRunner` | 200
 `AStartRunnerSimple` | 169
+
+`AStartRunner` is simply a more robust AI, taking into consideration all goals in the playfield. `AStartRunnerSimple` calculates the closest goal and sticks with it until it has obtained it or the goal has been removed.
