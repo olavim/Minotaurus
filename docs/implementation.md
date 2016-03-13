@@ -52,7 +52,8 @@ MazeGenerator | Scenario | Runners
 --------------|----------|--------
 `DFSMazeGeneratorPretty` | `GatherPointScenario` with 4 goals | `AStartRunner`, `AStarRunnerSimple`
 
-Averages after 10 simulations:
+
+**Averages after 10 simulations**
 
 Runner | Score
 -------|------
