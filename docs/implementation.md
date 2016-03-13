@@ -27,7 +27,7 @@ Some exceptions apply:
 - `HashMap`'s and `HashSet`'s operations have amortized `O(1)` time complexity; in the worst case scenario all operations have `O(n)` complexity if all elements end up in the same bucket.
 - `Stack`'s access, insertion and deletion only apply to the top element of the stack.
 - `PriorityQueue`'s access can only access the minimum element in the queue. `PriorityQueue` also has a special operation, `extractMin`, which accesses and removes the minimum element in the queue. `extractMin`'s time requirement is `O(log n)`.
-- 
+
 ## Performance
 
 Benchmarks for `HashMap` and `PriorityQueue` are located in [**testing docs**](testing.md) 
