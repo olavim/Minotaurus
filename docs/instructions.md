@@ -2,10 +2,10 @@
 
 After running the program from the command line, or double-clicking the executable Jar, the main menu pops up. Here you can find the following sections, from top to bottom:
 
-- **Maze Generator**
-- **Scenario**
-- **Runners**
-- **Start**
+- Maze Generator
+- Scenario
+- Runners
+- Start
  
 #### Maze Generator
 
