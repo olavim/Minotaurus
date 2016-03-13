@@ -91,46 +91,60 @@ To implement a `Runner`, refer to the below example:
 ```Java
 public class SimpletonRunner extends Runner {
     
-    public static void main(String[] args) {
-        Runner.testGenerator(SimpletonRunner.class, 20, 20);
-    }
-    
     private static final Direction dirs[] = new Direction[] {
         Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT
     };
 
     @Override
-    public Direction getNextMove(Maze maze, Collection<MazeEntity> goals, Predicate<Position> positionPredicate) {
+    public Direction getNextMove(Maze maze, Collection<MazeEntity> goals, 
+            Predicate<Position> positionPredicate) {
+            
+        // Determine the closest goal and distance to it.
         MazeEntity goal = getClosestGoal(goals);
-        
         int bestDist = getDistanceTo(goal);
+        
+        // It is still unknown which direction leads to the least distance to the closest goal.
         Direction bestDir = Direction.NONE;
+        
         for (Direction dir : dirs) {
+        
+            // Calculate the new position.
             int nx = getPosition().x + dir.deltaX;
             int ny = getPosition().y + dir.deltaY;
             Position newPos = new Position(nx, ny);
             
+            // Is visiting the new position allowed?
             if (!positionPredicate.test(newPos))
                 continue;
             
+            // What is the distance to the closest goal from the new position?
             int dist = getManhattanDistance(newPos, goal.getPosition());
             
+            // If the distance is better than the best known, update the info.
             if (dist < bestDist) {
                 bestDist = dist;
                 bestDir = dir;
             }
         }
         
+        // Return the best direction.
         return bestDir;
     }
     
     private MazeEntity getClosestGoal(Collection<MazeEntity> goals) {
+    
+        // Init best known distance to infinity
         int bestDist = Integer.MAX_VALUE;
+        
+        // Closest known goal.
         MazeEntity bestGoal = null;
         
         for (MazeEntity goal : goals) {
             int dist = getDistanceTo(goal);      
             
+            /* If distance to this goal is smaller than the best known,
+             * update the best known distance.
+             */
             if (dist < bestDist) {
                 bestDist = dist;
                 bestGoal = goal;
