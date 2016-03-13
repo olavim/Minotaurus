@@ -78,6 +78,8 @@ The `generateMaze` returns a `Maze` object, which can be constructed with a 2D `
 
 All maze generator implementations should at least implement the `MazeGenerator` interface, though it is recommended to simply extend the `AbstractMazeGenerator` class to make things easier, as in the example above.
 
+Further examples can be found [here](plugins).
+
 #### Scenario
 
 To implement a `Scenario`, refer to the below example:
