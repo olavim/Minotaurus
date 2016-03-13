@@ -1,0 +1,10 @@
+com.github.tilastokeskus.minotaurus
+com.github.tilastokeskus.minotaurus.maze
+com.github.tilastokeskus.minotaurus.plugin
+com.github.tilastokeskus.minotaurus.runner
+com.github.tilastokeskus.minotaurus.scenario
+com.github.tilastokeskus.minotaurus.simulation
+com.github.tilastokeskus.minotaurus.ui
+com.github.tilastokeskus.minotaurus.ui.button
+com.github.tilastokeskus.minotaurus.ui.component
+com.github.tilastokeskus.minotaurus.util
