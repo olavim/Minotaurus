@@ -25,8 +25,6 @@
 package com.github.tilastokeskus.minotaurus.simulation;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
-import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
-import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
 import com.github.tilastokeskus.minotaurus.scenario.Scenario;
 import com.github.tilastokeskus.minotaurus.util.Direction;
@@ -35,6 +33,7 @@ import java.util.Observable;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.util.ArrayList;
 import com.github.tilastokeskus.minotaurus.util.Rotation;
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -64,7 +63,7 @@ public class SimulationHandler extends Observable {
      * @param runners Runners to use.
      */
     public SimulationHandler(MazeGenerator gen, Scenario scenario, List<Runner> runners) {
-        this.maze = gen.generateMaze(50, 50);
+        this.maze = gen.generateMaze(50, 50).clone();
         this.scenario = scenario;
         this.runners = runners;
         
@@ -94,21 +93,30 @@ public class SimulationHandler extends Observable {
             } catch (Exception ex) {
                 LOGGER.log(Level.SEVERE, "", ex);
             }
+            
+            if (runners.isEmpty())
+                stop();
         }, rate, rate, TimeUnit.MILLISECONDS);
     }
     
     /**
      * Simulates a single round, a round being when all runners have moved once.
+     * If a runner makes a move that is not allowed, that runner will be removed
+     * from the simulation.
      */
     private void simulateRound() {
-        for (Runner runner : runners) {
+        Iterator<Runner> it = runners.iterator();
+        while (it.hasNext()) {
+            Runner runner = it.next();
             
             // Get the direction the runner wants to go next.
-            Direction dir = runner.getNextMove(maze, scenario.getRunnerGoals(runner));
+            Direction dir = runner.getNextMove(maze, 
+                    scenario.getRunnerGoals(runner), 
+                    scenario.getPositionPredicate(runner));
             
-            boolean didMove = scenario.handleRunnerMove(runner, dir);
+            boolean acceptedMove = scenario.handleRunnerMove(runner, dir);
             
-            if (didMove) {
+            if (acceptedMove) {
             
                 // Update the runner to point in the direction it moved.
                 switch (dir) {
@@ -121,10 +129,13 @@ public class SimulationHandler extends Observable {
                     case DOWN:
                         runner.setRotation(Rotation.DOWN.angle);
                         break;
-                    default:
+                    case LEFT:
                         runner.setRotation(Rotation.LEFT.angle);
                         break;
                 }
+            } else {
+                System.out.println("illegal");
+                it.remove();
             }
         }
         

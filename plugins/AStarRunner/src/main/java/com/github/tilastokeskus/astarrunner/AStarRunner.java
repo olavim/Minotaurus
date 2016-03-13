@@ -7,7 +7,6 @@
 package com.github.tilastokeskus.astarrunner;
 
 import com.github.tilastokeskus.minotaurus.maze.Maze;
-import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.util.Direction;
@@ -17,6 +16,7 @@ import com.github.tilastokeskus.minotaurus.util.PriorityQueue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class AStarRunner extends Runner {
     
@@ -29,7 +29,7 @@ public class AStarRunner extends Runner {
     };
 
     @Override
-    public Direction getNextMove(Maze maze, Collection<MazeEntity> goals) {
+    public Direction getNextMove(Maze maze, Collection<MazeEntity> goals, Predicate<Position> positionPredicate) {
         
         // A queue of nodes we have yet to visit.
         PriorityQueue<Node> open = new PriorityQueue<>((Node o1, Node o2) -> Integer.compare(o1.score, o2.score));
@@ -76,8 +76,8 @@ public class AStarRunner extends Runner {
                 Position pos = n.pos;
                 Position newPos = new Position(pos.x + dir.deltaX, pos.y + dir.deltaY);
                 
-                // Skip direction if it would lead to a wall.
-                if (maze.get(newPos.x, newPos.y) != MazeBlock.FLOOR)
+                // Skip direction if it would lead to an illegal position.
+                if (!positionPredicate.test(newPos))
                     continue;
                 
                 Node newNode = new Node(newPos, n);

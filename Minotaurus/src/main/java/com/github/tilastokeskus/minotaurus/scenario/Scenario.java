@@ -31,7 +31,9 @@ import java.util.Collection;
 import java.util.List;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.util.Direction;
+import com.github.tilastokeskus.minotaurus.util.Position;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * A scenario is a situation, or a world, that a simulation aims to model. A
@@ -101,6 +103,15 @@ public interface Scenario extends Plugin {
     boolean isCollisionAllowed(MazeEntity ent1, MazeEntity ent2);
     
     /**
+     * Returns a predicate that tests if a position is allowed to be visited by
+     * a runner.
+     * 
+     * @param runner A Runner.
+     * @return A predicate.
+     */
+    Predicate<Position> getPositionPredicate(Runner runner);
+    
+    /**
      * Attempts to move a runner in some direction. If the movement is not
      * allowed, the runner is not moved.
      * 
@@ -126,5 +137,12 @@ public interface Scenario extends Plugin {
      * settings
      */
     Map<String, Setting> getModifiableSettings();
+    
+    /**
+     * Returns a shallow copy of this class instance.
+     * 
+     * @return A MazeGenerator.
+     */
+    Scenario clone();
 
 }

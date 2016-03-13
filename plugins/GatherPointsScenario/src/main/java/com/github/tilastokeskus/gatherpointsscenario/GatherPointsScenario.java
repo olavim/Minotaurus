@@ -4,7 +4,6 @@ import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.scenario.AbstractScenario;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -13,9 +12,11 @@ import com.github.tilastokeskus.minotaurus.scenario.Setting;
 import com.github.tilastokeskus.minotaurus.util.ArrayList;
 import com.github.tilastokeskus.minotaurus.util.Direction;
 import com.github.tilastokeskus.minotaurus.util.HashMap;
+import com.github.tilastokeskus.minotaurus.util.Position;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.function.Predicate;
 
 public class GatherPointsScenario extends AbstractScenario implements Observer {
 
@@ -151,6 +152,11 @@ public class GatherPointsScenario extends AbstractScenario implements Observer {
             goals.add(new MazeEntity(0, 0));
         while (goals.size() > numGoals)
             goals.remove(goals.size() - 1);
+    }
+
+    @Override
+    public Predicate<Position> getPositionPredicate(Runner runner) {
+        return pos -> maze.get(pos.x, pos.y) == MazeBlock.FLOOR;
     }
     
 }

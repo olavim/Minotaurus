@@ -24,6 +24,7 @@
 
 package com.github.tilastokeskus.minotaurus.ui;
 
+import com.github.tilastokeskus.minotaurus.util.HashSet;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -32,12 +33,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import net.miginfocom.swing.MigLayout;
 import java.util.List;
+import java.util.Set;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class Chooser<T> extends JPanel {
     
     final GUI parent;
     final List<T> objects;
+    final Set<ChangeListener> changeListeners;
     JLabel selectedObjectLabel;
     T object;
     
@@ -46,6 +51,7 @@ public class Chooser<T> extends JPanel {
         this.parent = parent;
         this.objects = objects;
         this.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        this.changeListeners = new HashSet<>();
         addComponents();
     }
     
@@ -62,6 +68,20 @@ public class Chooser<T> extends JPanel {
     public void setSelectedObject(T object) {
         this.object = object;
         refresh();
+    }
+    
+    public void addChangeListener(ChangeListener listener) {
+        changeListeners.add(listener);
+    }
+    
+    public void removeChangeListener(ChangeListener listener) {
+        changeListeners.remove(listener);
+    }
+    
+    protected void notifyChangeListeners() {
+        for (ChangeListener listener : changeListeners) {
+            listener.stateChanged(new ChangeEvent(this));
+        }
     }
         
     private void addComponents() {
@@ -107,6 +127,7 @@ public class Chooser<T> extends JPanel {
             if (chosenPlugin != null) {
                 object = chosenPlugin;
                 chooser.refresh();
+                notifyChangeListeners();
             }
         }
     }

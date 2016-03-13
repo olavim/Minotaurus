@@ -32,9 +32,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.HashSet;
-import java.util.Set;
-import javax.swing.JComponent;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import javax.swing.JPanel;
 
 public class MazePanel extends JPanel {
@@ -43,12 +42,10 @@ public class MazePanel extends JPanel {
     private static final int BLOCK_HEIGHT = 10;
     
     private Maze maze;
-    private Set<JComponent> components;
     
     public MazePanel(Maze maze) {
         this.maze = maze;
         this.setBackground(MazeBlock.FLOOR.drawColor);
-        this.components = new HashSet<>();
     }
     
     @Override
@@ -84,15 +81,22 @@ public class MazePanel extends JPanel {
             }
         }
         
+        AffineTransform af;
         for (MazeEntity ent : maze.getEntities()) {
-            JComponent c = ent.getComponent();
-            if (!components.contains(c)) {
-                components.add(c);
-                this.add(c);
-            }
+            af = new AffineTransform();
             
+            Shape s = ent.getShape();
             Position p = ent.getPosition();
-            c.setBounds(p.x * blockW, p.y * blockH, blockW, blockH);
+            g2.setColor(ent.getShapeColor());
+            int x = s.getBounds().x;
+            int y = s.getBounds().y;
+            offsetX = p.x * blockW - x;
+            offsetY = p.y * blockH - y;
+            
+            af.translate(offsetX, offsetY);
+            s = af.createTransformedShape(s);
+            
+            g2.fill(s);
         }
         
         this.revalidate();
@@ -100,6 +104,11 @@ public class MazePanel extends JPanel {
     
     @Override
     public Dimension getPreferredSize() {
+        return new Dimension(maze.getWidth() * BLOCK_WIDTH, maze.getHeight() * BLOCK_HEIGHT);
+    }
+    
+    @Override
+    public Dimension getSize() {
         return new Dimension(maze.getWidth() * BLOCK_WIDTH, maze.getHeight() * BLOCK_HEIGHT);
     }
     

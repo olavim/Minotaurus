@@ -35,10 +35,9 @@ import com.github.tilastokeskus.minotaurus.util.HashMap;
  */
 public abstract class AbstractScenario implements Scenario {
     
-    protected final Map<Runner, Integer> scoreMap;    
-    protected Maze maze;
-    
-    private String title;
+    protected Map<Runner, Integer> scoreMap;    
+    protected Maze maze;    
+    protected String title;
     
     public AbstractScenario() {
         this.scoreMap = new HashMap<>();
@@ -69,5 +68,19 @@ public abstract class AbstractScenario implements Scenario {
     @Override
     public String toString() {
         return this.title;
+    }
+    
+    @Override
+    public AbstractScenario clone() {
+        try {
+            AbstractScenario clone = (AbstractScenario) super.clone();
+            clone.scoreMap = new HashMap<>();
+            clone.title = title;
+            if (maze != null)
+                clone.maze = maze.clone();
+            return clone;
+        } catch (CloneNotSupportedException ex) {
+            return null;
+        }
     }
 }

@@ -179,7 +179,7 @@ public abstract class AbstractList<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new Itr();
+        return listIterator(0);
     }
 
     @Override

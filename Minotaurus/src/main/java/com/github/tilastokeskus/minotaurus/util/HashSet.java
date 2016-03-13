@@ -37,6 +37,11 @@ public class HashSet<E> implements Set<E> {
     public HashSet() {
         map = new HashMap<>();
     }
+    
+    public HashSet(Collection<? extends E> c) {
+        map = new HashMap<>();
+        addAll(c);
+    }
 
     @Override
     public int size() {

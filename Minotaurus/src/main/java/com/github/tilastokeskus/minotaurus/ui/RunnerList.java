@@ -67,7 +67,9 @@ public class RunnerList extends ComponentList<Runner> {
     public void refresh() {
         for (ListElement le : this.listElements) {
             RunnerPanel p = (RunnerPanel) le.component;
-            int runnerNum = indexOf(new Pair(p, p.chooser.getSelectedObject())) + 1;
+            Runner r = p.chooser.getSelectedObject();
+            le.element = r;
+            int runnerNum = indexOf(new Pair(p, r)) + 1;
             p.runnerName.setText("Runner " + runnerNum);
         }
         
@@ -79,11 +81,11 @@ public class RunnerList extends ComponentList<Runner> {
         List<Runner> list = new ArrayList<>();
         for (ListElement le : this.listElements) {
             RunnerPanel rp = (RunnerPanel) le.component;
-            Runner runner = rp.chooser.object;
-            if (runner != null) {
-                runner.setComponentColor(rp.runnerColor);
-                list.add(runner);
-            }
+            Runner runner = rp.chooser.getSelectedObject();
+            if (runner != null)
+                runner = runner.clone();
+
+            list.add(runner);
         }
         
         return list;
@@ -98,14 +100,17 @@ public class RunnerList extends ComponentList<Runner> {
         
         public RunnerPanel(Runner runner) {
             super(new MigLayout("insets 0", "[]0[grow,fill]0[]0", "[]0"));
-            this.runnerName = new JLabel("Runner 1");
-            this.runnerName.setFont(RunnerList.this.getFont());
-            this.runnerName.setForeground(RunnerList.this.getForeground());
-            this.runnerColor = runnerColorFactory.getNextColor();
+            runnerName = new JLabel("Runner 1");
+            runnerName.setFont(RunnerList.this.getFont());
+            runnerName.setForeground(RunnerList.this.getForeground());
+            runnerColor = runnerColorFactory.getNextColor();
             
             List<Runner> runners = PluginLoader.loadPlugins(Runner.class);
-            this.chooser = new Chooser<>(parent, runners);
-            this.chooser.setSelectedObject(runner);
+            chooser = new Chooser<>(parent, runners);
+            chooser.setSelectedObject(runner);
+            chooser.addChangeListener(e -> {
+                RunnerList.this.refresh();
+            });
             
             this.addComponents();
         }

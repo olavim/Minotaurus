@@ -25,10 +25,7 @@
 package com.github.tilastokeskus.minotaurus.ui;
 
 import com.github.tilastokeskus.minotaurus.runner.Runner;
-import com.github.tilastokeskus.minotaurus.scenario.Scenario;
 import com.github.tilastokeskus.minotaurus.simulation.SimulationHandler;
-import com.github.tilastokeskus.minotaurus.ui.component.RectangleComponent;
-import java.awt.Color;
 import java.awt.Container;
 import java.util.Observable;
 import java.util.Observer;
@@ -61,8 +58,8 @@ public class SimulationWindow extends AbstractGUI implements Observer {
     }
 
     private void addContents(Container container) {
-        container.setLayout(new MigLayout("wrap 1", "[grow]", "[grow]"));
-        container.add(this.mazePanel, "grow");
+        container.setLayout(new MigLayout("wrap 1", "[grow]", ""));
+        container.add(this.mazePanel);
         container.add(this.scorePanel);
     }
     

@@ -22,32 +22,18 @@
  * THE SOFTWARE.
  */
 
-package com.github.tilastokeskus.minotaurus.maze;
+package com.github.tilastokeskus.minotaurus.ui;
 
-/**
- * A skeletal implementation of a MazeGenerator to help creating maze generators
- * as easily as possible.
- */
-public abstract class AbstractMazeGenerator implements MazeGenerator {
+import java.awt.geom.Path2D;
+
+public class TriangleShape extends Path2D.Double {
     
-    private String title;
-    
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
+    public TriangleShape(int size) {
+        moveTo(0, 0);
+        lineTo(0, size);
+        lineTo(size, size/2.0);
+        lineTo(0, 0);
+        closePath();
     }
-    
-    @Override
-    public String toString() {
-        return this.title;
-    }
-    
-    @Override
-    public AbstractMazeGenerator clone() {
-        try {
-            return (AbstractMazeGenerator) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            return null;
-        }
-    }
+
 }

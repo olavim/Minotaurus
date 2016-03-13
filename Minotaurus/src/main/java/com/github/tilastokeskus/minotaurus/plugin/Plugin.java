@@ -29,6 +29,6 @@ package com.github.tilastokeskus.minotaurus.plugin;
  * to specify the title under which it is listed (preferably the one specified
  * by setTitle).
  */
-public interface Plugin {
+public interface Plugin extends Cloneable {
     void setTitle(String title);
 }

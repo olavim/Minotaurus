@@ -94,7 +94,7 @@ public class ArrayList<E> extends AbstractList<E> {
     public E remove(int index) {
         checkBounds(index);
         E oldElem = get(index);
-        int elementsToMove = numElements - index;
+        int elementsToMove = numElements - index - 1;
         System.arraycopy(data, index + 1, data, index, elementsToMove);
         data[numElements - 1] = null;
         numElements--;

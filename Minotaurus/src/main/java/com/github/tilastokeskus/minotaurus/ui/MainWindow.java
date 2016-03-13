@@ -152,8 +152,8 @@ public class MainWindow extends AbstractGUI {
         
         @Override
         public void actionPerformed(ActionEvent e) {
-            MazeGenerator gen = mazeGeneratorChooser.getSelectedObject();
-            Scenario scen = scenarioChooser.getSelectedObject();
+            MazeGenerator gen = mazeGeneratorChooser.getSelectedObject().clone();
+            Scenario scen = scenarioChooser.getSelectedObject().clone();
             List<Runner> runners = runnerList.getObjects();
             
             if (runners.size() < scen.getMinRunners()) {

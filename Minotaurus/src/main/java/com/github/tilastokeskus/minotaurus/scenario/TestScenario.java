@@ -33,7 +33,9 @@ import java.util.List;
 import java.util.Random;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.util.Direction;
+import com.github.tilastokeskus.minotaurus.util.Position;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * A Scenario intended for testing runners with. In this scenario, a goal is
@@ -107,6 +109,11 @@ public class TestScenario extends AbstractScenario {
     @Override
     public List<MazeEntity> getRunnerGoals(Runner runner) {
         return Arrays.asList(goal);
+    }
+
+    @Override
+    public Predicate<Position> getPositionPredicate(Runner runner) {
+        return pos -> maze.get(pos.x, pos.y) == MazeBlock.FLOOR;
     }
     
     private void resetGoal() {

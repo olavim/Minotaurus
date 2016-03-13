@@ -100,6 +100,7 @@ public abstract class ComponentList<T> extends JComponent {
         ListElement le = new ListElement(pair, false);
         int index = Arrays.asList(this.getComponents()).indexOf(le);
         remove(index);
+        listElements.remove(le);
         objects.remove(pair.second);
         refresh();
     }
@@ -168,8 +169,8 @@ public abstract class ComponentList<T> extends JComponent {
     
     class ListElement extends JPanel {
 
-        final T element;
-        final Component component;
+        T element;
+        Component component;
         
         private ListElement(Pair<Component, T> pair) {
             this(pair, true);

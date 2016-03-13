@@ -46,7 +46,7 @@ public class ScorePanel extends JPanel {
             JLabel l = new JLabel("0");
             scores.put(r, l);
             
-            Color runnerColor = r.getComponentColor();
+            Color runnerColor = r.getShapeColor();
             RectangleComponent c = new RectangleComponent(16,
                     runnerColor, 1, runnerColor.darker());
             

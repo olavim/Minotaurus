@@ -40,6 +40,7 @@ public class PriorityQueueTest {
     private final boolean BENCHMARK = false;
     
     PriorityQueue<Integer> queue;
+    PriorityQueue<Integer> q;
     
     public PriorityQueueTest() {
     }
@@ -120,7 +121,7 @@ public class PriorityQueueTest {
     int x = 0;
     
     public void hashMapPerformanceTestIntegers() {
-        int numIters = 20000;
+        int numIters = 100000;
         List<Integer> shuffled = IntStream.range(0, numIters).boxed().collect(Collectors.toList());
         Collections.shuffle(shuffled);
         
@@ -133,28 +134,26 @@ public class PriorityQueueTest {
         }).runBenchmark(100);
         
         int containsAvg = new Benchmark(() -> {}, () -> {
+            System.out.println(x++);
             for (int i = 0; i < numIters; i++)
                 queue.contains(i);
         }).runBenchmark(100);
         
         int extractMinAvg = new Benchmark(() -> {
-            queue.clear();
-            for (int i = 0; i < numIters; i++)
-                queue.add(shuffled.get(i));
+            q = new PriorityQueue<>(queue);
         }, () -> {
             System.out.println(x++);
             for (int i = 0; i < numIters; i++)
-                queue.extractMin();
+                q.extractMin();
         }).runBenchmark(50);
         
         int removeAvg = new Benchmark(() -> {
-            queue.clear();
-            for (int i = 0; i < numIters; i++)
-                queue.add(shuffled.get(i));
+            q = new PriorityQueue<>(queue);
         }, () -> {
+            System.out.println(x++);
             for (int i = 0; i < numIters; i++)
-                queue.remove(i);
-        }).runBenchmark(100);
+                q.remove(i);
+        }).runBenchmark(50);
         
         System.out.println("Integers - Put: " + putAvg);        
         System.out.println("Integers - Contains: " + containsAvg);        
@@ -163,12 +162,13 @@ public class PriorityQueueTest {
     }
     
     public void hashMapPerformanceTestStrings() {
+        x = 0;
         int numIters = 100000;
         
         long start = System.nanoTime();
         String[] strings = new String[numIters];
         for (int n = 0; n < numIters; n++)
-            strings[n] = StringUtils.getRandomString(50);
+            strings[n] = StringUtils.getRandomString(10);
         
         long end = System.nanoTime();
         System.out.println("String gen took " + millis(start, end) + "ms");
@@ -177,13 +177,14 @@ public class PriorityQueueTest {
         
         int putAvg = new Benchmark(() -> {
             q.clear();
-            q.data = new Object[PriorityQueue.INITIAL_CAPACITY];
         }, () -> {
+            System.out.println(x++);
             for (int i = 0; i < numIters; i++)
                 q.add(strings[i]);
         }).runBenchmark(100);
         
         int containsAvg = new Benchmark(() -> {}, () -> {
+            System.out.println(x++);
             for (int i = 0; i < numIters; i++)
                 q.contains(strings[i]);
         }).runBenchmark(100);
@@ -193,19 +194,20 @@ public class PriorityQueueTest {
             for (int i = 0; i < numIters; i++)
                 q.add(strings[i]);
         }, () -> {
+            System.out.println(x++);
             for (int i = 0; i < numIters; i++)
                 q.extractMin();
-        }).runBenchmark(100);
+        }).runBenchmark(50);
         
         int removeAvg = new Benchmark(() -> {
             q.clear();
-            q.data = new Object[PriorityQueue.INITIAL_CAPACITY];
             for (int i = 0; i < numIters; i++)
                 q.add(strings[i]);
         }, () -> {
+            System.out.println(x++);
             for (int i = 0; i < numIters; i++)
                 q.remove(strings[i]);
-        }).runBenchmark(100);
+        }).runBenchmark(50);
         
         System.out.println("Strings - Put: " + putAvg);        
         System.out.println("Strings - Contains: " + containsAvg);        

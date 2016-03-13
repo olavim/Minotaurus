@@ -42,13 +42,21 @@ public final class PriorityQueue<T> {
     Object[] data;
     
     public PriorityQueue() {
-        this(null);
+        this.comparator = null;
+        this.numElements = 0;
+        this.data = new Object[INITIAL_CAPACITY];
     }
     
     public PriorityQueue(Comparator<T> comparator) {
         this.comparator = comparator;
         this.numElements = 0;
         this.data = new Object[INITIAL_CAPACITY];
+    }
+    
+    public PriorityQueue(PriorityQueue<T> q) {
+        this.comparator = q.comparator;
+        this.numElements = q.numElements;
+        this.data = Arrays.copyOf(q.data, q.data.length);
     }
     
     public int size() {

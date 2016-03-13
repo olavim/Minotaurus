@@ -13,6 +13,7 @@ import com.github.tilastokeskus.minotaurus.util.Direction;
 import com.github.tilastokeskus.minotaurus.runner.Runner;
 import com.github.tilastokeskus.minotaurus.util.Position;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * Decides a direction by checking which direction has the lowest Manhattan
@@ -29,7 +30,7 @@ public class SimpletonRunner extends Runner {
     };
 
     @Override
-    public Direction getNextMove(Maze maze, Collection<MazeEntity> goals) {
+    public Direction getNextMove(Maze maze, Collection<MazeEntity> goals, Predicate<Position> positionPredicate) {
         MazeEntity goal = getClosestGoal(goals);
         
         int bestDist = getDistanceTo(goal);
@@ -37,11 +38,12 @@ public class SimpletonRunner extends Runner {
         for (Direction dir : dirs) {
             int nx = getPosition().x + dir.deltaX;
             int ny = getPosition().y + dir.deltaY;
+            Position newPos = new Position(nx, ny);
             
-            if (maze.get(nx, ny) == MazeBlock.WALL)
+            if (!positionPredicate.test(newPos))
                 continue;
             
-            int dist = getManhattanDistance(new Position(nx, ny), goal.getPosition());
+            int dist = getManhattanDistance(newPos, goal.getPosition());
             
             if (dist < bestDist) {
                 bestDist = dist;

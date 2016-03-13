@@ -25,10 +25,10 @@
 package com.github.tilastokeskus.minotaurus.ui;
 
 import java.awt.Color;
-import javax.swing.JComponent;
+import java.awt.Shape;
 
 public interface Drawable {
-    JComponent getComponent();
-    void setComponentColor(Color color);
-    Color getComponentColor();
+    Shape getShape();
+    void setShapeColor(Color color);
+    Color getShapeColor();
 }

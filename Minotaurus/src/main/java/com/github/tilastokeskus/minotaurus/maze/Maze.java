@@ -26,22 +26,20 @@ package com.github.tilastokeskus.minotaurus.maze;
 
 import com.github.tilastokeskus.minotaurus.util.ArrayList;
 import com.github.tilastokeskus.minotaurus.util.HashMap;
+import com.github.tilastokeskus.minotaurus.util.HashSet;
 import com.github.tilastokeskus.minotaurus.util.Position;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class Maze implements Observer {
+public class Maze implements Observer, Cloneable {
     
-    final Map<Position, List<MazeEntity>> entityMap;
-    final Set<MazeEntity> entitySet;    
-    final MazeBlock[][] layout;
+    Map<Position, List<MazeEntity>> entityMap;
+    Set<MazeEntity> entitySet;
+    MazeBlock[][] layout;
     
     /**
      * Creates a new maze with the given layout.
@@ -52,7 +50,7 @@ public class Maze implements Observer {
         this.layout = copyLayout(layout);
         checkValidity(this.layout);
         entityMap = new HashMap<>();
-        entitySet = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        entitySet = new HashSet<>();
     }
     
     /**
@@ -145,12 +143,14 @@ public class Maze implements Observer {
     }
     
     /**
-     * Returns a list of all the entities in the maze.
+     * Returns a set of all the entities in the maze.
      * 
-     * @return A list of MazeEntities.
+     * @return A set of MazeEntities.
      */
-    public Set<MazeEntity> getEntities() {
-        return new HashSet<>(entitySet);
+    public HashSet<MazeEntity> getEntities() {
+        synchronized(entitySet) {
+            return new HashSet<>(entitySet);
+        }
     }
     
     /**
@@ -165,8 +165,11 @@ public class Maze implements Observer {
         if (!entityMap.containsKey(p))
             entityMap.put(p, new ArrayList<>());
         
-        entityMap.get(p).add(ent);        
-        entitySet.add(ent);
+        entityMap.get(p).add(ent);
+        
+        synchronized(entitySet) {
+            entitySet.add(ent);
+        }
         
         ent.addObserver(this);
     }
@@ -181,10 +184,12 @@ public class Maze implements Observer {
     public void setEntities(List<MazeEntity> entities) {
         entityMap.clear();
         
-        for (MazeEntity ent : entitySet)
-            ent.deleteObserver(this);
-            
-        entitySet.clear();
+        synchronized(entitySet) {
+            for (MazeEntity ent : entitySet)
+                ent.deleteObserver(this);
+
+            entitySet.clear();
+        }
         
         for (MazeEntity ent : entities)
             addEntity(ent);
@@ -199,7 +204,10 @@ public class Maze implements Observer {
     public void removeEntity(MazeEntity ent) {
         if (entityMap.containsKey(ent.getPosition()))
             entityMap.get(ent.getPosition()).remove(ent);
-        entitySet.remove(ent);
+        
+        synchronized(entitySet) {
+            entitySet.remove(ent);
+        }
         
         ent.deleteObserver(this);
     }
@@ -231,7 +239,32 @@ public class Maze implements Observer {
         MazeEntity ent = (MazeEntity) o;
         Position oldPos = (Position) arg;
         entityMap.get(oldPos).remove(ent);
+        
+        synchronized(entitySet) {
+            entitySet.remove(ent);
+        }
+        
         addEntity(ent);
+    }
+    
+    @Override
+    public Maze clone() {
+        try {
+            Maze clone = (Maze) super.clone();
+    
+            Set<MazeEntity> s = new HashSet<>();
+            Map<Position, List<MazeEntity>> m = new HashMap<>();            
+            MazeBlock[][] l = new MazeBlock[getHeight()][getHeight()];
+            for (int i = 0; i < getHeight(); i++)
+                l[i] = Arrays.copyOf(layout[i], layout[i].length);
+                
+            clone.entitySet = s;
+            clone.entityMap = m;
+            clone.layout = l;
+            return clone;
+        } catch (CloneNotSupportedException ex) {
+            return null;
+        }
     }
 
 }

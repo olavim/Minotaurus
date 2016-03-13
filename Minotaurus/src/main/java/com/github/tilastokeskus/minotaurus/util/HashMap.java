@@ -26,6 +26,7 @@ package com.github.tilastokeskus.minotaurus.util;
 
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -46,6 +47,12 @@ public class HashMap<K, V> implements Map<K, V> {
     
     public HashMap() {
         this.table = new Entry[INITIAL_CAPACITY];
+    }
+    
+    public HashMap(HashMap<K, V> m) {
+        this.table = Arrays.copyOf(m.table, m.size);
+        this.size = m.size;
+        this.mods = m.mods;
     }
 
     @Override

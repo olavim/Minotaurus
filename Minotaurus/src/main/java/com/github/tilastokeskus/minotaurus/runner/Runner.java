@@ -30,12 +30,14 @@ import com.github.tilastokeskus.minotaurus.maze.MazeEntity;
 import com.github.tilastokeskus.minotaurus.maze.TestMazeGenerator;
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import com.github.tilastokeskus.minotaurus.scenario.TestScenario;
-import com.github.tilastokeskus.minotaurus.ui.component.TriangleComponent;
+import com.github.tilastokeskus.minotaurus.ui.TriangleShape;
 import com.github.tilastokeskus.minotaurus.util.ColorFactory;
 import com.github.tilastokeskus.minotaurus.util.Direction;
+import com.github.tilastokeskus.minotaurus.util.Position;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,10 +68,10 @@ public abstract class Runner extends MazeEntity implements Plugin {
         }
     }
     
-    private String title;
+    protected String title;
     
     public Runner() {
-        super(0, 0, new TriangleComponent(ColorFactory.nextColor()));
+        super(0, 0, new TriangleShape(10), ColorFactory.nextColor());
     }
     
     @Override
@@ -88,9 +90,12 @@ public abstract class Runner extends MazeEntity implements Plugin {
      * 
      * @param maze Maze to navigate.
      * @param goals Goals to aim for.
+     * @param positionPredicate Predicate to test if it is allowed to visit a
+     *                          position.
      * @return A direction.
      */
-    public abstract Direction getNextMove(Maze maze, Collection<MazeEntity> goals);
+    public abstract Direction getNextMove(Maze maze, 
+            Collection<MazeEntity> goals, Predicate<Position> positionPredicate);
 
     @Override
     public boolean equals(Object obj) {
@@ -101,14 +106,24 @@ public abstract class Runner extends MazeEntity implements Plugin {
             return false;
         
         final Runner other = (Runner) obj;
-        return Objects.equals(this.title, other.title);
+        return Objects.equals(this.initialShape, other.initialShape) 
+                && Objects.equals(this.shapeColor, other.shapeColor)
+                && Objects.equals(this.title, other.title);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * super.hashCode();
+        hash = 59 * hash + Objects.hashCode(this.initialShape);
+        hash = 59 * hash + Objects.hashCode(this.shapeColor);
         hash = 59 * hash + Objects.hashCode(this.title);
         return hash;
+    }
+
+    @Override
+    public Runner clone() {
+        Runner clone = (Runner) super.clone();
+        clone.title = title;
+        return clone;
     }
 }

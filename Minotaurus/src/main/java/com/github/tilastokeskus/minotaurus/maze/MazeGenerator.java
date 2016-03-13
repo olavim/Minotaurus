@@ -26,7 +26,6 @@ package com.github.tilastokeskus.minotaurus.maze;
 
 import com.github.tilastokeskus.minotaurus.plugin.Plugin;
 import com.github.tilastokeskus.minotaurus.ui.MazePanel;
-import com.github.tilastokeskus.minotaurus.ui.SimulationWindow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -69,4 +68,11 @@ public interface MazeGenerator extends Plugin {
      * @see Maze
      */
     Maze generateMaze(int width, int height);
+    
+    /**
+     * Returns a shallow copy of this class instance.
+     * 
+     * @return A MazeGenerator.
+     */
+    MazeGenerator clone();
 }

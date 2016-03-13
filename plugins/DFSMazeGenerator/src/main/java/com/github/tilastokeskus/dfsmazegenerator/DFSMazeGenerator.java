@@ -24,15 +24,13 @@
 
 package com.github.tilastokeskus.dfsmazegenerator;
 
+import com.github.tilastokeskus.minotaurus.maze.AbstractMazeGenerator;
 import com.github.tilastokeskus.minotaurus.maze.Maze;
 import com.github.tilastokeskus.minotaurus.maze.MazeBlock;
 import com.github.tilastokeskus.minotaurus.maze.MazeGenerator;
-import java.awt.Point;
-import java.util.Collections;
 import java.util.Random;
-import java.util.Stack;
 
-public class DFSMazeGenerator implements MazeGenerator {
+public class DFSMazeGenerator extends AbstractMazeGenerator {
     
     public static void main(String[] args) {
         MazeGenerator.testGenerator(DFSMazeGenerator.class, 20, 20);
@@ -117,5 +115,4 @@ public class DFSMazeGenerator implements MazeGenerator {
     public String toString() {
         return this.title;
     }
-
 }
