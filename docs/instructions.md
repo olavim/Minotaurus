@@ -5,6 +5,8 @@ After running the program from the command line, or double-clicking the executab
 - Maze Generator
 - Scenario
 - Runners
+- Rate of simulation
+- End simulation at score
 - Start
  
 #### Maze Generator
@@ -34,6 +36,14 @@ To choose a scenario, click on the menu icon on the right edge below the **Maze 
 A runner is an artificial intelligence moving in the maze. In most cases it's nothing more than some path finding algorithm moving towards the closest goal it can find, but depending on the scenario it's intended for, it might be a little more complicated than that.
 
 To add a runner, click on the **Add Runner** button. To specify a runner's algorithm, click on the menu icon on the appropriate row. To remove a runner, click on the delete icon on the appropriate row.
+
+#### Rate of simulation
+
+You can specify the delay, in milliseconds, between each move in this field. So a smaller value makes the simulation go faster.
+
+#### End simulation at score
+
+You can specify a score cap in this field. When some runner attains this score (or higher), the simulation stops. This is by default 200. A value of 0 or lower means no cap.
 
 #### Start
 
